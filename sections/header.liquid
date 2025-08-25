@@ -1,0 +1,571 @@
+<link rel="stylesheet" href="{{ 'component-search.css' | asset_url }}" media="print" onload="this.media='all'">
+<link
+  rel="stylesheet"
+  href="{{ 'component-cart-notification.css' | asset_url }}"
+  media="print"
+  onload="this.media='all'"
+>
+
+<style>
+  .header-wrapper {
+    width: 100%;
+    border-bottom: none; /* remove bottom bar */
+    background: transparent; /* remove background bar */
+  }
+
+  .custom-header {
+    width: 100%;
+  }
+
+  .custom-navbar {
+    display: grid; /* true three-column layout */
+    grid-template-columns: 1fr auto 1fr; /* left | logo | right */
+    align-items: center;
+    padding: 2rem 1.6rem; /* vertical 2rem, horizontal mobile 16px */
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+    width: 100%;
+    min-height: 60px;
+    color: inherit;
+  }
+
+  .navbar-left,
+  .navbar-right {
+    display: flex;
+    gap: 1.6rem; /* 16px base gap */
+    min-width: 0; /* Prevent overflow */
+  }
+
+  .navbar-left {
+    justify-self: start;
+    justify-content: flex-start;
+  }
+  .navbar-right {
+    justify-self: end;
+    justify-content: flex-end;
+  }
+
+  .navbar-center {
+    display: flex;
+    align-items: center;
+    justify-self: center; /* sits in the middle column */
+  }
+
+  .navbar-link {
+    text-decoration: none;
+    color: inherit;
+    font-weight: 500;
+    transition: opacity 0.2s ease;
+  }
+
+  @media screen and (min-width: 1200px) {
+    .navbar-link:hover {
+      opacity: 0.5;
+    }
+  }
+
+  .navbar-logo {
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    color: inherit;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .navbar-logo-image {
+    max-height: 40px;
+    width: auto;
+  }
+
+  /* no icons - text only */
+
+  .cart-count-bubble {
+    background: #000;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 10px;
+    padding: 2px 6px;
+    margin-left: 4px;
+    min-width: 16px;
+    text-align: center;
+    line-height: 1;
+  }
+
+  /* Mobile responsive */
+  @media screen and (max-width: 1199px) {
+    .navbar-left,
+    .navbar-right {
+      gap: 1.5rem;
+    }
+
+    .custom-navbar {
+      font-size: 11px;
+      padding: 1.5rem 1.6rem; /* keep 16px sides on mobile */
+    }
+
+    .navbar-logo {
+      font-size: 16px;
+    }
+
+    .navbar-logo-image {
+      max-height: 32px;
+    }
+  }
+
+  @media screen and (min-width: 1200px) {
+    .custom-navbar {
+      padding-left: 3rem; /* 30px desktop sides */
+      padding-right: 3rem;
+    }
+
+    .navbar-left,
+    .navbar-right {
+      gap: 3rem; /* 30px desktop spacing between items */
+    }
+  }
+
+  /* Variant styles */
+  .nav-variant--dark .custom-navbar,
+  .nav-variant--dark .navbar-link {
+    color: #000;
+  }
+  .nav-variant--light .custom-navbar,
+  .nav-variant--light .navbar-link {
+    color: #fff;
+  }
+
+  /* Mobile menu visibility rules */
+  .navbar-menu {
+    display: none;
+  }
+
+  @media screen and (max-width: 1199px) {
+    .navbar-left .navbar-link:not(.navbar-menu) {
+      display: none;
+    }
+    .navbar-menu {
+      display: inline-flex;
+    }
+    .nav-hide-mobile {
+      display: none !important;
+    }
+  }
+
+  /* Unified Mobile Menu System */
+  @media screen and (max-width: 1199px) {
+    .unified-menu-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 70vw;
+      height: 100vh;
+      background: #4e8926;
+      color: #fff;
+      padding: 2rem 1.6rem;
+      transform: translateX(-100%);
+      transition: transform 300ms ease;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .unified-menu-drawer nav {
+      display: flex;
+      flex-direction: column;
+      gap: 1.6rem;
+    }
+
+    .unified-menu-drawer .navbar-link {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.4rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .unified-menu-drawer .navbar-link:hover {
+      opacity: 0.8;
+    }
+
+    /* Menu open state */
+    body.unified-menu-open {
+      overflow: hidden;
+    }
+
+    body.unified-menu-open .unified-menu-drawer {
+      transform: translateX(0);
+    }
+
+    /* Push content and header content (but not the drawer) when menu is open */
+    body.unified-menu-open #MainContent,
+    body.unified-menu-open main,
+    body.unified-menu-open .content-for-layout,
+    body.unified-menu-open .custom-header {
+      transform: translateX(70vw) !important;
+      transition: transform 300ms ease !important;
+    }
+  }
+
+  /* Hide text on very small screens, show icons only */
+  @media screen and (max-width: 768px) {
+    .navbar-text {
+      display: none;
+    }
+
+    .navbar-left,
+    .navbar-right {
+      gap: 1rem;
+    }
+
+    .custom-navbar {
+      padding: 1rem 1.6rem; /* ensure 16px side padding on small mobile */
+    }
+
+    .navbar-logo {
+      font-size: 14px;
+    }
+
+    .navbar-logo-image {
+      max-height: 28px;
+    }
+  }
+</style>
+
+<header class="header-wrapper color-{{ section.settings.color_scheme }} gradient nav-variant--{{ section.settings.nav_variant }}">
+  <div class="custom-header">
+    <nav class="custom-navbar">
+      <!-- Left Navigation -->
+      <div class="navbar-left">
+        <a href="#" class="navbar-link navbar-menu" data-unified-menu-toggle>MENU</a>
+        <a href="{{ routes.collections_url }}" class="navbar-link nav-hide-mobile">
+          <span class="navbar-text">SHOP</span>
+        </a>
+        <a href="{{ routes.pages_url }}/explore" class="navbar-link nav-hide-mobile">
+          <span class="navbar-text">EXPLORE</span>
+        </a>
+        <a href="{{ routes.pages_url }}/brand" class="navbar-link nav-hide-mobile">
+          <span class="navbar-text">BRAND</span>
+        </a>
+      </div>
+
+      <!-- Center Logo -->
+      <div class="navbar-center">
+        <a href="{{ routes.root_url }}" class="navbar-logo">
+          {%- assign logo_alt = shop.name | escape -%}
+          {%- assign dark_logo_url = 'https://cdn.shopify.com/s/files/1/0911/2394/1654/files/logo_2.png?v=1756148711' -%}
+          {%- assign light_logo_url = 'https://cdn.shopify.com/s/files/1/0911/2394/1654/files/Group_343.png?v=1756148728' -%}
+          <img
+            src="{%- if section.settings.nav_variant == 'light' -%}{{ light_logo_url }}{%- else -%}{{ dark_logo_url }}{%- endif -%}"
+            alt="{{ logo_alt }}"
+            class="navbar-logo-image"
+            width="120"
+            height="32"
+            style="height: 32px; width: auto;"
+          >
+        </a>
+      </div>
+
+      <!-- Right Navigation -->
+      <div class="navbar-right">
+        <a href="{{ routes.search_url }}" class="navbar-link nav-hide-mobile">SEARCH</a>
+
+        {%- if shop.customer_accounts_enabled -%}
+          <a
+            href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+            class="navbar-link nav-hide-mobile"
+            >ACCOUNT</a
+          >
+        {%- endif -%}
+
+        <a href="{{ routes.cart_url }}" class="navbar-link" id="cart-icon-bubble"
+          >CART
+          {%- if cart != empty -%}
+            <span class="cart-count-bubble">{{ cart.item_count }}</span>
+          {%- endif -%}
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Unified Menu Drawer (outside header) -->
+<div class="unified-menu-drawer" id="UnifiedMenuDrawer" aria-hidden="true">
+  <nav>
+    <a href="{{ routes.collections_url }}" class="navbar-link">Shop</a>
+    <a href="{{ routes.pages_url }}/explore" class="navbar-link">Explore</a>
+    <a href="{{ routes.pages_url }}/brand" class="navbar-link">Brand</a>
+    <a href="{{ routes.search_url }}" class="navbar-link">Search</a>
+    {%- if shop.customer_accounts_enabled -%}
+      <a
+        href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+        class="navbar-link"
+        >Account</a
+      >
+    {%- endif -%}
+    <a href="{{ routes.cart_url }}" class="navbar-link">Cart</a>
+  </nav>
+</div>
+
+{% comment %}
+  {%- render 'cart-notification', color_scheme: section.settings.color_scheme -%}
+{% endcomment %}
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    "name": {{ shop.name | json }},
+    {% if settings.logo %}
+      "logo": {{ settings.logo | image_url: width: 500 | prepend: "https:" | json }},
+    {% endif %}
+    "sameAs": [
+      {{ settings.social_twitter_link | json }},
+      {{ settings.social_facebook_link | json }},
+      {{ settings.social_pinterest_link | json }},
+      {{ settings.social_instagram_link | json }},
+      {{ settings.social_tumblr_link | json }},
+      {{ settings.social_snapchat_link | json }},
+      {{ settings.social_youtube_link | json }},
+      {{ settings.social_vimeo_link | json }}
+    ],
+    "url": {{ request.origin | append: page.url | json }}
+  }
+</script>
+
+<script>
+  // Unified Menu System
+  (function () {
+    var toggle = document.querySelector('[data-unified-menu-toggle]');
+    var drawer = document.getElementById('UnifiedMenuDrawer');
+
+    if (!toggle || !drawer) return;
+
+    // Toggle menu
+    toggle.addEventListener('click', function (e) {
+      e.preventDefault();
+      var isOpen = document.body.classList.toggle('unified-menu-open');
+      drawer.setAttribute('aria-hidden', String(!isOpen));
+    });
+
+    // Close on ESC key
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      closeMenu();
+    });
+
+    // Close when clicking pushed content
+    function bindCloseOnClick(selector) {
+      var el = document.querySelector(selector);
+      if (!el) return;
+      el.addEventListener('click', function (e) {
+        if (!document.body.classList.contains('unified-menu-open')) return;
+        // Don't close if clicking on the header or menu
+        if (e.target.closest('.header-wrapper') || e.target.closest('.unified-menu-drawer')) return;
+        closeMenu();
+      });
+    }
+
+    // Bind to main content areas
+    bindCloseOnClick('#MainContent');
+    bindCloseOnClick('main');
+    bindCloseOnClick('.content-for-layout');
+
+    // Close when any menu link is clicked
+    var drawerNav = drawer.querySelector('nav');
+    if (drawerNav) {
+      drawerNav.addEventListener('click', function (e) {
+        var target = e.target.closest('a');
+        if (!target) return;
+        closeMenu();
+      });
+    }
+
+    function closeMenu() {
+      document.body.classList.remove('unified-menu-open');
+      drawer.setAttribute('aria-hidden', 'true');
+    }
+  })();
+</script>
+
+{%- if request.page_type == 'index' -%}
+  {% assign potential_action_target = request.origin | append: routes.search_url | append: '?q={search_term_string}' %}
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      "name": {{ shop.name | json }},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {{ potential_action_target | json }},
+        "query-input": "required name=search_term_string"
+      },
+      "url": {{ request.origin | append: page.url | json }}
+    }
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.header.name",
+  "class": "section-header",
+  "settings": [
+    {
+      "type": "select",
+      "id": "nav_variant",
+      "label": "Navbar variant",
+      "options": [
+        { "value": "dark", "label": "Dark (black text)" },
+        { "value": "light", "label": "Light (white text)" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_line_separator",
+      "default": true,
+      "label": "t:sections.header.settings.show_line_separator.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.header__1.content"
+    },
+    {
+      "type": "select",
+      "id": "logo_position",
+      "options": [
+        {
+          "value": "middle-left",
+          "label": "t:sections.header.settings.logo_position.options__1.label"
+        },
+        {
+          "value": "top-left",
+          "label": "t:sections.header.settings.logo_position.options__2.label"
+        },
+        {
+          "value": "top-center",
+          "label": "t:sections.header.settings.logo_position.options__3.label"
+        },
+        {
+          "value": "middle-center",
+          "label": "t:sections.header.settings.logo_position.options__4.label"
+        }
+      ],
+      "default": "middle-left",
+      "label": "t:sections.header.settings.logo_position.label",
+      "info": "t:sections.header.settings.logo_position.info"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "label": "t:sections.header.settings.menu.label"
+    },
+    {
+      "type": "select",
+      "id": "menu_type_desktop",
+      "options": [
+        {
+          "value": "dropdown",
+          "label": "t:sections.header.settings.menu_type_desktop.options__1.label"
+        },
+        {
+          "value": "mega",
+          "label": "t:sections.header.settings.menu_type_desktop.options__2.label"
+        },
+        {
+          "value": "drawer",
+          "label": "t:sections.header.settings.menu_type_desktop.options__3.label"
+        }
+      ],
+      "default": "dropdown",
+      "label": "t:sections.header.settings.menu_type_desktop.label",
+      "info": "t:sections.header.settings.menu_type_desktop.info"
+    },
+    {
+      "type": "select",
+      "id": "sticky_header_type",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.header.settings.sticky_header_type.options__1.label"
+        },
+        {
+          "value": "on-scroll-up",
+          "label": "t:sections.header.settings.sticky_header_type.options__2.label"
+        },
+        {
+          "value": "always",
+          "label": "t:sections.header.settings.sticky_header_type.options__3.label"
+        },
+        {
+          "value": "reduce-logo-size",
+          "label": "t:sections.header.settings.sticky_header_type.options__4.label"
+        }
+      ],
+      "default": "on-scroll-up",
+      "label": "t:sections.header.settings.sticky_header_type.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.header__3.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_country_selector",
+      "default": true,
+      "label": "t:sections.header.settings.enable_country_selector.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.header__4.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_language_selector",
+      "default": true,
+      "label": "t:sections.header.settings.enable_language_selector.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.mobile_layout.content"
+    },
+    {
+      "type": "select",
+      "id": "mobile_logo_position",
+      "options": [
+        {
+          "value": "center",
+          "label": "t:sections.header.settings.mobile_logo_position.options__1.label"
+        },
+        {
+          "value": "left",
+          "label": "t:sections.header.settings.mobile_logo_position.options__2.label"
+        }
+      ],
+      "default": "center",
+      "label": "t:sections.header.settings.mobile_logo_position.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.header__5.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_customer_avatar",
+      "default": true,
+      "label": "t:sections.header.settings.enable_customer_avatar.label",
+      "info": "t:sections.header.settings.enable_customer_avatar.info"
+    }
+  ]
+}
+{% endschema %}
