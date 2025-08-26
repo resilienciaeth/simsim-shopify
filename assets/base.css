@@ -80,7 +80,7 @@
 /* Mobile: 16px sides, Desktop: 30px sides */
 /* Breakpoint: 1200px (Mobile below, Desktop above) */
 .page-width {
-  max-width: var(--page-width);
+ 
   margin: 0 auto;
   padding: 0 1.6rem; /* 16px mobile margins */
 }

@@ -1,23 +1,90 @@
 <style type="text/css">
-  .template-404 .title + * {
-    margin-top: 1rem;
+  .template-404 {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 0; /* No container padding - padding applied to text content instead */
+    margin: 0;
+    box-sizing: border-box;
   }
 
-  @media screen and (min-width: 750px) {
-    .template-404 .title + * {
-      margin-top: 2rem;
+  .template-404 .error-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #000000;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+    margin: 0 0 1rem 0;
+  }
+
+  .template-404 .error-content {
+    font-size: 12px;
+    color: #000000;
+    line-height: 125%;
+    text-indent: 18px;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+    margin: 0 0 1rem 0;
+    text-transform: none;
+  }
+
+  .template-404 .error-link {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #000000;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    margin: 0;
+  }
+
+  .template-404 .error-link:hover {
+    opacity: 0.7;
+  }
+
+  .template-404 .error-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* Desktop: back to bottom positioning */
+  @media screen and (min-width: 1200px) {
+    .template-404 {
+      justify-content: flex-end; /* Back to bottom positioning */
+    }
+
+    .template-404 .error-content-wrapper {
+      width: 25vw;
+      max-width: 25vw;
+      padding: 30px; /* 30px padding only on the text content */
+      margin-top: 0; /* Remove top margin */
+    }
+  }
+
+  /* Mobile: move to top as well */
+  @media screen and (max-width: 1199px) {
+    .template-404 {
+      justify-content: flex-start; /* Move to top instead of bottom */
+    }
+
+    .template-404 .error-content-wrapper {
+      width: 100%;
+      padding: 16px; /* 16px padding only on the text content */
+      margin-top: 120px; /* 120px from top on mobile too */
     }
   }
 </style>
 
-<div class="template-404 page-width page-margin center">
-  <p>
-    {{ 'templates.404.subtext' | t }}
-  </p>
-  <h1 class="title">
-    {{ 'templates.404.title' | t }}
-  </h1>
-  <a href="{{ routes.all_products_collection_url }}" class="button">
-    {{ 'general.continue_shopping' | t }}
-  </a>
+<div class="template-404">
+  <div class="error-content-wrapper">
+    <h1 class="error-title">404 TIMES OOOPS!</h1>
+    <p class="error-content">
+      You were lookin' for love on all the wrong places. It's not you, it's us. That link is broken. And now our hearts
+      are, too. Let's find your match with one of these most-loved styles.
+    </p>
+    <a href="{{ routes.all_products_collection_url }}" class="error-link">BACK TO SHOP</a>
+  </div>
 </div>
