@@ -2,7 +2,7 @@
   "layout": "theme.miscellaneous",
   "sections": {
     "main": {
-      "type": "main-page",
+      "type": "brand-page-split",
       "settings": {}
     }
   },

@@ -1,0 +1,123 @@
+{{ 'section-main-page.css' | asset_url | stylesheet_tag }}
+
+<style type="text/css">
+  .brand-page-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+  }
+
+  /* Left side - scrollable text */
+  .brand-page-text {
+    width: 50%;
+    overflow-y: auto;
+    padding: 30px;
+    box-sizing: border-box;
+  }
+
+  /* Right side - fixed image */
+  .brand-page-image {
+    width: 50%;
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .brand-page-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Text styling - same as miscellaneous page */
+  .brand-page-text .page-title {
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    color: #000000 !important;
+    font-weight: normal !important;
+    letter-spacing: 0.5px !important;
+    margin: 0 0 1rem 0 !important;
+  }
+
+  .brand-page-text .rte,
+  .brand-page-text .rte * {
+    font-size: 12px !important;
+    text-transform: none !important;
+    color: #000000 !important;
+    line-height: 125% !important;
+    text-indent: 18px !important;
+    margin-bottom: 1rem !important;
+    margin-top: 0 !important;
+    font-weight: normal !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  /* Desktop: add top margin to text */
+  @media screen and (min-width: 1200px) {
+    .brand-page-text {
+      margin-top: 300px;
+    }
+  }
+
+  /* Mobile responsive */
+  @media screen and (max-width: 1199px) {
+    .brand-page-container {
+      flex-direction: column;
+      margin-top: -180px; /* Offset header height to push image to very top */
+      padding-top: 180px; /* Add padding back for content flow */
+    }
+
+    .brand-page-text {
+      width: 100%;
+      padding: 16px;
+      order: 2; /* Text appears second */
+      margin-top: 120px; /* 120px gap between image and text */
+    }
+
+    .brand-page-image {
+      position: relative;
+      width: 100%;
+      height: 70vh;
+      right: auto;
+      top: auto;
+      order: 1; /* Image appears first */
+      margin-top: -180px; /* Pull image up to cover header space */
+    }
+  }
+</style>
+
+<div class="brand-page-container">
+  <!-- Left side - scrollable text -->
+  <div class="brand-page-text">
+    <h1 class="page-title">{{ page.title | escape }}</h1>
+    <div class="rte">
+      {{ page.content }}
+    </div>
+  </div>
+
+  <!-- Right side - fixed image -->
+  <div class="brand-page-image">
+    {% if page.metafields.custom.brand_page_image != blank %}
+      <img
+        src="{{ page.metafields.custom.brand_page_image | image_url: width: 1200 }}"
+        alt="{{ page.metafields.custom.brand_page_image.alt | default: page.title }}"
+        loading="lazy"
+      >
+    {% else %}
+      <!-- Placeholder if no image is set -->
+      <div style="background: #f0f0f0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #999; font-size: 14px;">
+        Brand Image Placeholder
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Brand Page Split",
+  "class": "section",
+  "settings": []
+}
+{% endschema %}
