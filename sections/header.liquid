@@ -29,6 +29,107 @@
     }
   }
 
+  /* Remove padding for brand page */
+  .template-page.page-brand-page body,
+  body.template-page.page-brand-page,
+  .template-page.brand-page body,
+  body.template-page.brand-page {
+    padding-top: 0 !important;
+  }
+
+    /* Ensure consistent font family and size across entire website */
+  html, body, * {
+    font-family: var(--font-body-family) !important;
+    font-size: 12px !important;
+  }
+
+  h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: var(--font-heading-family) !important;
+    font-size: 12px !important;
+  }
+
+  /* Ensure all specific text elements are 12px */
+  p, span, div, a, button, input, textarea, select, label, li, td, th {
+    font-size: 12px !important;
+  }
+
+  /* Ensure price elements are 12px */
+  .price, .price *, .card-information, .card-information * {
+    font-size: 12px !important;
+  }
+
+  /* Ensure navigation and menu elements are 12px */
+  nav, nav *, .header, .header *, .footer, .footer * {
+    font-size: 12px !important;
+  }
+
+  /* Ensure form elements are 12px */
+  .field, .field *, .form, .form *, .button, .button * {
+    font-size: 12px !important;
+  }
+
+  /* Override desktop-specific media queries for consistent 12px */
+  @media screen and (min-width: 750px) {
+    .price, .price *, .price--large, .price--large * {
+      font-size: 12px !important;
+    }
+
+    .card__heading, .card__heading *, .h5, .h5 * {
+      font-size: 12px !important;
+    }
+
+    .card--horizontal .card__heading,
+    .card--horizontal .price__container .price-item,
+    .card--horizontal__quick-add {
+      font-size: 12px !important;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .price, .price *, .price--large, .price--large * {
+      font-size: 12px !important;
+    }
+
+    .card__heading, .card__heading *, .h5, .h5 * {
+      font-size: 12px !important;
+    }
+  }
+
+  @media screen and (min-width: 1200px) {
+    .price, .price *, .price--large, .price--large * {
+      font-size: 12px !important;
+    }
+
+    .card__heading, .card__heading *, .h5, .h5 * {
+      font-size: 12px !important;
+    }
+  }
+
+  /* Remove padding for product pages and brand pages */
+  html body.template-product,
+  body.template-product,
+  .template-product body,
+  html body.template-page.page-brand-page,
+  body.template-page.page-brand-page,
+  .template-page.page-brand-page body {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  @media screen and (max-width: 1199px) {
+    html body.template-product,
+    body.template-product,
+    .template-product body,
+    html.template-product body,
+    body.template-product *,
+    html body.template-page.page-brand-page,
+    body.template-page.page-brand-page,
+    .template-page.page-brand-page body {
+      padding-top: 0 !important;
+      margin-top: 0 !important;
+    }
+  }
+
   /* Mobile and Desktop content styling for miscellaneous page */
   /* @media screen and (min-width: 1200px) { */ /* Apply to all screen sizes */
     /* Remove all default padding and constraints */
@@ -136,9 +237,8 @@
     body[class*='page'] h1,
     .template-page h1,
     .template-page .h0,
-    .h0 {
-      font-size: 12px !important;
-      text-transform: uppercase !important;
+      .h0 {
+    text-transform: uppercase !important;
       color: #000000 !important;
       margin-bottom: 1rem !important;
       margin-top: 0 !important;
@@ -290,8 +390,21 @@
     }
 
     .custom-navbar {
-      font-size: 11px;
+      font-size: 12px; /* keep 12px on mobile too */
       padding: 1.5rem 1.6rem; /* keep 16px sides on mobile */
+    }
+
+    /* Ensure link text is 12px on mobile */
+    .navbar-link {
+      font-size: 12px !important;
+    }
+
+    /* Force all navbar text to be 12px on mobile */
+    .custom-navbar,
+    .custom-navbar *,
+    .navbar-link,
+    .navbar-menu {
+      font-size: 12px !important;
     }
 
     .navbar-logo {
@@ -350,14 +463,30 @@
     width: 70vw;
     height: 100vh;
     background: #4e8926;
-    color: #fff;
-    padding: 2rem 1.6rem;
+    color: #000; /* black text per design */
+    padding: 0 16px 16px 16px; /* 16px sides; top spacing handled by close button */
     transform: translateX(-100%);
     transition: transform 300ms ease;
     z-index: 9999;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 0; /* we'll manage spacing explicitly */
+    will-change: transform; /* Optimize for smooth animations */
+  }
+
+  .unified-menu-drawer .menu-close {
+    position: absolute;
+    top: 20px; /* 20px from top */
+    left: 16px; /* 16px from left */
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: #000;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
   }
 
   /* Hide mobile drawer on desktop */
@@ -371,18 +500,80 @@
     .unified-menu-drawer nav {
       display: flex;
       flex-direction: column;
-      gap: 1.6rem;
+      gap: 10px !important; /* exact 10px between items */
+      margin-top: 90px; /* 90px space after CLOSE */
     }
 
     .unified-menu-drawer .navbar-link {
-      color: #fff;
+      color: #000;
       text-decoration: none;
-      font-size: 1.4rem;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 24px !important; /* force 24px menu options size */
+      text-transform: uppercase; /* make options uppercase */
+      padding: 0; /* no extra padding */
+      border: none; /* remove any borders */
+      margin: 0; /* ensure no extra spacing */
+      line-height: 1; /* tighten line box so gap controls spacing */
+      display: block; /* consistent height calculation */
+      font-weight: normal; /* ensure normal weight */
+    }
+
+    /* Add 30px gap between the two groups (after 3rd link) */
+    .unified-menu-drawer nav a:nth-child(4) {
+      margin-top: 20px; /* 10px base gap + 20px = 30px total */
     }
 
     .unified-menu-drawer .navbar-link:hover {
+      opacity: 0.8;
+    }
+
+    /* Footer menu options */
+    .menu-footer {
+      margin-top: auto; /* Push to bottom */
+      padding-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .menu-footer-link {
+      color: #000;
+      text-decoration: none;
+      font-size: 12px !important;
+      text-transform: uppercase;
+      padding: 0;
+      border: none;
+      margin: 0;
+      line-height: 1;
+      display: block;
+      font-weight: normal;
+    }
+
+    .menu-footer-link:hover {
+      opacity: 0.8;
+    }
+
+    /* Social media links */
+    .menu-social {
+      padding-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .menu-social-link {
+      color: #000;
+      text-decoration: none;
+      font-size: 12px !important;
+      text-transform: uppercase;
+      padding: 0;
+      border: none;
+      margin: 0;
+      line-height: 1;
+      display: block;
+      font-weight: normal;
+    }
+
+    .menu-social-link:hover {
       opacity: 0.8;
     }
 
@@ -442,7 +633,7 @@
         <a href="{{ routes.pages_url }}/explore" class="navbar-link nav-hide-mobile">
           <span class="navbar-text">EXPLORE</span>
         </a>
-        <a href="{{ routes.pages_url }}/brand" class="navbar-link nav-hide-mobile">
+        <a href="/pages/brand" class="navbar-link nav-hide-mobile">
           <span class="navbar-text">BRAND</span>
         </a>
       </div>
@@ -489,10 +680,11 @@
 
 <!-- Unified Menu Drawer (outside header) -->
 <div class="unified-menu-drawer" id="UnifiedMenuDrawer" aria-hidden="true">
+  <button type="button" class="menu-close" data-unified-menu-close>CLOSE</button>
   <nav>
     <a href="{{ routes.collections_url }}" class="navbar-link">Shop</a>
     <a href="{{ routes.pages_url }}/explore" class="navbar-link">Explore</a>
-    <a href="{{ routes.pages_url }}/brand" class="navbar-link">Brand</a>
+    <a href="/pages/brand" class="navbar-link">Brand</a>
     <a href="{{ routes.search_url }}" class="navbar-link">Search</a>
     {%- if shop.customer_accounts_enabled -%}
       <a
@@ -501,8 +693,21 @@
         >Account</a
       >
     {%- endif -%}
-    <a href="{{ routes.cart_url }}" class="navbar-link">Cart</a>
   </nav>
+
+  <!-- Footer Menu Options -->
+  <div class="menu-footer">
+    <a href="{{ routes.pages_url }}/privacy-policy" class="menu-footer-link">PRIVACY POLICY</a>
+    <a href="{{ routes.pages_url }}/shipping-and-return" class="menu-footer-link">SHIPPING AND RETURN</a>
+    <a href="{{ routes.pages_url }}/terms-and-conditions" class="menu-footer-link">TERMS AND CONDITIONS</a>
+  </div>
+
+  <!-- Social Media Links -->
+  <div class="menu-social">
+    <a href="#" class="menu-social-link">FACEBOOK</a>
+    <a href="#" class="menu-social-link">INSTAGRAM</a>
+    <a href="#" class="menu-social-link">TIKTOK</a>
+  </div>
 </div>
 
 {% comment %}
@@ -546,6 +751,14 @@
       drawer.setAttribute('aria-hidden', String(!isOpen));
     });
 
+    // Close button inside drawer
+    var closeBtn = drawer.querySelector('[data-unified-menu-close]');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function () {
+        closeMenu();
+      });
+    }
+
     // Close on ESC key
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
@@ -582,6 +795,20 @@
     function closeMenu() {
       document.body.classList.remove('unified-menu-open');
       drawer.setAttribute('aria-hidden', 'true');
+    }
+
+    // If the unified menu is open and user clicks CART, close menu then open cart
+    var cartLinkWhenMenuOpen = document.getElementById('cart-icon-bubble');
+    if (cartLinkWhenMenuOpen) {
+      cartLinkWhenMenuOpen.addEventListener('click', function (e) {
+        if (!document.body.classList.contains('unified-menu-open')) return;
+        e.preventDefault();
+        closeMenu();
+        // Re-trigger the click after menu closes so the cart drawer can open
+        setTimeout(function () {
+          cartLinkWhenMenuOpen.click();
+        }, 20);
+      });
     }
   })();
 </script>

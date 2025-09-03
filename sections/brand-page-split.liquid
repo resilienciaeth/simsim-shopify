@@ -1,6 +1,13 @@
 {{ 'section-main-page.css' | asset_url | stylesheet_tag }}
 
 <style type="text/css">
+  /* Remove global body padding on desktop for brand page template */
+  @media screen and (min-width: 1200px) {
+    body {
+      padding-top: 0 !important;
+    }
+  }
+
   .brand-page-container {
     display: flex;
     min-height: 100vh;
@@ -10,16 +17,15 @@
   /* Left side - scrollable text */
   .brand-page-text {
     width: 50%;
-    overflow-y: auto;
+    overflow: visible;
     padding: 30px;
     box-sizing: border-box;
   }
 
-  /* Right side - fixed image */
+  /* Right side - sticky image on desktop */
   .brand-page-image {
     width: 50%;
-    position: fixed;
-    right: 0;
+    position: sticky;
     top: 0;
     height: 100vh;
     overflow: hidden;
@@ -54,10 +60,21 @@
     letter-spacing: 0.5px !important;
   }
 
-  /* Desktop: add top margin to text */
+  /* Desktop: sticky layout and no extra top margin */
   @media screen and (min-width: 1200px) {
     .brand-page-text {
       margin-top: 300px;
+    }
+
+    .brand-page-container {
+      align-items: stretch;
+    }
+
+    .brand-page-image {
+      position: sticky;
+      top: 0;
+      right: auto;
+      height: 100vh;
     }
   }
 
@@ -100,11 +117,12 @@
   <!-- Right side - fixed image -->
   <div class="brand-page-image">
     {% if page.metafields.custom.brand_page_image != blank %}
-      <img
-        src="{{ page.metafields.custom.brand_page_image | image_url: width: 1200 }}"
-        alt="{{ page.metafields.custom.brand_page_image.alt | default: page.title }}"
-        loading="lazy"
-      >
+      {{
+        page.metafields.custom.brand_page_image
+        | image_url: width: 1200
+        | image_tag: alt: page.metafields.custom.brand_page_image.alt
+        | default: page.title, loading: 'lazy'
+      }}
     {% else %}
       <!-- Placeholder if no image is set -->
       <div style="background: #f0f0f0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #999; font-size: 14px;">
@@ -113,6 +131,8 @@
     {% endif %}
   </div>
 </div>
+
+{%- render 'path-topbar' -%}
 
 {% schema %}
 {

@@ -1,0 +1,777 @@
+<style>
+  /* Reset all padding and margins for product page */
+  body,
+  #MainContent,
+  .shopify-section,
+  main {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .product-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .product-image-column {
+    background: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Thumbnails */
+  .mobile-thumbnails {
+    display: none;
+  }
+
+  .desktop-thumbnails {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    gap: 0;
+  }
+
+  .product-thumbnail {
+    width: 100px;
+    height: 125px;
+    object-fit: cover;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+    margin-right: 0;
+  }
+
+  .product-thumbnail.active,
+  .product-thumbnail:hover {
+    opacity: 1;
+  }
+
+  .product-info-column {
+    padding: 0 40px 40px 40px;
+    background: white;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  /* Product info positioned at bottom with left padding for thumbnails */
+  .product-info-content {
+    padding-left: 200px; /* Increased space for thumbnails - more noticeable */
+    margin-bottom: 20px;
+  }
+
+  /* Product title and price row */
+  .product-title-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .product-title {
+    font-size: 2rem;
+    font-weight: normal;
+    margin: 0;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .product-price {
+    font-size: 1.5rem;
+    font-weight: normal;
+    color: #333;
+    white-space: nowrap;
+  }
+
+  .product-description {
+    margin-top: 15px;
+    line-height: 1.6;
+    color: #666;
+    font-size: 1rem;
+  }
+
+  /* Sizes section */
+  .product-sizes {
+    padding-top: 30px;
+  }
+
+  .sizes-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .size-option {
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    color: #000;
+    opacity: 0.5;
+    font-size: 1rem;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  .size-option:hover {
+    opacity: 0.7;
+  }
+
+  .size-option.selected {
+    opacity: 1;
+    color: #000;
+  }
+
+  /* Colors section */
+  .product-colors {
+    padding-top: 10px;
+  }
+
+  .colors-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .color-option {
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    color: #000;
+    opacity: 0.5;
+    font-size: 1rem;
+    background: none;
+    border: none;
+    padding: 0;
+    text-decoration: none;
+  }
+
+  .color-option:hover {
+    opacity: 0.7;
+  }
+
+  .color-option.current {
+    opacity: 1;
+    color: #000;
+  }
+
+  /* Accordion section - Desktop only */
+  .product-accordion {
+    padding-top: 30px;
+    display: block;
+  }
+
+  /* Hide mobile accordion on desktop */
+  .accordion-mobile {
+    display: none;
+  }
+
+  .accordion-item {
+    margin-bottom: 10px;
+  }
+
+  .accordion-header {
+    cursor: pointer;
+    font-size: 1rem;
+    color: #000;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+    padding: 0;
+    border: none;
+    background: none;
+    text-align: left;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .accordion-header:hover {
+    opacity: 0.7;
+  }
+
+  .accordion-header.active {
+    opacity: 1;
+  }
+
+  .accordion-content {
+    display: none;
+    padding: 10px 0 0 0;
+    color: #000;
+    line-height: 1.6;
+    font-size: 0.9rem;
+  }
+
+  .accordion-content.active {
+    display: block;
+  }
+
+  .accordion-icon {
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  /* Add to Cart Button */
+  .add-to-cart-section {
+    padding-top: 30px;
+  }
+
+  .add-to-cart-btn {
+    width: 100%;
+    padding: 15px 20px;
+    background-color: #000;
+    color: #fff;
+    border: 2px solid #000;
+    border-radius: 70px;
+    font-size: 1rem;
+    font-weight: normal;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .add-to-cart-btn:hover {
+    background-color: #fff;
+    color: #000;
+  }
+
+  /* Related Items section - Below main columns */
+  .related-items-section {
+    padding-top: 90px;
+    padding-bottom: 40px;
+    background: white;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    position: relative;
+  }
+
+  .related-items-title {
+    font-size: 1rem;
+    font-weight: normal;
+    color: #000;
+    margin-bottom: 20px;
+    text-align: left;
+    padding-left: 40px; /* Add back padding for title alignment */
+  }
+
+  .related-items-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0;
+    align-items: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .related-items-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .related-item {
+    display: block;
+    text-decoration: none;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .related-item:hover {
+    opacity: 1;
+  }
+
+  .related-item-image {
+    width: 150px;
+    height: 187px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .related-item-info {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    padding-top: 10px;
+    padding-left: 10px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    background: white;
+    min-width: 200px;
+    z-index: 10;
+  }
+
+  .related-item:hover .related-item-info {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .related-item-name {
+    font-size: 0.9rem;
+    color: #000;
+    margin-bottom: 5px;
+    font-weight: normal;
+  }
+
+  .related-item-price {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: normal;
+  }
+
+  /* Mobile Styles */
+  @media screen and (max-width: 768px) {
+    .product-container {
+      display: flex;
+      flex-direction: column;
+      height: auto;
+    }
+
+    .product-image-column {
+      width: 100%;
+      height: 60vh;
+    }
+
+    .product-info-column {
+      padding: 30px 20px 20px 20px;
+      justify-content: flex-start;
+    }
+
+    .product-info-content {
+      padding-left: 0; /* Remove left padding on mobile */
+      margin-bottom: 0;
+    }
+
+    .product-title-price-row {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 15px;
+    }
+
+    .product-title {
+      font-size: 1.5rem;
+      min-width: auto;
+    }
+
+    .product-price {
+      font-size: 1.2rem;
+    }
+
+    /* Hide desktop accordion on mobile */
+    .product-accordion:not(.accordion-mobile) {
+      display: none;
+    }
+
+    /* Show mobile accordion */
+    .accordion-mobile {
+      display: block;
+      padding-top: 30px;
+    }
+
+    .product-info-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Related Items mobile styles - same approach */
+    .related-items-title {
+      padding-left: 20px; /* Add back padding for mobile title alignment */
+    }
+
+    .related-items-grid {
+      gap: 0;
+    }
+
+    .related-item-image {
+      width: 180px;
+      height: 225px;
+    }
+
+    /* Hide hover info on mobile */
+    .related-item-info {
+      display: none;
+    }
+
+    .mobile-thumbnails {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0;
+      overflow-x: auto;
+      gap: 0;
+    }
+
+    .desktop-thumbnails {
+      display: none;
+    }
+
+    .product-thumbnail {
+      width: 100px;
+      height: 125px;
+      flex-shrink: 0;
+      margin-right: 0;
+    }
+  }
+</style>
+
+<div class="product-container">
+  <!-- Left Column - Product Image -->
+  <div class="product-image-column">
+    {%- if product.featured_media -%}
+      <img
+        id="main-product-image"
+        class="product-image"
+        src="{{ product.featured_media | image_url: width: 1200 }}"
+        alt="{{ product.featured_media.alt | escape }}"
+      >
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag }}
+    {%- endif -%}
+  </div>
+
+  <!-- Thumbnails (Mobile: under image, Desktop: in right column) -->
+  {%- if product.media.size > 1 -%}
+    <div class="product-thumbnails mobile-thumbnails">
+      {%- for media in product.media limit: 8 -%}
+        <img
+          class="product-thumbnail{% if forloop.first %} active{% endif %}"
+          src="{{ media | image_url: width: 200 }}"
+          alt="{{ media.alt | escape }}"
+          data-full-src="{{ media | image_url: width: 1200 }}"
+          onclick="changeMainImage(this)"
+        >
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  <!-- Right Column - Product Info -->
+  <div class="product-info-column">
+    <!-- Thumbnails (Desktop only) -->
+    {%- if product.media.size > 1 -%}
+      <div class="product-thumbnails desktop-thumbnails">
+        {%- for media in product.media limit: 8 -%}
+          <img
+            class="product-thumbnail{% if forloop.first %} active{% endif %}"
+            src="{{ media | image_url: width: 200 }}"
+            alt="{{ media.alt | escape }}"
+            data-full-src="{{ media | image_url: width: 1200 }}"
+            onclick="changeMainImage(this)"
+          >
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <!-- Product Info Content (positioned at bottom on desktop) -->
+    <div class="product-info-content">
+      <div class="product-title-price-row">
+        <h1 class="product-title">{{ product.title }}</h1>
+        <div class="product-price" id="product-price">
+          {%- assign first_variant = product.variants.first -%}
+          {{ first_variant.price | money_without_currency | remove: ',' | remove: '.00' }} USD
+        </div>
+      </div>
+
+      <!-- Sizes Section -->
+      {%- if product.variants.size > 1 -%}
+        <div class="product-sizes">
+          <div class="sizes-options">
+            {%- for variant in product.variants -%}
+              {%- if variant.available -%}
+                <div
+                  class="size-option{% if forloop.first %} selected{% endif %}"
+                  data-variant-id="{{ variant.id }}"
+                  data-variant-price="{{ variant.price | money_without_currency | remove: ',' | remove: '.00' }}"
+                  onclick="selectVariant(this)"
+                >
+                  {{ variant.title }}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      <!-- Colors Section -->
+      {%- assign product_collections = product.collections -%}
+      {%- if product_collections.size > 0 -%}
+        {%- assign main_collection = product_collections.first -%}
+        {%- assign collection_products = main_collection.products -%}
+        {%- if collection_products.size > 1 -%}
+          <div class="product-colors">
+            <div class="colors-options">
+              {%- for collection_product in collection_products limit: 10 -%}
+                {%- if collection_product.available -%}
+                  <a
+                    href="{{ collection_product.url }}"
+                    class="color-option{% if collection_product.id == product.id %} current{% endif %}"
+                  >
+                    {{ collection_product.metafields.custom.color }}
+                  </a>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+
+      <!-- Accordion Section - Desktop only -->
+      <div class="product-accordion">
+        <!-- Information Accordion -->
+        {%- if product.metafields.custom.product_information -%}
+          <div class="accordion-item">
+            <button class="accordion-header" onclick="toggleAccordion(this)">
+              <span>INFORMATION</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              {{ product.metafields.custom.product_information }}
+            </div>
+          </div>
+        {%- endif -%}
+
+        <!-- Details Accordion -->
+        {%- if product.metafields.custom.product_details -%}
+          <div class="accordion-item">
+            <button class="accordion-header" onclick="toggleAccordion(this)">
+              <span>DETAILS</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              {{ product.metafields.custom.product_details }}
+            </div>
+          </div>
+        {%- endif -%}
+
+        <!-- Shipping Accordion -->
+        {%- if product.metafields.custom.shipping_info -%}
+          <div class="accordion-item">
+            <button class="accordion-header" onclick="toggleAccordion(this)">
+              <span>SHIPPING</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              {{ product.metafields.custom.shipping_info }}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <!-- Add to Cart Button -->
+      <div class="add-to-cart-section">
+        <button type="button" class="add-to-cart-btn" onclick="addToCart()">ADD TO CART</button>
+      </div>
+
+      <!-- Mobile Accordion Section -->
+      <div class="product-accordion accordion-mobile">
+        <!-- Information Accordion -->
+        {%- if product.metafields.custom.product_information -%}
+          <div class="accordion-item">
+            <button class="accordion-header" onclick="toggleAccordion(this)">
+              <span>INFORMATION</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              {{ product.metafields.custom.product_information }}
+            </div>
+          </div>
+        {%- endif -%}
+
+        <!-- Details Accordion -->
+        {%- if product.metafields.custom.product_details -%}
+          <div class="accordion-item">
+            <button class="accordion-header" onclick="toggleAccordion(this)">
+              <span>DETAILS</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              {{ product.metafields.custom.product_details }}
+            </div>
+          </div>
+        {%- endif -%}
+
+        <!-- Shipping Accordion -->
+        {%- if product.metafields.custom.shipping_info -%}
+          <div class="accordion-item">
+            <button class="accordion-header" onclick="toggleAccordion(this)">
+              <span>SHIPPING</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              {{ product.metafields.custom.shipping_info }}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Related Items Section - Below main columns -->
+{%- assign product_collections = product.collections -%}
+{%- if product_collections.size > 0 -%}
+  {%- assign main_collection = product_collections.first -%}
+  {%- assign collection_products = main_collection.products -%}
+  {%- if collection_products.size > 1 -%}
+    <div class="related-items-section">
+      <div class="related-items-title">RELATED ITEMS</div>
+      <div class="related-items-grid">
+        {%- for collection_product in collection_products limit: 8 -%}
+          {%- if collection_product.available and collection_product.id != product.id -%}
+            <a
+              href="{{ collection_product.url }}"
+              class="related-item"
+            >
+              {%- if collection_product.featured_media -%}
+                <img
+                  class="related-item-image"
+                  src="{{ collection_product.featured_media | image_url: width: 400 }}"
+                  alt="{{ collection_product.title | escape }}"
+                  loading="lazy"
+                >
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'related-item-image' }}
+              {%- endif -%}
+
+              <div class="related-item-info">
+                <div class="related-item-name">{{ collection_product.title }}</div>
+                <div class="related-item-price">
+                  {{ collection_product.price | money_without_currency | remove: ',' | remove: '.00' }} USD
+                </div>
+              </div>
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+{%- endif -%}
+
+<!-- Path and Back to Top Component -->
+{% render 'path-topbar' %}
+
+<script>
+  function changeMainImage(thumbnail) {
+    // Update main image
+    const mainImage = document.getElementById('main-product-image');
+    const newSrc = thumbnail.getAttribute('data-full-src');
+    const newAlt = thumbnail.getAttribute('alt');
+
+    if (mainImage && newSrc) {
+      mainImage.src = newSrc;
+      mainImage.alt = newAlt;
+    }
+
+    // Update thumbnail active state
+    const allThumbnails = document.querySelectorAll('.product-thumbnail');
+    allThumbnails.forEach((thumb) => thumb.classList.remove('active'));
+    thumbnail.classList.add('active');
+  }
+
+  function selectVariant(sizeElement) {
+    // Remove selected class from all size options
+    const allSizeOptions = document.querySelectorAll('.size-option');
+    allSizeOptions.forEach((option) => option.classList.remove('selected'));
+
+    // Add selected class to clicked option
+    sizeElement.classList.add('selected');
+
+    // Update price
+    const newPrice = sizeElement.getAttribute('data-variant-price');
+    const priceElement = document.getElementById('product-price');
+    if (priceElement && newPrice) {
+      priceElement.textContent = newPrice + ' USD';
+    }
+
+    // Store selected variant ID for potential form submission
+    const variantId = sizeElement.getAttribute('data-variant-id');
+    // You can use this variantId for cart functionality later
+    console.log('Selected variant ID:', variantId);
+  }
+
+  function toggleAccordion(header) {
+    // Get the content element
+    const content = header.nextElementSibling;
+    const icon = header.querySelector('.accordion-icon');
+    const isCurrentlyActive = content.classList.contains('active');
+
+    // Close all accordions first
+    const allHeaders = document.querySelectorAll('.accordion-header');
+    const allContents = document.querySelectorAll('.accordion-content');
+    const allIcons = document.querySelectorAll('.accordion-icon');
+
+    allHeaders.forEach((h) => h.classList.remove('active'));
+    allContents.forEach((c) => c.classList.remove('active'));
+    allIcons.forEach((i) => (i.textContent = '+'));
+
+    // If the clicked accordion wasn't active, open it
+    if (!isCurrentlyActive) {
+      header.classList.add('active');
+      content.classList.add('active');
+      icon.textContent = '–'; // Using en-dash for straighter line
+    }
+  }
+
+  function addToCart() {
+    // Get selected variant ID from the size options
+    const selectedSize = document.querySelector('.size-option.selected');
+    let variantId = null;
+
+    if (selectedSize) {
+      variantId = selectedSize.getAttribute('data-variant-id');
+    } else {
+      // If no size selected, use first available variant
+      const firstSize = document.querySelector('.size-option');
+      if (firstSize) {
+        variantId = firstSize.getAttribute('data-variant-id');
+      }
+    }
+
+    if (variantId) {
+      // Add to cart logic - you can customize this
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: variantId,
+          quantity: 1,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('Added to cart:', data);
+          // You can add notification or cart drawer functionality here
+          alert('Product added to cart!');
+        })
+        .catch((error) => {
+          console.error('Error adding to cart:', error);
+          alert('Error adding to cart. Please try again.');
+        });
+    } else {
+      alert('Please select a size before adding to cart.');
+    }
+  }
+</script>

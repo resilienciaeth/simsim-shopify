@@ -1,0 +1,50 @@
+<style>
+  .path-topbar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    box-sizing: border-box;
+    padding-top: 90px;
+    padding-bottom: 20px; /* added bottom padding */
+  }
+
+  .path-topbar__left,
+  .path-topbar__right {
+    text-transform: uppercase;
+    color: #000;
+    line-height: 1;
+  }
+
+  .path-topbar__right {
+    margin-left: auto;
+    text-decoration: none;
+    color: #000;
+  }
+
+  @media screen and (min-width: 1200px) {
+    .path-topbar {
+      padding-top: 180px;
+      padding-bottom: 20px; /* keep bottom padding on desktop */
+    }
+  }
+</style>
+
+<div class="path-topbar site-margins" role="navigation" aria-label="Breadcrumb and back to top">
+  <div class="path-topbar__left">
+    {% assign raw_path = request.path %}
+    {% assign parts = raw_path | split: '/' %}
+    {% assign built = '' %}
+    {% for p in parts %}
+      {% if p != '' %}
+        {% if built != '' %}{% assign built = built | append: ' / ' %}{% endif %}
+        {% assign label = p | replace: '-', ' ' %}
+        {% assign built = built | append: label %}
+      {% endif %}
+    {% endfor %}
+    <span>{{ built | upcase }}</span>
+  </div>
+  <a href="#" class="path-topbar__right" onclick="window.scrollTo({ top: 0, behavior: 'smooth' }); return false;"
+    >BACK TO TOP</a
+  >
+</div>
