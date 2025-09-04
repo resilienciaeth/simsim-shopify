@@ -4,6 +4,9 @@
   <div class="custom-carousel" id="carousel-{{ section.id }}">
     <!-- Slide 1: Two columns -->
     <div class="carousel-slide active" data-slide="1">
+      {%- if section.settings.slide1_link != blank -%}
+        <a href="{{ section.settings.slide1_link }}" class="slide-link" aria-label="Navigate to slide 1 link">
+      {%- endif -%}
       <div class="slide-content two-columns">
         <div class="column">
           {%- if section.settings.slide1_image1 != blank -%}
@@ -36,10 +39,16 @@
           {%- endif -%}
         </div>
       </div>
+      {%- if section.settings.slide1_link != blank -%}
+        </a>
+      {%- endif -%}
     </div>
 
     <!-- Slide 2: Two columns -->
     <div class="carousel-slide" data-slide="2">
+      {%- if section.settings.slide2_link != blank -%}
+        <a href="{{ section.settings.slide2_link }}" class="slide-link" aria-label="Navigate to slide 2 link">
+      {%- endif -%}
       <div class="slide-content two-columns">
         <div class="column">
           {%- if section.settings.slide2_image1 != blank -%}
@@ -72,10 +81,16 @@
           {%- endif -%}
         </div>
       </div>
+      {%- if section.settings.slide2_link != blank -%}
+        </a>
+      {%- endif -%}
     </div>
 
     <!-- Slide 3: One column -->
     <div class="carousel-slide" data-slide="3">
+      {%- if section.settings.slide3_link != blank -%}
+        <a href="{{ section.settings.slide3_link }}" class="slide-link" aria-label="Navigate to slide 3 link">
+      {%- endif -%}
       <div class="slide-content one-column">
         <div class="column">
           {%- if section.settings.slide3_image != blank -%}
@@ -93,6 +108,9 @@
           {%- endif -%}
         </div>
       </div>
+      {%- if section.settings.slide3_link != blank -%}
+        </a>
+      {%- endif -%}
     </div>
   </div>
 </div>
@@ -173,6 +191,12 @@
       "info": "Recommended size: 800x600px or larger"
     },
     {
+      "type": "url",
+      "id": "slide1_link",
+      "label": "Slide 1 Link",
+      "info": "Optional: Make this slide clickable by adding a link"
+    },
+    {
       "type": "header",
       "content": "🖼️ Slide 2 - Two Column Layout"
     },
@@ -193,6 +217,12 @@
       "info": "Recommended size: 800x600px or larger"
     },
     {
+      "type": "url",
+      "id": "slide2_link",
+      "label": "Slide 2 Link",
+      "info": "Optional: Make this slide clickable by adding a link"
+    },
+    {
       "type": "header",
       "content": "🖼️ Slide 3 - Full Width Layout"
     },
@@ -205,6 +235,12 @@
       "id": "slide3_image",
       "label": "Full Width Image",
       "info": "Recommended size: 1920x1080px or larger for best quality"
+    },
+    {
+      "type": "url",
+      "id": "slide3_link",
+      "label": "Slide 3 Link",
+      "info": "Optional: Make this slide clickable by adding a link"
     },
     {
       "type": "header",
