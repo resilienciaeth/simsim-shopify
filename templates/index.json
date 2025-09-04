@@ -1,8 +1,19 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "custom_carousel": {
       "type": "custom-carousel",
       "settings": {
+        "slide1_image1": "shopify://shop_images/ce92f700b25b932bf78153a37fca0cf3ee86d9e4_1.jpg",
+        "slide1_image2": "shopify://shop_images/8B322045AMI_AMINI_GIULY_SHEARLING_FLUO_GREEN-1_2048x_6de285cf-408a-41c7-b624-b6f44d6acc6c.png"
       }
     }
   },
