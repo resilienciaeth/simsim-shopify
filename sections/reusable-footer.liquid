@@ -4,6 +4,21 @@
     color: #000; /* per nav-variant dark text */
     padding-top: 180px; /* mobile default */
     padding-bottom: 30px;
+    position: relative;
+  }
+
+  .reusable-footer .footer-mobile-image {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+
+  .reusable-footer .footer-mobile-image img {
+    width: 81px;
+    height: 38px;
+    display: block;
   }
 
   .reusable-footer .footer-inner {
@@ -16,13 +31,13 @@
   .reusable-footer .footer-group {
     display: flex;
     flex-direction: column;
-    gap: 30px; /* 30px padding between groups */
+    gap: 12px; /* 12px padding between groups on mobile */
   }
 
   .reusable-footer .footer-links {
     display: flex;
     flex-direction: column;
-    gap: 5px; /* 5px between links within each group */
+    gap: 0px; /* 0px between links within each group */
   }
 
   .reusable-footer a {
@@ -31,6 +46,65 @@
     text-transform: uppercase;
     font-size: 12px;
     letter-spacing: 0.5px;
+  }
+
+  .reusable-footer .footer-bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .reusable-footer .footer-copyright {
+    color: #000;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .reusable-footer .social-credit-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+  }
+
+  .reusable-footer .social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+  }
+
+  .reusable-footer .footer-credits {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0px;
+  }
+
+  .reusable-footer .credit-toggle {
+    background: none;
+    border: none;
+    color: #000;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    text-align: right;
+  }
+
+  .reusable-footer .credit-details {
+    margin-top: 5px;
+    text-align: right;
+  }
+
+  .reusable-footer .credit-line {
+    color: #000;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin: 0;
   }
 
   @media screen and (min-width: 1200px) {
@@ -45,12 +119,24 @@
 
     .reusable-footer .footer-group {
       flex-direction: column;
-      gap: 30px; /* keep same column layout on desktop */
+      gap: 30px; /* 30px between groups on desktop */
+    }
+
+    .reusable-footer .footer-mobile-image {
+      display: none; /* hide on desktop */
     }
   }
 </style>
 
 <footer class="reusable-footer">
+  <div class="footer-mobile-image">
+    <img
+      src="https://cdn.shopify.com/s/files/1/0911/2394/1654/files/Vector.png?v=1756945832"
+      alt="Vector"
+      width="81"
+      height="38"
+    >
+  </div>
   <div class="footer-inner">
     <!-- All links in single column layout -->
     <div class="footer-group">
@@ -65,9 +151,48 @@
         <a href="{{ routes.pages_url }}/shipping-and-return">SHIPPING AND RETURNS</a>
         <a href="{{ routes.pages_url }}/terms-and-conditions">TERMS AND CONDITIONS</a>
       </nav>
+
+      <nav class="footer-links">
+        <div class="social-credit-row">
+          <div class="social-links">
+            <a href="#" target="_blank">INSTAGRAM</a>
+            <a href="#" target="_blank">TIKTOK</a>
+            <a href="#" target="_blank">FACEBOOK</a>
+          </div>
+          <div class="footer-credits">
+            <div class="credit-details" id="creditDetails" style="display: none;">
+              <div class="credit-line">DESIGN AND AD: SPECS47</div>
+              <div class="credit-line">DEVELOPMENT: RESILIENCIASTUDIO</div>
+            </div>
+            <button class="credit-toggle" onclick="toggleCredits()">CREDIT</button>
+          </div>
+        </div>
+      </nav>
+
+      <div class="footer-bottom-row">
+        <nav class="footer-links">
+          <a href="{{ routes.pages_url }}/newsletter">NEWSLETTER</a>
+        </nav>
+        <div class="footer-copyright">© 2025 SIMSIM. ALL RIGHTS RESERVED.</div>
+      </div>
     </div>
   </div>
 </footer>
+
+<script>
+  function toggleCredits() {
+    const toggle = document.querySelector('.credit-toggle');
+    const details = document.getElementById('creditDetails');
+
+    if (details.style.display === 'none') {
+      details.style.display = 'block';
+      toggle.textContent = 'CLOSE';
+    } else {
+      details.style.display = 'none';
+      toggle.textContent = 'CREDIT';
+    }
+  }
+</script>
 
 {% schema %}
 {
