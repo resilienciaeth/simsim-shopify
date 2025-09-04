@@ -1,0 +1,116 @@
+<style>
+  .reusable-footer {
+    background-color: #4e8926; /* match cart background */
+    color: #000; /* per nav-variant dark text */
+    padding-top: 180px; /* mobile default */
+    padding-bottom: 30px;
+  }
+
+  .reusable-footer .footer-inner {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 1.6rem; /* 16px sides mobile */
+    padding-right: 1.6rem;
+  }
+
+  .reusable-footer .footer-group {
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* 30px padding between groups */
+  }
+
+  .reusable-footer .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* 5px between links within each group */
+  }
+
+  .reusable-footer a {
+    color: #000;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  @media screen and (min-width: 1200px) {
+    .reusable-footer {
+      padding-top: 90px; /* desktop */
+    }
+
+    .reusable-footer .footer-inner {
+      padding-left: 3rem; /* 30px sides desktop */
+      padding-right: 3rem;
+    }
+
+    .reusable-footer .footer-group {
+      flex-direction: column;
+      gap: 30px; /* keep same column layout on desktop */
+    }
+  }
+</style>
+
+<footer class="reusable-footer">
+  <div class="footer-inner">
+    <!-- All links in single column layout -->
+    <div class="footer-group">
+      <nav class="footer-links">
+        <a href="{{ routes.pages_url }}/about">ABOUT</a>
+        <a href="{{ routes.pages_url }}/contact">CONTACT</a>
+        <a href="{{ routes.pages_url }}/stockist">STOCKIST</a>
+      </nav>
+
+      <nav class="footer-links">
+        <a href="{{ routes.pages_url }}/privacy-policy">PRIVACY POLICY</a>
+        <a href="{{ routes.pages_url }}/shipping-and-return">SHIPPING AND RETURNS</a>
+        <a href="{{ routes.pages_url }}/terms-and-conditions">TERMS AND CONDITIONS</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Reusable Footer",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "about_handle",
+      "label": "About page handle",
+      "default": "about"
+    },
+    {
+      "type": "text",
+      "id": "contact_handle",
+      "label": "Contact page handle",
+      "default": "contact"
+    },
+    {
+      "type": "text",
+      "id": "stockist_handle",
+      "label": "Stockist page handle",
+      "default": "stockist"
+    },
+    {
+      "type": "text",
+      "id": "privacy_handle",
+      "label": "Privacy policy handle",
+      "default": "privacy-policy"
+    },
+    {
+      "type": "text",
+      "id": "shipping_handle",
+      "label": "Shipping and returns handle",
+      "default": "shipping-and-return"
+    },
+    {
+      "type": "text",
+      "id": "terms_handle",
+      "label": "Terms and conditions handle",
+      "default": "terms-and-conditions"
+    }
+  ]
+}
+{% endschema %}

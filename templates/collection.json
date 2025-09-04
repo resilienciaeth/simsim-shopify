@@ -2,9 +2,14 @@
   "sections": {
     "custom-grid": {
       "type": "custom-collection-grid"
+    },
+    "footer": {
+      "type": "reusable-footer",
+      "settings": {}
     }
   },
   "order": [
-    "custom-grid"
+    "custom-grid",
+    "footer"
   ]
 }

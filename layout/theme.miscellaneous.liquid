@@ -312,9 +312,10 @@
 
     <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
       {{ content_for_layout }}
+      {%- render 'path-topbar' -%}
     </main>
 
-    <!-- NO FOOTER FOR MISCELLANEOUS PAGES -->
+    {%- section 'reusable-footer' -%}
 
     <ul hidden>
       <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
