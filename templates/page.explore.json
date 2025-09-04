@@ -1,14 +1,15 @@
 {
   "sections": {
-    "custom_product": {
-      "type": "custom-product"
+    "main": {
+      "type": "explore",
+      "settings": {}
     },
     "reusable-footer": {
       "type": "reusable-footer"
     }
   },
   "order": [
-    "custom_product",
+    "main",
     "reusable-footer"
   ]
 }

@@ -1,0 +1,19 @@
+{
+  "layout": "theme.liquid",
+  "sections": {
+    "main": {
+      "type": "blog-gallery",
+      "settings": {
+        "show_date": true,
+        "show_excerpt": true
+      }
+    },
+    "reusable-footer": {
+      "type": "reusable-footer"
+    }
+  },
+  "order": [
+    "main",
+    "reusable-footer"
+  ]
+}

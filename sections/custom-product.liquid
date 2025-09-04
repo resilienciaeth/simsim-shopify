@@ -238,17 +238,16 @@
     padding: 15px 20px;
     background-color: #000;
     color: #fff;
-    border: 2px solid #000;
+    border: none;
     border-radius: 70px;
     font-size: 1rem;
     font-weight: normal;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease;
   }
 
   .add-to-cart-btn:hover {
-    background-color: #fff;
-    color: #000;
+    opacity: 0.5;
   }
 
   /* Related Items section - Below main columns */
@@ -259,6 +258,11 @@
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     position: relative;
+  }
+
+  /* Footer spacing */
+  .shopify-section:last-child {
+    margin-top: 0;
   }
 
   .related-items-title {
@@ -733,7 +737,7 @@
     }
   }
 
-  function addToCart() {
+  async function addToCart() {
     // Get selected variant ID from the size options
     const selectedSize = document.querySelector('.size-option.selected');
     let variantId = null;
@@ -749,27 +753,57 @@
     }
 
     if (variantId) {
-      // Add to cart logic - you can customize this
-      fetch('/cart/add.js', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: variantId,
-          quantity: 1,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('Added to cart:', data);
-          // You can add notification or cart drawer functionality here
-          alert('Product added to cart!');
-        })
-        .catch((error) => {
-          console.error('Error adding to cart:', error);
-          alert('Error adding to cart. Please try again.');
+      try {
+        // Add to cart using Shopify AJAX API
+        const response = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: variantId,
+            quantity: 1,
+          }),
         });
+
+        const data = await response.json();
+
+        // Get updated cart data
+        const cartResponse = await fetch('/cart.js');
+        const cart = await cartResponse.json();
+
+        // Update cart count in header
+        const cartIconBubble = document.getElementById('cart-icon-bubble');
+        if (cartIconBubble) {
+          cartIconBubble.textContent = cart.item_count > 0 ? `CART(${cart.item_count})` : 'CART';
+        }
+
+        // Open cart drawer if it exists
+        const cartDrawer = document.querySelector('cart-drawer');
+        if (cartDrawer) {
+          cartDrawer.classList.remove('is-empty');
+          cartDrawer.style.visibility = 'visible';
+
+          // Update cart drawer content
+          const drawerForm = document.getElementById('CartDrawer-Form');
+          if (drawerForm) {
+            const formData = new FormData(drawerForm);
+            const searchParams = new URLSearchParams(formData).toString();
+            const fetchUrl = `${window.location.pathname}?section_id=cart-drawer&${searchParams}`;
+
+            const response = await fetch(fetchUrl);
+            const text = await response.text();
+            const html = new DOMParser().parseFromString(text, 'text/html');
+            const sourceQty = html.querySelector('cart-drawer-items');
+            const targetQty = document.querySelector('cart-drawer-items');
+            if (sourceQty && targetQty) {
+              targetQty.innerHTML = sourceQty.innerHTML;
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
     } else {
       alert('Please select a size before adding to cart.');
     }

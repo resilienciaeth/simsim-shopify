@@ -38,7 +38,7 @@
   height: var(--cart-panel-height);
   background-color: #4E8926;
   color: #000;
-  padding: 1.5rem;
+  padding: 0 0 1.5rem 0;
   border: none;
   overflow: hidden;
   display: flex;
@@ -65,6 +65,7 @@ cart-drawer.is-empty .drawer__header {
 /* Top CTA area */
 .cart-top-cta {
   padding-bottom: 1rem;
+  padding-top: 0;
 }
 
 .cart-top-cta .cart__checkout-button {

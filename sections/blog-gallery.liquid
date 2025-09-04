@@ -1,0 +1,146 @@
+{{ 'component-article-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .blog-gallery {
+    padding: 0 16px;
+  }
+
+  .blog-gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    margin-top: 30px;
+  }
+
+  .blog-gallery-item {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .blog-gallery-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+  }
+
+  .blog-gallery-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+
+  .blog-gallery-item:hover .blog-gallery-content {
+    transform: translateY(0);
+  }
+
+  .blog-gallery-title {
+    font-size: 1.2rem;
+    margin: 0 0 10px;
+    font-weight: normal;
+  }
+
+  .blog-gallery-date {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-bottom: 10px;
+  }
+
+  .blog-gallery-excerpt {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  @media screen and (min-width: 750px) {
+    .blog-gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+      margin-top: 40px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .blog-gallery {
+      padding: 0 40px;
+    }
+
+    .blog-gallery-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 50px;
+      margin-top: 50px;
+    }
+  }
+</style>
+
+<div class="blog-gallery">
+  <div class="blog-gallery-grid">
+    {%- for blog in blogs -%}
+      {%- if blog.articles.size > 0 -%}
+        {%- assign latest_article = blog.articles.first -%}
+        <a href="{{ blog.url }}" class="blog-gallery-item">
+          {%- if latest_article.image -%}
+            <img
+              srcset="
+                {%- if latest_article.image.width >= 375 -%}{{ latest_article.image | image_url: width: 375 }} 375w,{%- endif -%}
+                {%- if latest_article.image.width >= 750 -%}{{ latest_article.image | image_url: width: 750 }} 750w,{%- endif -%}
+                {%- if latest_article.image.width >= 1100 -%}{{ latest_article.image | image_url: width: 1100 }} 1100w,{%- endif -%}
+                {%- if latest_article.image.width >= 1500 -%}{{ latest_article.image | image_url: width: 1500 }} 1500w,{%- endif -%}
+                {{ latest_article.image | image_url }} {{ latest_article.image.width }}w
+              "
+              src="{{ latest_article.image | image_url: width: 750 }}"
+              sizes="(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw"
+              alt="{{ latest_article.image.alt | escape }}"
+              class="blog-gallery-image"
+              loading="lazy"
+              width="{{ latest_article.image.width }}"
+              height="{{ latest_article.image.height }}"
+            >
+          {%- else -%}
+            {{ 'image' | placeholder_svg_tag: 'blog-gallery-image placeholder' }}
+          {%- endif -%}
+
+          <div class="blog-gallery-content">
+            <h2 class="blog-gallery-title">{{ blog.title }}</h2>
+            {%- if section.settings.show_date and latest_article.published_at -%}
+              <div class="blog-gallery-date">{{ latest_article.published_at | time_tag: format: 'date' }}</div>
+            {%- endif -%}
+            {%- if section.settings.show_excerpt -%}
+              <div class="blog-gallery-excerpt">
+                {%- if latest_article.excerpt.size > 0 -%}
+                  {{ latest_article.excerpt | strip_html | truncatewords: 30 }}
+                {%- else -%}
+                  {{ latest_article.content | strip_html | truncatewords: 30 }}
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          </div>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Blog Gallery",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "default": true,
+      "label": "Show date"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "default": true,
+      "label": "Show excerpt"
+    }
+  ]
+}
+{% endschema %}
