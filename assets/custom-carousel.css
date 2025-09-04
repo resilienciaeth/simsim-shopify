@@ -100,11 +100,11 @@ body.template-index {
   text-decoration: none;
   color: inherit;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
 .slide-link:hover {
-  transform: scale(1.02);
+  opacity: 0.5;
 }
 
 .slide-link:focus {
@@ -145,9 +145,7 @@ body.template-index {
   transition: transform 0.3s ease;
 }
 
-.column:hover img {
-  transform: scale(1.02);
-}
+/* Removed individual image hover effect - using slide-level opacity instead */
 
 /* Placeholder styling */
 .placeholder-image {
