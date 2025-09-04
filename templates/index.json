@@ -18,8 +18,10 @@
         "slide1_link": "shopify://collections",
         "slide2_image1": "shopify://shop_images/c2effb203ed1d6fb41ae43a8c85309cbd6f82ddb_1.png",
         "slide2_image2": "shopify://shop_images/c2effb203ed1d6fb41ae43a8c85309cbd6f82ddb_1_f5ae06fc-03d1-4e3e-8b44-6843046f06d5.png",
+        "slide2_mobile_image": "shopify://shop_images/c2effb203ed1d6fb41ae43a8c85309cbd6f82ddb_1_f5ae06fc-03d1-4e3e-8b44-6843046f06d5.png",
         "slide2_link": "shopify://pages/brand",
         "slide3_image": "shopify://shop_images/b2349108806a537c885402db2a3527edc74c4bbf.jpg",
+        "slide3_mobile_image": "shopify://shop_images/b2349108806a537c885402db2a3527edc74c4bbf.jpg",
         "slide3_link": "shopify://blogs/explore/in-conversation-with-gideon-rubin"
       }
     }
