@@ -1,28 +1,12 @@
 {
   "sections": {
-    "hello_world": {
-      "type": "rich-text",
-      "blocks": {
-        "heading": {
-          "type": "heading",
-          "settings": {
-            "heading": "Hello World",
-            "heading_size": "h1"
-          }
-        }
-      },
-      "block_order": [
-        "heading"
-      ],
+    "custom_carousel": {
+      "type": "custom-carousel",
       "settings": {
-        "color_scheme": "scheme-1",
-        "full_width": true,
-        "padding_top": 100,
-        "padding_bottom": 100
       }
     }
   },
   "order": [
-    "hello_world"
+    "custom_carousel"
   ]
 }
