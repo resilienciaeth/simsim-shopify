@@ -71,8 +71,8 @@ body.template-index {
 
 @media screen and (max-width: 749px) {
   .custom-carousel {
-    height: 70vh;
-    min-height: 500px;
+    height: 100vh;
+    min-height: 100vh;
   }
 }
 
@@ -176,15 +176,34 @@ body.template-index {
   animation: fadeIn 0.6s ease-in-out;
 }
 
-/* Responsive adjustments */
+/* Mobile/Desktop display controls */
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
 @media screen and (max-width: 749px) {
-  .slide-content.two-columns {
+  .desktop-only {
+    display: none;
+  }
+  
+  .mobile-only {
+    display: block;
+  }
+  
+  /* Mobile: single image per slide */
+  .slide-content.two-columns,
+  .slide-content.one-column {
     flex-direction: column;
   }
   
-  .slide-content.two-columns .column {
+  .slide-content .column.mobile-only {
     flex: none;
-    height: 50%;
+    height: 100%;
+    width: 100%;
   }
 }
 
