@@ -220,11 +220,24 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    console.log('🎠 Carousel initialization starting...');
+
     const sectionWrapper = document.getElementById('section-{{ section.id }}');
-    if (!sectionWrapper) return;
+    if (!sectionWrapper) {
+      console.error('❌ Section wrapper not found:', 'section-{{ section.id }}');
+      return;
+    }
+    console.log('✅ Found section wrapper:', sectionWrapper);
+
     const carousel = sectionWrapper.querySelector('#carousel-{{ section.id }}');
-    if (!carousel) return;
+    if (!carousel) {
+      console.error('❌ Carousel element not found:', 'carousel-{{ section.id }}');
+      return;
+    }
+    console.log('✅ Found carousel element:', carousel);
+
     const slides = carousel.querySelectorAll('.carousel-slide');
+    console.log('📊 Found slides:', slides.length);
     // Removed indicators and navigation buttons
     let currentSlide = 1;
     let autoSlideInterval;
@@ -248,53 +261,84 @@
     }
 
     function resetAllBars(activeSlide) {
+      console.log('🔄 Resetting status bars for slide (scale mode):', activeSlide);
+
       const statusBars = sectionWrapper.querySelectorAll('.status-bar');
+      console.log('📊 Found status bars:', statusBars.length);
+
       statusBars.forEach((bar, index) => {
         const slideNum = index + 1;
         const fill = bar.querySelector('.status-bar-fill');
-        if (!fill) return;
-        
-        // Remove any existing animations
-        fill.style.animation = 'none';
-        fill.style.width = slideNum < activeSlide ? '100%' : '0%';
-        
-        // Force reflow
-        void fill.offsetWidth;
-        
-        // Start animation for active slide
-        if (slideNum === activeSlide) {
-          fill.style.animation = 'fillProgress 5s linear forwards';
+        if (!fill) {
+          console.error('❌ Fill element not found for bar:', slideNum);
+          return;
+        }
+
+        // Stop transition and set base transform
+        fill.style.transition = 'none';
+        if (slideNum < activeSlide) {
+          fill.style.transform = 'scaleX(1)';
+        } else {
+          fill.style.transform = 'scaleX(0)';
         }
       });
     }
 
+    function animateActiveBar(activeSlide) {
+      const activeFill = sectionWrapper.querySelector(`.status-bar[data-slide="${activeSlide}"] .status-bar-fill`);
+      if (!activeFill) {
+        console.warn('⚠️ Active fill not found for slide:', activeSlide);
+        return;
+      }
+
+      // Reset to scaleX(0) without transition, then animate to scaleX(1)
+      activeFill.style.transition = 'none';
+      activeFill.style.transform = 'scaleX(0)';
+      void activeFill.offsetWidth; // reflow
+      activeFill.style.transition = 'transform 5s linear';
+      requestAnimationFrame(() => {
+        activeFill.style.transform = 'scaleX(1)';
+      });
+
+      // Debug: sample visual width via DOMRect
+      setTimeout(() => {
+        const r1 = activeFill.getBoundingClientRect();
+        console.log('⏱️ 1s rect width (px):', r1.width);
+      }, 1000);
+      setTimeout(() => {
+        const r3 = activeFill.getBoundingClientRect();
+        console.log('⏱️ 3s rect width (px):', r3.width);
+      }, 3000);
+    }
+
     function updateStatusBars(activeSlide) {
       resetAllBars(activeSlide);
+      animateActiveBar(activeSlide);
     }
 
     function pauseBarAnimation() {
       const activeBar = sectionWrapper.querySelector(`.status-bar[data-slide="${currentSlide}"] .status-bar-fill`);
       if (!activeBar) return;
-      
-      const animation = activeBar.getAnimations()[0];
-      if (animation) {
-        animation.pause();
-      }
+      const rect = activeBar.getBoundingClientRect();
+      const parentRect = activeBar.parentElement.getBoundingClientRect();
+      const progressPct = parentRect.width ? (rect.width / parentRect.width) * 100 : 0;
+      activeBar.style.transition = 'none';
+      activeBar.style.transform = `scaleX(${Math.min(1, Math.max(0, progressPct / 100))})`;
+      console.log('⏸️ Paused at % (scale):', progressPct);
     }
 
     function resumeBarAnimation() {
       const activeBar = sectionWrapper.querySelector(`.status-bar[data-slide="${currentSlide}"] .status-bar-fill`);
       if (!activeBar) return;
-      
-      const animation = activeBar.getAnimations()[0];
-      if (animation) {
-        animation.play();
-      } else {
-        // If no animation exists, start a new one
-        activeBar.style.animation = 'none';
-        void activeBar.offsetWidth;
-        activeBar.style.animation = 'fillProgress 5s linear forwards';
-      }
+      const rect = activeBar.getBoundingClientRect();
+      const parentRect = activeBar.parentElement.getBoundingClientRect();
+      const progressPct = parentRect.width ? (rect.width / parentRect.width) * 100 : 0;
+      const remainingMs = Math.max(0, 5000 * (1 - progressPct / 100));
+      activeBar.style.transition = `transform ${remainingMs}ms linear`;
+      requestAnimationFrame(() => {
+        activeBar.style.transform = 'scaleX(1)';
+      });
+      console.log('▶️ Resumed (scale), remaining ms:', remainingMs);
     }
 
     function nextSlide() {
@@ -325,19 +369,30 @@
       resumeBarAnimation();
     });
 
-    // Initialize status bars and start the carousel
-    showSlide(1); // This will trigger updateStatusBars
-    startAutoSlide();
-
-    // Force initial animation of the first status bar
-    const firstBar = sectionWrapper.querySelector('.status-bar[data-slide="1"] .status-bar-fill');
-    if (firstBar) {
-      requestAnimationFrame(() => {
-        firstBar.style.transition = 'width 5s linear';
-        firstBar.style.width = '100%';
-        firstBar.classList.add('animating');
-      });
+    // Immediately start filling the first bar
+    function initializeFirstBar() {
+      console.log('🎬 Initializing first status bar (transition mode)...');
+      const firstBar = sectionWrapper.querySelector('.status-bar[data-slide="1"] .status-bar-fill');
+      if (!firstBar) {
+        console.error('❌ First status bar fill element not found');
+        return;
+      }
+      console.log('✅ Found first status bar:', firstBar);
+      animateActiveBar(1);
     }
+
+    // Initialize everything
+    console.log('🚀 Starting carousel initialization...');
+    showSlide(1);
+    startAutoSlide();
+    initializeFirstBar();
+
+    // Also trigger animation on load event as backup
+    console.log('⏳ Setting up load event handler...');
+    window.addEventListener('load', () => {
+      console.log('📥 Window load event fired, reinitializing first bar...');
+      initializeFirstBar();
+    });
   });
 </script>
 
