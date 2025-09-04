@@ -1,6 +1,6 @@
 {{ 'custom-carousel.css' | asset_url | stylesheet_tag }}
 
-<div class="custom-carousel-wrapper page-width-none section custom-carousel-section">
+<div class="custom-carousel-wrapper page-width-none section custom-carousel-section" id="section-{{ section.id }}">
   <div class="custom-carousel" id="carousel-{{ section.id }}">
     <!-- Slide 1: Two columns desktop, single column mobile -->
     <div class="carousel-slide active" data-slide="1">
@@ -220,14 +220,15 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const carousel = document.getElementById('carousel-{{ section.id }}');
+    const sectionWrapper = document.getElementById('section-{{ section.id }}');
+    if (!sectionWrapper) return;
+    const carousel = sectionWrapper.querySelector('#carousel-{{ section.id }}');
+    if (!carousel) return;
     const slides = carousel.querySelectorAll('.carousel-slide');
     // Removed indicators and navigation buttons
     let currentSlide = 1;
     let autoSlideInterval;
-    let progressFrameId = null;
-    let progressStartMs = null;
-    let progressElapsedMs = 0;
+    // Progress animation using CSS transition for reliability
 
     function showSlide(slideNumber) {
       // Remove active class from all slides
@@ -247,74 +248,53 @@
     }
 
     function resetAllBars(activeSlide) {
-      const statusBars = document.querySelectorAll('.status-bar');
+      const statusBars = sectionWrapper.querySelectorAll('.status-bar');
       statusBars.forEach((bar, index) => {
         const slideNum = index + 1;
         const fill = bar.querySelector('.status-bar-fill');
-        if (slideNum < activeSlide) {
-          fill.style.width = '100%';
-        } else if (slideNum === activeSlide) {
-          fill.style.width = '0%';
-        } else {
-          fill.style.width = '0%';
+        if (!fill) return;
+        
+        // Remove any existing animations
+        fill.style.animation = 'none';
+        fill.style.width = slideNum < activeSlide ? '100%' : '0%';
+        
+        // Force reflow
+        void fill.offsetWidth;
+        
+        // Start animation for active slide
+        if (slideNum === activeSlide) {
+          fill.style.animation = 'fillProgress 5s linear forwards';
         }
       });
     }
 
-    function animateActiveBar(activeSlide) {
-      cancelAnimationFrame(progressFrameId);
-      progressFrameId = null;
-      progressStartMs = performance.now();
-      progressElapsedMs = 0;
-
-      const activeBar = document.querySelector(`.status-bar[data-slide="${activeSlide}"] .status-bar-fill`);
-      if (!activeBar) return;
-
-      function step(now) {
-        const elapsed = now - progressStartMs + progressElapsedMs;
-        const progress = Math.min(elapsed / 5000, 1);
-        activeBar.style.width = `${progress * 100}%`;
-        if (progress < 1) {
-          progressFrameId = requestAnimationFrame(step);
-        }
-      }
-
-      progressFrameId = requestAnimationFrame(step);
+    function updateStatusBars(activeSlide) {
+      resetAllBars(activeSlide);
     }
 
     function pauseBarAnimation() {
-      if (progressFrameId) {
-        cancelAnimationFrame(progressFrameId);
-        progressFrameId = null;
-        // Capture elapsed so we can resume
-        const activeBar = document.querySelector(`.status-bar[data-slide="${currentSlide}"] .status-bar-fill`);
-        if (activeBar) {
-          const width = parseFloat(activeBar.style.width || '0');
-          progressElapsedMs = (width / 100) * 5000;
-        }
+      const activeBar = sectionWrapper.querySelector(`.status-bar[data-slide="${currentSlide}"] .status-bar-fill`);
+      if (!activeBar) return;
+      
+      const animation = activeBar.getAnimations()[0];
+      if (animation) {
+        animation.pause();
       }
     }
 
     function resumeBarAnimation() {
-      if (!progressFrameId) {
-        progressStartMs = performance.now();
-        const activeBar = document.querySelector(`.status-bar[data-slide="${currentSlide}"] .status-bar-fill`);
-        if (!activeBar) return;
-        function step(now) {
-          const elapsed = now - progressStartMs + progressElapsedMs;
-          const progress = Math.min(elapsed / 5000, 1);
-          activeBar.style.width = `${progress * 100}%`;
-          if (progress < 1) {
-            progressFrameId = requestAnimationFrame(step);
-          }
-        }
-        progressFrameId = requestAnimationFrame(step);
+      const activeBar = sectionWrapper.querySelector(`.status-bar[data-slide="${currentSlide}"] .status-bar-fill`);
+      if (!activeBar) return;
+      
+      const animation = activeBar.getAnimations()[0];
+      if (animation) {
+        animation.play();
+      } else {
+        // If no animation exists, start a new one
+        activeBar.style.animation = 'none';
+        void activeBar.offsetWidth;
+        activeBar.style.animation = 'fillProgress 5s linear forwards';
       }
-    }
-
-    function updateStatusBars(activeSlide) {
-      resetAllBars(activeSlide);
-      animateActiveBar(activeSlide);
     }
 
     function nextSlide() {
@@ -346,8 +326,18 @@
     });
 
     // Initialize status bars and start the carousel
-    updateStatusBars(1);
+    showSlide(1); // This will trigger updateStatusBars
     startAutoSlide();
+
+    // Force initial animation of the first status bar
+    const firstBar = sectionWrapper.querySelector('.status-bar[data-slide="1"] .status-bar-fill');
+    if (firstBar) {
+      requestAnimationFrame(() => {
+        firstBar.style.transition = 'width 5s linear';
+        firstBar.style.width = '100%';
+        firstBar.classList.add('animating');
+      });
+    }
   });
 </script>
 
