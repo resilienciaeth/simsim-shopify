@@ -60,9 +60,13 @@
       <div class="slide-text-overlay desktop-only">
         {%- if section.settings.slide1_text != blank -%}
           <p class="slide-small-text">{{ section.settings.slide1_text }}</p>
+        {%- else -%}
+          <p class="slide-small-text">Sample small text for slide 1</p>
         {%- endif -%}
         {%- if section.settings.slide1_title != blank -%}
           <h2 class="slide-title">{{ section.settings.slide1_title }}</h2>
+        {%- else -%}
+          <h2 class="slide-title">Sample Title One</h2>
         {%- endif -%}
       </div>
       {%- if section.settings.slide1_link != blank -%}
@@ -128,9 +132,13 @@
       <div class="slide-text-overlay desktop-only">
         {%- if section.settings.slide2_text != blank -%}
           <p class="slide-small-text">{{ section.settings.slide2_text }}</p>
+        {%- else -%}
+          <p class="slide-small-text">Sample small text for slide 2</p>
         {%- endif -%}
         {%- if section.settings.slide2_title != blank -%}
           <h2 class="slide-title">{{ section.settings.slide2_title }}</h2>
+        {%- else -%}
+          <h2 class="slide-title">Sample Title Two</h2>
         {%- endif -%}
       </div>
       {%- if section.settings.slide2_link != blank -%}
@@ -181,14 +189,31 @@
       <div class="slide-text-overlay desktop-only">
         {%- if section.settings.slide3_text != blank -%}
           <p class="slide-small-text">{{ section.settings.slide3_text }}</p>
+        {%- else -%}
+          <p class="slide-small-text">Sample small text for slide 3</p>
         {%- endif -%}
         {%- if section.settings.slide3_title != blank -%}
           <h2 class="slide-title">{{ section.settings.slide3_title }}</h2>
+        {%- else -%}
+          <h2 class="slide-title">Sample Title Three</h2>
         {%- endif -%}
       </div>
       {%- if section.settings.slide3_link != blank -%}
         </a>
       {%- endif -%}
+    </div>
+  </div>
+
+  <!-- Status bars -->
+  <div class="carousel-status-bars desktop-only">
+    <div class="status-bar" data-slide="1">
+      <div class="status-bar-fill"></div>
+    </div>
+    <div class="status-bar" data-slide="2">
+      <div class="status-bar-fill"></div>
+    </div>
+    <div class="status-bar" data-slide="3">
+      <div class="status-bar-fill"></div>
     </div>
   </div>
 </div>
@@ -200,6 +225,9 @@
     // Removed indicators and navigation buttons
     let currentSlide = 1;
     let autoSlideInterval;
+    let progressFrameId = null;
+    let progressStartMs = null;
+    let progressElapsedMs = 0;
 
     function showSlide(slideNumber) {
       // Remove active class from all slides
@@ -212,7 +240,81 @@
         targetSlide.classList.add('active');
       }
 
+      // Update status bars
+      updateStatusBars(slideNumber);
+
       currentSlide = slideNumber;
+    }
+
+    function resetAllBars(activeSlide) {
+      const statusBars = document.querySelectorAll('.status-bar');
+      statusBars.forEach((bar, index) => {
+        const slideNum = index + 1;
+        const fill = bar.querySelector('.status-bar-fill');
+        if (slideNum < activeSlide) {
+          fill.style.width = '100%';
+        } else if (slideNum === activeSlide) {
+          fill.style.width = '0%';
+        } else {
+          fill.style.width = '0%';
+        }
+      });
+    }
+
+    function animateActiveBar(activeSlide) {
+      cancelAnimationFrame(progressFrameId);
+      progressFrameId = null;
+      progressStartMs = performance.now();
+      progressElapsedMs = 0;
+
+      const activeBar = document.querySelector(`.status-bar[data-slide="${activeSlide}"] .status-bar-fill`);
+      if (!activeBar) return;
+
+      function step(now) {
+        const elapsed = now - progressStartMs + progressElapsedMs;
+        const progress = Math.min(elapsed / 5000, 1);
+        activeBar.style.width = `${progress * 100}%`;
+        if (progress < 1) {
+          progressFrameId = requestAnimationFrame(step);
+        }
+      }
+
+      progressFrameId = requestAnimationFrame(step);
+    }
+
+    function pauseBarAnimation() {
+      if (progressFrameId) {
+        cancelAnimationFrame(progressFrameId);
+        progressFrameId = null;
+        // Capture elapsed so we can resume
+        const activeBar = document.querySelector(`.status-bar[data-slide="${currentSlide}"] .status-bar-fill`);
+        if (activeBar) {
+          const width = parseFloat(activeBar.style.width || '0');
+          progressElapsedMs = (width / 100) * 5000;
+        }
+      }
+    }
+
+    function resumeBarAnimation() {
+      if (!progressFrameId) {
+        progressStartMs = performance.now();
+        const activeBar = document.querySelector(`.status-bar[data-slide="${currentSlide}"] .status-bar-fill`);
+        if (!activeBar) return;
+        function step(now) {
+          const elapsed = now - progressStartMs + progressElapsedMs;
+          const progress = Math.min(elapsed / 5000, 1);
+          activeBar.style.width = `${progress * 100}%`;
+          if (progress < 1) {
+            progressFrameId = requestAnimationFrame(step);
+          }
+        }
+        progressFrameId = requestAnimationFrame(step);
+      }
+    }
+
+    function updateStatusBars(activeSlide) {
+      resetAllBars(activeSlide);
+      animateActiveBar(activeSlide);
     }
 
     function nextSlide() {
@@ -234,10 +336,17 @@
     }
 
     // Pause on hover (optional - can be removed if you want continuous auto-slide)
-    carousel.addEventListener('mouseenter', stopAutoSlide);
-    carousel.addEventListener('mouseleave', startAutoSlide);
+    carousel.addEventListener('mouseenter', () => {
+      stopAutoSlide();
+      pauseBarAnimation();
+    });
+    carousel.addEventListener('mouseleave', () => {
+      startAutoSlide();
+      resumeBarAnimation();
+    });
 
-    // Start the carousel
+    // Initialize status bars and start the carousel
+    updateStatusBars(1);
     startAutoSlide();
   });
 </script>
