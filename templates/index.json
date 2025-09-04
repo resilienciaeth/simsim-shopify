@@ -13,7 +13,10 @@
       "type": "custom-carousel",
       "settings": {
         "slide1_image1": "shopify://shop_images/ce92f700b25b932bf78153a37fca0cf3ee86d9e4_1.jpg",
-        "slide1_image2": "shopify://shop_images/8B322045AMI_AMINI_GIULY_SHEARLING_FLUO_GREEN-1_2048x_6de285cf-408a-41c7-b624-b6f44d6acc6c.png"
+        "slide1_image2": "shopify://shop_images/8B322045AMI_AMINI_GIULY_SHEARLING_FLUO_GREEN-1_2048x_6de285cf-408a-41c7-b624-b6f44d6acc6c.png",
+        "slide1_link": "shopify://collections",
+        "slide2_link": "",
+        "slide3_link": ""
       }
     }
   },
