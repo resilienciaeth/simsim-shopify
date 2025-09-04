@@ -56,6 +56,15 @@
           {%- endif -%}
         </div>
       </div>
+      <!-- Desktop text overlay -->
+      <div class="slide-text-overlay desktop-only">
+        {%- if section.settings.slide1_text != blank -%}
+          <p class="slide-small-text">{{ section.settings.slide1_text }}</p>
+        {%- endif -%}
+        {%- if section.settings.slide1_title != blank -%}
+          <h2 class="slide-title">{{ section.settings.slide1_title }}</h2>
+        {%- endif -%}
+      </div>
       {%- if section.settings.slide1_link != blank -%}
         </a>
       {%- endif -%}
@@ -115,6 +124,15 @@
           {%- endif -%}
         </div>
       </div>
+      <!-- Desktop text overlay -->
+      <div class="slide-text-overlay desktop-only">
+        {%- if section.settings.slide2_text != blank -%}
+          <p class="slide-small-text">{{ section.settings.slide2_text }}</p>
+        {%- endif -%}
+        {%- if section.settings.slide2_title != blank -%}
+          <h2 class="slide-title">{{ section.settings.slide2_title }}</h2>
+        {%- endif -%}
+      </div>
       {%- if section.settings.slide2_link != blank -%}
         </a>
       {%- endif -%}
@@ -158,6 +176,15 @@
             </div>
           {%- endif -%}
         </div>
+      </div>
+      <!-- Desktop text overlay -->
+      <div class="slide-text-overlay desktop-only">
+        {%- if section.settings.slide3_text != blank -%}
+          <p class="slide-small-text">{{ section.settings.slide3_text }}</p>
+        {%- endif -%}
+        {%- if section.settings.slide3_title != blank -%}
+          <h2 class="slide-title">{{ section.settings.slide3_title }}</h2>
+        {%- endif -%}
       </div>
       {%- if section.settings.slide3_link != blank -%}
         </a>
@@ -248,6 +275,18 @@
       "info": "Single image for mobile view - Recommended size: 800x1000px or larger"
     },
     {
+      "type": "text",
+      "id": "slide1_text",
+      "label": "Small Text",
+      "info": "Optional: Small text displayed at bottom (24px)"
+    },
+    {
+      "type": "text",
+      "id": "slide1_title",
+      "label": "Title",
+      "info": "Optional: Title displayed below small text (48px)"
+    },
+    {
       "type": "url",
       "id": "slide1_link",
       "label": "Slide 1 Link",
@@ -280,6 +319,18 @@
       "info": "Single image for mobile view - Recommended size: 800x1000px or larger"
     },
     {
+      "type": "text",
+      "id": "slide2_text",
+      "label": "Small Text",
+      "info": "Optional: Small text displayed at bottom (24px)"
+    },
+    {
+      "type": "text",
+      "id": "slide2_title",
+      "label": "Title",
+      "info": "Optional: Title displayed below small text (48px)"
+    },
+    {
       "type": "url",
       "id": "slide2_link",
       "label": "Slide 2 Link",
@@ -304,6 +355,18 @@
       "id": "slide3_mobile_image",
       "label": "Mobile Image",
       "info": "Single image for mobile view - Recommended size: 800x1000px or larger"
+    },
+    {
+      "type": "text",
+      "id": "slide3_text",
+      "label": "Small Text",
+      "info": "Optional: Small text displayed at bottom (24px)"
+    },
+    {
+      "type": "text",
+      "id": "slide3_title",
+      "label": "Title",
+      "info": "Optional: Title displayed below small text (48px)"
     },
     {
       "type": "url",

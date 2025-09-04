@@ -162,6 +162,42 @@ body.template-index {
 
 /* Navigation controls removed - carousel now auto-slides only */
 
+/* Desktop text overlay */
+.slide-text-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0 30px 30px 30px;
+  z-index: 5;
+  pointer-events: none; /* Allow clicks to pass through to slide link */
+}
+
+.slide-small-text {
+  font-size: 24px;
+  line-height: 1.2;
+  margin: 0 0 8px 0;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-weight: 400;
+}
+
+.slide-title {
+  font-size: 48px;
+  line-height: 1.1;
+  margin: 0;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-weight: 700;
+}
+
+/* Mobile: hide text overlay */
+@media screen and (max-width: 749px) {
+  .slide-text-overlay {
+    display: none;
+  }
+}
+
 /* Fade animation for smooth transitions */
 @keyframes fadeIn {
   from {
