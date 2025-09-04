@@ -3,7 +3,7 @@
     background-color: #4e8926; /* match cart background */
     color: #000; /* per nav-variant dark text */
     padding-top: 180px; /* mobile default */
-    padding-bottom: 30px;
+    padding-bottom: 10px;
     position: relative;
   }
 
@@ -107,9 +107,22 @@
     margin: 0;
   }
 
+  .reusable-footer .footer-logo {
+    display: none; /* hide on mobile */
+  }
+
+  .reusable-footer .footer-desktop-right {
+    display: none; /* hide on mobile */
+  }
+
+  .reusable-footer .footer-copyright-desktop {
+    display: none; /* hide desktop copyright on mobile */
+  }
+
   @media screen and (min-width: 1200px) {
     .reusable-footer {
-      padding-top: 90px; /* desktop */
+      padding-top: 120px; /* desktop */
+      padding-bottom: 10px; /* desktop */
     }
 
     .reusable-footer .footer-inner {
@@ -124,6 +137,79 @@
 
     .reusable-footer .footer-mobile-image {
       display: none; /* hide on desktop */
+    }
+
+    .reusable-footer .footer-links {
+      gap: 0px; /* 0px between links on desktop */
+    }
+
+    .reusable-footer .social-links {
+      gap: 0px; /* 0px between social links on desktop */
+    }
+
+    .reusable-footer .footer-bottom-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .reusable-footer .footer-bottom-row .footer-links {
+      justify-self: start;
+    }
+
+    .reusable-footer .footer-logo {
+      justify-self: center;
+      display: block;
+    }
+
+    .reusable-footer .footer-desktop-right {
+      justify-self: end;
+      display: flex;
+      gap: 60px;
+      align-items: flex-end;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .reusable-footer .footer-credits-desktop {
+      position: relative;
+      flex: 1;
+    }
+
+    .reusable-footer .footer-credits-desktop .credit-toggle {
+      background: none;
+      border: none;
+      color: #000;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .reusable-footer .footer-credits-desktop .credit-details {
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      text-align: left;
+      margin-bottom: 5px;
+      white-space: nowrap;
+    }
+
+    .reusable-footer .footer-copyright {
+      align-self: flex-end;
+      flex-shrink: 0;
+    }
+
+    .reusable-footer .footer-copyright-mobile {
+      display: none; /* hide mobile copyright on desktop */
+    }
+
+    .reusable-footer .social-credit-row .footer-credits {
+      display: none; /* hide mobile credit section on desktop */
     }
   }
 </style>
@@ -173,7 +259,25 @@
         <nav class="footer-links">
           <a href="{{ routes.pages_url }}/newsletter">NEWSLETTER</a>
         </nav>
-        <div class="footer-copyright">© 2025 SIMSIM. ALL RIGHTS RESERVED.</div>
+        <div class="footer-copyright footer-copyright-mobile">© 2025 SIMSIM. ALL RIGHTS RESERVED.</div>
+        <div class="footer-logo">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0911/2394/1654/files/Vector.png?v=1756945832"
+            alt="{{ shop.name }}"
+            width="81"
+            height="38"
+          >
+        </div>
+        <div class="footer-desktop-right">
+          <div class="footer-credits-desktop">
+            <div class="credit-details" id="creditDetailsDesktop" style="display: none;">
+              <div class="credit-line">DESIGN AND AD: SPECS47</div>
+              <div class="credit-line">DEVELOPMENT: RESILIENCIASTUDIO</div>
+            </div>
+            <button class="credit-toggle" onclick="toggleCreditsDesktop()">CREDIT</button>
+          </div>
+          <div class="footer-copyright">© 2025 SIMSIM. ALL RIGHTS RESERVED.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -183,6 +287,19 @@
   function toggleCredits() {
     const toggle = document.querySelector('.credit-toggle');
     const details = document.getElementById('creditDetails');
+
+    if (details.style.display === 'none') {
+      details.style.display = 'block';
+      toggle.textContent = 'CLOSE';
+    } else {
+      details.style.display = 'none';
+      toggle.textContent = 'CREDIT';
+    }
+  }
+
+  function toggleCreditsDesktop() {
+    const toggle = document.querySelector('.footer-desktop-right .credit-toggle');
+    const details = document.getElementById('creditDetailsDesktop');
 
     if (details.style.display === 'none') {
       details.style.display = 'block';
