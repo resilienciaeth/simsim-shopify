@@ -1,20 +1,60 @@
 <style>
-  .explore-wrapper {
-    padding: 40px 16px;
+  .explore-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
   }
-  .explore-title {
-    font-size: 24px;
-    text-transform: uppercase;
-    margin-bottom: 10px;
+  @media screen and (min-width: 1200px) {
+    .explore-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
-  .explore-subtitle {
-    opacity: 0.6;
+  .explore-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  .explore-image {
+    width: 100%;
+    height: 40vw; /* mobile-ish ratio */
+    object-fit: cover;
+    display: block;
+  }
+  @media screen and (min-width: 1200px) {
+    .explore-image {
+      height: 33vw; /* keep square-ish on desktop across 3 cols */
+      max-height: 520px;
+    }
   }
 </style>
 
-<div class="explore-wrapper">
-  <div class="explore-title">EXPLORE</div>
-  <div class="explore-subtitle">Starter template connected successfully.</div>
+<div class="explore-grid">
+  {%- for blog in blogs -%}
+    {%- for article in blog.articles limit: 6 -%}
+      <a class="explore-card" href="{{ article.url }}">
+        {%- if article.image -%}
+          <img
+            class="explore-image"
+            srcset="
+              {%- if article.image.width >= 375 -%}{{ article.image | image_url: width: 375 }} 375w,{%- endif -%}
+              {%- if article.image.width >= 750 -%}{{ article.image | image_url: width: 750 }} 750w,{%- endif -%}
+              {%- if article.image.width >= 1100 -%}{{ article.image | image_url: width: 1100 }} 1100w,{%- endif -%}
+              {%- if article.image.width >= 1500 -%}{{ article.image | image_url: width: 1500 }} 1500w,{%- endif -%}
+              {{ article.image | image_url }} {{ article.image.width }}w
+            "
+            sizes="(min-width: 1200px) 33vw, 50vw"
+            src="{{ article.image | image_url: width: 750 }}"
+            alt="{{ article.image.alt | escape }}"
+            loading="lazy"
+            width="{{ article.image.width }}"
+            height="{{ article.image.height }}"
+          >
+        {%- else -%}
+          {{ 'image' | placeholder_svg_tag: 'explore-image placeholder' }}
+        {%- endif -%}
+      </a>
+    {%- endfor -%}
+  {%- endfor -%}
 </div>
 
 {% schema %}

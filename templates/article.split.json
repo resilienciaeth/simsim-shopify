@@ -2,7 +2,7 @@
   "layout": "theme.miscellaneous",
   "sections": {
     "main": {
-      "type": "explore"
+      "type": "article-page-split"
     }
   },
   "order": [

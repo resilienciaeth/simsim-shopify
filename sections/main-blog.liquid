@@ -14,33 +14,89 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+  /* Remove side padding and width cap from the blog container */
+  .main-blog.page-width {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  /* Mobile blog grid: 2 columns of images with title overlay */
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+  }
+  @media screen and (min-width: 1200px) {
+    .blog-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .blog-card {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  .blog-card-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 4; /* slightly shorter portrait on mobile */
+    object-fit: cover;
+    display: block;
+  }
+  @media screen and (min-width: 990px) {
+    .blog-card-image {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 2 / 3; /* portrait */
+      max-height: 720px;
+    }
+    .blog-card-title {
+      font-size: 12px;
+      top: 30px !important;
+      left: 30px !important;
+    }
+  }
+  .blog-card-title {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 10px;
+    line-height: 1.2;
+    max-width: calc(100% - 20px);
+    color: #fff;
+  }
 {%- endstyle -%}
 
 {%- paginate blog.articles by 6 -%}
   <div class="main-blog page-width section-{{ section.id }}-padding">
-    <h1 class="title--primary{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
-      {{ blog.title | escape }}
-    </h1>
-
-    <div class="blog-articles {% if section.settings.layout == 'collage' %}blog-articles--collage{% endif %}">
+    <div class="blog-grid">
       {%- for article in blog.articles -%}
-        <div
-          class="blog-articles__article article{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-          {% if settings.animations_reveal_on_scroll %}
-            data-cascade
-            style="--animation-order: {{ forloop.index }};"
-          {% endif %}
-        >
-          {%- render 'article-card',
-            article: article,
-            media_height: section.settings.image_height,
-            media_aspect_ratio: article.image.aspect_ratio,
-            show_image: section.settings.show_image,
-            show_date: section.settings.show_date,
-            show_author: section.settings.show_author,
-            show_excerpt: true
-          -%}
-        </div>
+        <a class="blog-card" href="{{ article.url }}">
+          {%- if article.image -%}
+            <img
+              class="blog-card-image"
+              srcset="
+                {%- if article.image.width >= 375 -%}{{ article.image | image_url: width: 375 }} 375w,{%- endif -%}
+                {%- if article.image.width >= 750 -%}{{ article.image | image_url: width: 750 }} 750w,{%- endif -%}
+                {%- if article.image.width >= 1100 -%}{{ article.image | image_url: width: 1100 }} 1100w,{%- endif -%}
+                {%- if article.image.width >= 1500 -%}{{ article.image | image_url: width: 1500 }} 1500w,{%- endif -%}
+                {{ article.image | image_url }} {{ article.image.width }}w
+              "
+              sizes="(min-width: 750px) 50vw, 50vw"
+              src="{{ article.image | image_url: width: 750 }}"
+              alt="{{ article.image.alt | escape }}"
+              loading="lazy"
+              width="{{ article.image.width }}"
+              height="{{ article.image.height }}"
+            >
+          {%- else -%}
+            {{ 'image' | placeholder_svg_tag: 'blog-card-image placeholder' }}
+          {%- endif -%}
+          <div class="blog-card-title">{{ article.title }}</div>
+        </a>
       {%- endfor -%}
     </div>
 
