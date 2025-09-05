@@ -1,4 +1,43 @@
 {{ 'custom-carousel.css' | asset_url | stylesheet_tag }}
+<style>
+  /* Inline fallback styles to ensure status bars render and animate */
+  .carousel-status-bars {
+    position: absolute;
+    bottom: 20px;
+    left: 30px;
+    right: 30px;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 10;
+    height: 10px;
+  }
+  .status-bar {
+    width: calc((100% - 20px) / 3);
+    height: 10px;
+    background-color: rgba(255, 255, 255, 0.25);
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
+  }
+  .status-bar:not(:last-child) {
+    margin-right: 10px;
+  }
+  .status-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+    transition: width 5s linear;
+  }
+  @media screen and (max-width: 749px) {
+    .carousel-status-bars {
+      display: none;
+    }
+  }
+</style>
 
 <div class="custom-carousel-wrapper page-width-none section custom-carousel-section" id="section-{{ section.id }}">
   <div class="custom-carousel" id="carousel-{{ section.id }}">
@@ -219,7 +258,7 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  (function () {
     console.log('🎠 Carousel initialization starting...');
 
     const sectionWrapper = document.getElementById('section-{{ section.id }}');
@@ -228,6 +267,11 @@
       return;
     }
     console.log('✅ Found section wrapper:', sectionWrapper);
+
+    if (sectionWrapper.dataset.carouselInitialized === 'true') {
+      console.log('ℹ️ Carousel already initialized. Skipping re-init.');
+      return;
+    }
 
     const carousel = sectionWrapper.querySelector('#carousel-{{ section.id }}');
     if (!carousel) {
@@ -241,7 +285,12 @@
     // Removed indicators and navigation buttons
     let currentSlide = 1;
     let autoSlideInterval;
-    // Progress animation using CSS transition for reliability
+    // Progress animation state
+    let progressRafId = null;
+    let progressStartTime = 0;
+    let progressStartPct = 0; // 0..1
+    // Progress animation using transition/RAF for reliability
+    let slideTimeoutId = null;
 
     function showSlide(slideNumber) {
       // Remove active class from all slides
@@ -254,14 +303,23 @@
         targetSlide.classList.add('active');
       }
 
+      // Cancel any running progress animation and update status bars
+      cancelProgressRaf();
       // Update status bars
       updateStatusBars(slideNumber);
 
       currentSlide = slideNumber;
     }
 
+    function cancelProgressRaf() {
+      if (progressRafId !== null) {
+        cancelAnimationFrame(progressRafId);
+        progressRafId = null;
+      }
+    }
+
     function resetAllBars(activeSlide) {
-      console.log('🔄 Resetting status bars for slide (scale mode):', activeSlide);
+      console.log('🔄 Resetting status bars (width mode) for slide:', activeSlide);
 
       const statusBars = sectionWrapper.querySelectorAll('.status-bar');
       console.log('📊 Found status bars:', statusBars.length);
@@ -274,12 +332,13 @@
           return;
         }
 
-        // Stop transition and set base transform
+        // Stop any running animations/transitions and set base width
         fill.style.transition = 'none';
+        fill.style.animation = 'none';
         if (slideNum < activeSlide) {
-          fill.style.transform = 'scaleX(1)';
+          fill.style.width = '100%';
         } else {
-          fill.style.transform = 'scaleX(0)';
+          fill.style.width = '0%';
         }
       });
     }
@@ -291,24 +350,26 @@
         return;
       }
 
-      // Reset to scaleX(0) without transition, then animate to scaleX(1)
-      activeFill.style.transition = 'none';
-      activeFill.style.transform = 'scaleX(0)';
-      void activeFill.offsetWidth; // reflow
-      activeFill.style.transition = 'transform 5s linear';
-      requestAnimationFrame(() => {
-        activeFill.style.transform = 'scaleX(1)';
-      });
+      // Cancel previous animation if any
+      cancelProgressRaf();
 
-      // Debug: sample visual width via DOMRect
-      setTimeout(() => {
-        const r1 = activeFill.getBoundingClientRect();
-        console.log('⏱️ 1s rect width (px):', r1.width);
-      }, 1000);
-      setTimeout(() => {
-        const r3 = activeFill.getBoundingClientRect();
-        console.log('⏱️ 3s rect width (px):', r3.width);
-      }, 3000);
+      // Reset to 0% then animate to 100% using RAF (5s duration)
+      activeFill.style.transition = 'none';
+      activeFill.style.animation = 'none';
+      activeFill.style.width = '0%';
+      progressStartPct = 0;
+      progressStartTime = performance.now();
+      const step = (now) => {
+        const elapsed = now - progressStartTime;
+        const pct = Math.min(1, progressStartPct + elapsed / 5000);
+        activeFill.style.width = `${pct * 100}%`;
+        if (pct < 1) {
+          progressRafId = requestAnimationFrame(step);
+        } else {
+          progressRafId = null;
+        }
+      };
+      progressRafId = requestAnimationFrame(step);
     }
 
     function updateStatusBars(activeSlide) {
@@ -319,12 +380,16 @@
     function pauseBarAnimation() {
       const activeBar = sectionWrapper.querySelector(`.status-bar[data-slide="${currentSlide}"] .status-bar-fill`);
       if (!activeBar) return;
+      // Stop animations/transitions before measuring and freezing
+      activeBar.style.animation = 'none';
+      cancelProgressRaf();
       const rect = activeBar.getBoundingClientRect();
       const parentRect = activeBar.parentElement.getBoundingClientRect();
       const progressPct = parentRect.width ? (rect.width / parentRect.width) * 100 : 0;
       activeBar.style.transition = 'none';
-      activeBar.style.transform = `scaleX(${Math.min(1, Math.max(0, progressPct / 100))})`;
-      console.log('⏸️ Paused at % (scale):', progressPct);
+      activeBar.style.width = `${progressPct}%`;
+      progressStartPct = Math.min(1, Math.max(0, progressPct / 100));
+      console.log('⏸️ Paused at % (width):', progressPct);
     }
 
     function resumeBarAnimation() {
@@ -333,17 +398,26 @@
       const rect = activeBar.getBoundingClientRect();
       const parentRect = activeBar.parentElement.getBoundingClientRect();
       const progressPct = parentRect.width ? (rect.width / parentRect.width) * 100 : 0;
-      const remainingMs = Math.max(0, 5000 * (1 - progressPct / 100));
-      activeBar.style.transition = `transform ${remainingMs}ms linear`;
-      requestAnimationFrame(() => {
-        activeBar.style.transform = 'scaleX(1)';
-      });
-      console.log('▶️ Resumed (scale), remaining ms:', remainingMs);
+      progressStartPct = Math.min(1, Math.max(0, progressPct / 100));
+      progressStartTime = performance.now();
+      const step = (now) => {
+        const elapsed = now - progressStartTime;
+        const pct = Math.min(1, progressStartPct + elapsed / 5000);
+        activeBar.style.width = `${pct * 100}%`;
+        if (pct < 1) {
+          progressRafId = requestAnimationFrame(step);
+        } else {
+          progressRafId = null;
+        }
+      };
+      progressRafId = requestAnimationFrame(step);
+      console.log('▶️ Resumed (width) from %:', progressPct);
     }
 
     function nextSlide() {
       const next = currentSlide >= 3 ? 1 : currentSlide + 1;
       showSlide(next);
+      startAutoSlide();
     }
 
     function prevSlide() {
@@ -352,22 +426,34 @@
     }
 
     function startAutoSlide() {
-      autoSlideInterval = setInterval(nextSlide, 5000); // 5 seconds
+      if (slideTimeoutId) {
+        clearTimeout(slideTimeoutId);
+      }
+      slideTimeoutId = setTimeout(() => {
+        slideTimeoutId = null;
+        nextSlide();
+      }, 5000);
     }
 
     function stopAutoSlide() {
-      clearInterval(autoSlideInterval);
+      if (slideTimeoutId) {
+        clearTimeout(slideTimeoutId);
+        slideTimeoutId = null;
+      }
     }
 
-    // Pause on hover (optional - can be removed if you want continuous auto-slide)
-    carousel.addEventListener('mouseenter', () => {
-      stopAutoSlide();
-      pauseBarAnimation();
-    });
-    carousel.addEventListener('mouseleave', () => {
-      startAutoSlide();
-      resumeBarAnimation();
-    });
+    // Pause on hover (disabled by default for reliability)
+    const pauseOnHover = false;
+    if (pauseOnHover) {
+      carousel.addEventListener('mouseenter', () => {
+        stopAutoSlide();
+        pauseBarAnimation();
+      });
+      carousel.addEventListener('mouseleave', () => {
+        startAutoSlide();
+        resumeBarAnimation();
+      });
+    }
 
     // Immediately start filling the first bar
     function initializeFirstBar() {
@@ -387,13 +473,32 @@
     startAutoSlide();
     initializeFirstBar();
 
-    // Also trigger animation on load event as backup
-    console.log('⏳ Setting up load event handler...');
-    window.addEventListener('load', () => {
-      console.log('📥 Window load event fired, reinitializing first bar...');
-      initializeFirstBar();
+    // Mark as initialized to avoid duplicate setups
+    sectionWrapper.dataset.carouselInitialized = 'true';
+
+    // Shopify Theme Editor lifecycle hooks
+    document.addEventListener('shopify:section:unload', (event) => {
+      if (!event || !event.detail) return;
+      if (event.detail.sectionId === '{{ section.id }}') {
+        // Cleanup timers and animations
+        stopAutoSlide();
+        cancelProgressRaf();
+      }
     });
-  });
+    document.addEventListener('shopify:section:load', (event) => {
+      if (!event || !event.detail) return;
+      if (event.detail.sectionId === '{{ section.id }}') {
+        const wrapper = document.getElementById('section-{{ section.id }}');
+        if (wrapper && wrapper.dataset.carouselInitialized !== 'true') {
+          console.log('🔁 Re-initializing carousel on shopify:section:load');
+          showSlide(1);
+          startAutoSlide();
+          initializeFirstBar();
+          wrapper.dataset.carouselInitialized = 'true';
+        }
+      }
+    });
+  })();
 </script>
 
 {% schema %}

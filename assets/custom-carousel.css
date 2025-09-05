@@ -230,15 +230,11 @@ body.template-index {
 
 .status-bar-fill {
   height: 100%;
-  width: 100%;
+  width: 0%;
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 5px;
-  will-change: transform;
-  transform-origin: left center;
-  transform: scaleX(0);
-  transition: transform 5s linear;
-  transform: translateZ(0) scaleX(0); /* Force hardware acceleration */
-  backface-visibility: hidden; /* Additional performance optimization */
+  will-change: width;
+  transition: width 5s linear;
 }
 
 /* Animation for filling the status bar */
