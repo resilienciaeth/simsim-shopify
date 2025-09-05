@@ -180,7 +180,7 @@ body.template-index {
   color: white !important;
   font-weight: 400 !important;
   letter-spacing: normal !important;
-  text-transform: none !important;
+  text-transform: uppercase !important;
 }
 
 .slide-title {
@@ -190,13 +190,33 @@ body.template-index {
   color: white !important;
   font-weight: 700 !important;
   letter-spacing: normal !important;
-  text-transform: none !important;
+  text-transform: uppercase !important;
 }
 
-/* Mobile: hide text overlay */
+/* Mobile: center text overlay vertically and align left */
 @media screen and (max-width: 749px) {
   .slide-text-overlay {
-    display: none;
+    display: block !important;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    transform: translateY(-50%);
+    padding: 0 20px;
+    text-align: left;
+    z-index: 5;
+    pointer-events: none;
+  }
+  
+  .slide-small-text {
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+  }
+  
+  .slide-title {
+    font-size: 32px !important;
+    line-height: 1.1 !important;
   }
 }
 
@@ -235,6 +255,14 @@ body.template-index {
   border-radius: 5px;
   will-change: width;
   transition: width 5s linear;
+  display: block !important; /* override global div:empty { display:none } */
+}
+
+/* CSS-driven animation class; JS toggles this class and listens for animationend */
+.status-bar-fill.is-animating {
+  -webkit-animation: fillProgress 5s linear forwards;
+  animation: fillProgress 5s linear forwards;
+  transition: none;
 }
 
 /* Animation for filling the status bar */

@@ -14,7 +14,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 9998;
+    z-index: 10001; /* ensure above homepage hero */
   }
 
   /* Add padding to body content to account for fixed header */
@@ -427,6 +427,69 @@
     color: #fff;
   }
 
+  /* Homepage-specific white navbar override - high specificity */
+  body.template-index .header-wrapper {
+    color: #fff !important;
+    --color-foreground: 255, 255, 255 !important; /* force theme var to white */
+  }
+  body.template-index .header-wrapper .custom-navbar,
+  body.template-index .header-wrapper .navbar-link,
+  body.template-index .header-wrapper .navbar-text,
+  body.template-index .header-wrapper .navbar-logo,
+  body.template-index .header-wrapper .navbar-left a,
+  body.template-index .header-wrapper .navbar-right a,
+  body.template-index .header-wrapper .navbar-center a,
+  body.template-index .header-wrapper .navbar-left .navbar-link,
+  body.template-index .header-wrapper .navbar-right .navbar-link,
+  body.template-index .header-wrapper .navbar-left .navbar-text,
+  body.template-index .header-wrapper .navbar-right .navbar-text,
+  body.template-index .header-wrapper .custom-navbar a,
+  body.template-index .header-wrapper .custom-navbar span,
+  body.template-index .header-wrapper *,
+  body.template-index .custom-header *,
+  body.template-index .custom-navbar * {
+    color: #fff !important;
+  }
+
+  /* Explicitly ensure the mobile MENU trigger is white on homepage */
+  @media screen and (max-width: 1199px) {
+    body.template-index .header-wrapper .navbar-link.navbar-menu {
+      color: #fff !important;
+      pointer-events: auto !important;
+    }
+    body.template-index .header-wrapper .navbar-link.navbar-menu:link,
+    body.template-index .header-wrapper .navbar-link.navbar-menu:visited,
+    body.template-index .header-wrapper .navbar-link.navbar-menu:hover,
+    body.template-index .header-wrapper .navbar-link.navbar-menu:active {
+      color: #fff !important;
+    }
+  }
+
+  /* Force override any variant classes on homepage */
+  body.template-index .nav-variant--dark .custom-navbar,
+  body.template-index .nav-variant--dark .navbar-link,
+  body.template-index .nav-variant--dark .navbar-text,
+  body.template-index .nav-variant--dark .navbar-left a,
+  body.template-index .nav-variant--dark .navbar-right a {
+    color: #fff !important;
+  }
+
+  /* Nuclear option - force white on all elements */
+  body.template-index .header-wrapper a[href*="collections"],
+  body.template-index .header-wrapper a[href*="explore"],
+  body.template-index .header-wrapper a[href*="brand"],
+  body.template-index .header-wrapper a[href*="search"],
+  body.template-index .header-wrapper a[href*="account"],
+  body.template-index .header-wrapper a[href*="cart"] {
+    color: white !important;
+  }
+
+  /* Homepage: make drawer text white too */
+  body.template-index .unified-menu-drawer,
+  body.template-index .unified-menu-drawer * {
+    color: #fff !important;
+  }
+
   /* Mobile menu visibility rules */
   .navbar-menu {
     display: none;
@@ -610,20 +673,69 @@
   }
 </style>
 
+<script>
+  // Since we're using inline styles now, we don't need the JavaScript override
+  // Mobile menu should work fine with inline styles
+</script>
+
 <header class="header-wrapper color-{{ section.settings.color_scheme }} gradient nav-variant--{{ section.settings.nav_variant }}">
   <div class="custom-header">
     <nav class="custom-navbar">
       <!-- Left Navigation -->
       <div class="navbar-left">
-        <a href="#" class="navbar-link navbar-menu" data-unified-menu-toggle>MENU</a>
-        <a href="{{ routes.collections_url }}" class="navbar-link nav-hide-mobile">
-          <span class="navbar-text">SHOP</span>
+        <a
+          href="#"
+          class="navbar-link navbar-menu"
+          data-unified-menu-toggle
+          {%- if template.name == 'index' -%}
+            style="color: #fff !important; position: relative; z-index: 10000;"
+          {%- endif -%}
+          >MENU</a
+        >
+        <a
+          href="{{ routes.collections_url }}"
+          class="navbar-link nav-hide-mobile"
+          {%- if template.name == 'index' -%}
+            style="color: #fff !important;"
+          {%- endif -%}
+        >
+          <span
+            class="navbar-text"
+            {%- if template.name == 'index' -%}
+              style="color: #fff !important;"
+            {%- endif -%}
+            >SHOP</span
+          >
         </a>
-        <a href="{{ routes.pages_url }}/explore" class="navbar-link nav-hide-mobile">
-          <span class="navbar-text">EXPLORE</span>
+        <a
+          href="{{ routes.pages_url }}/explore"
+          class="navbar-link nav-hide-mobile"
+          {%- if template.name == 'index' -%}
+            style="color: #fff !important;"
+          {%- endif -%}
+        >
+          <span
+            class="navbar-text"
+            {%- if template.name == 'index' -%}
+              style="color: #fff !important;"
+            {%- endif -%}
+            >EXPLORE</span
+          >
         </a>
-        <a href="/pages/brand" class="navbar-link nav-hide-mobile">
-          <span class="navbar-text">BRAND</span>
+        <a
+          href="/pages/brand"
+          class="navbar-link nav-hide-mobile"
+          {%- if template.name == 'index' -%}
+            style="color: #fff !important;"
+          {%- endif -%}
+        >
+          <span
+            class="navbar-text"
+            {%- if template.name == 'index' -%}
+              style="color: #fff !important;"
+            {%- endif -%}
+            >BRAND</span
+          >
         </a>
       </div>
 
@@ -634,7 +746,7 @@
           {%- assign dark_logo_url = 'https://cdn.shopify.com/s/files/1/0911/2394/1654/files/logo_2.png?v=1756148711' -%}
           {%- assign light_logo_url = 'https://cdn.shopify.com/s/files/1/0911/2394/1654/files/Group_343.png?v=1756148728' -%}
           <img
-            src="{%- if section.settings.nav_variant == 'light' -%}{{ light_logo_url }}{%- else -%}{{ dark_logo_url }}{%- endif -%}"
+            src="{%- if template.name == 'index' or section.settings.nav_variant == 'light' -%}{{ light_logo_url }}{%- else -%}{{ dark_logo_url }}{%- endif -%}"
             alt="{{ logo_alt }}"
             class="navbar-logo-image"
             width="120"
@@ -646,17 +758,34 @@
 
       <!-- Right Navigation -->
       <div class="navbar-right">
-        <a href="{{ routes.search_url }}" class="navbar-link nav-hide-mobile">SEARCH</a>
+        <a
+          href="{{ routes.search_url }}"
+          class="navbar-link nav-hide-mobile"
+          {%- if template.name == 'index' -%}
+            style="color: #fff !important;"
+          {%- endif -%}
+          >SEARCH</a
+        >
 
         {%- if shop.customer_accounts_enabled -%}
           <a
             href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
             class="navbar-link nav-hide-mobile"
+            {%- if template.name == 'index' -%}
+              style="color: #fff !important;"
+            {%- endif -%}
             >ACCOUNT</a
           >
         {%- endif -%}
 
-        <a href="{{ routes.cart_url }}" class="navbar-link" id="cart-icon-bubble">
+        <a
+          href="{{ routes.cart_url }}"
+          class="navbar-link"
+          id="cart-icon-bubble"
+          {%- if template.name == 'index' -%}
+            style="color: #fff !important;"
+          {%- endif -%}
+        >
           {%- if cart != empty -%}
             CART({{ cart.item_count }})
           {%- else -%}
@@ -732,13 +861,21 @@
     var toggle = document.querySelector('[data-unified-menu-toggle]');
     var drawer = document.getElementById('UnifiedMenuDrawer');
 
-    if (!toggle || !drawer) return;
+    console.log('📱 Mobile menu init - Toggle:', toggle, 'Drawer:', drawer);
+    if (!toggle || !drawer) {
+      console.error('❌ Mobile menu elements not found!');
+      return;
+    }
 
     // Toggle menu
     toggle.addEventListener('click', function (e) {
       e.preventDefault();
+      console.log('📱 Mobile menu toggle clicked');
       var isOpen = document.body.classList.toggle('unified-menu-open');
       drawer.setAttribute('aria-hidden', String(!isOpen));
+      console.log('📱 Menu is now:', isOpen ? 'OPEN' : 'CLOSED');
+      console.log('📱 Body classes:', document.body.className);
+      console.log('📱 Drawer transform:', window.getComputedStyle(drawer).transform);
     });
 
     // Close button inside drawer

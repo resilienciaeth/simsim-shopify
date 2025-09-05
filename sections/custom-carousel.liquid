@@ -291,6 +291,7 @@
     let progressStartPct = 0; // 0..1
     // Progress animation using transition/RAF for reliability
     let slideTimeoutId = null;
+    let isAnimating = false;
 
     function showSlide(slideNumber) {
       // Remove active class from all slides
@@ -319,7 +320,7 @@
     }
 
     function resetAllBars(activeSlide) {
-      console.log('🔄 Resetting status bars (width mode) for slide:', activeSlide);
+      console.log('🔄 Resetting status bars for slide:', activeSlide);
 
       const statusBars = sectionWrapper.querySelectorAll('.status-bar');
       console.log('📊 Found status bars:', statusBars.length);
@@ -335,10 +336,26 @@
         // Stop any running animations/transitions and set base width
         fill.style.transition = 'none';
         fill.style.animation = 'none';
-        if (slideNum < activeSlide) {
-          fill.style.width = '100%';
-        } else {
+
+        if (slideNum === activeSlide) {
+          // Current slide: start at 0% (will be animated)
           fill.style.width = '0%';
+          fill.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+        } else if (slideNum < activeSlide || (activeSlide === 1 && slideNum > 1)) {
+          // Previous slides OR when cycling back to slide 1, reset slides 2&3
+          if (activeSlide === 1) {
+            // When back to slide 1, all other bars should be empty
+            fill.style.width = '0%';
+            fill.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+          } else {
+            // Normal case: previous slides are filled
+            fill.style.width = '100%';
+            fill.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+          }
+        } else {
+          // Future slides: empty
+          fill.style.width = '0%';
+          fill.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
         }
       });
     }
@@ -350,26 +367,32 @@
         return;
       }
 
-      // Cancel previous animation if any
-      cancelProgressRaf();
+      // Clear any existing timeout to prevent multiple timers
+      if (slideTimeoutId) {
+        clearTimeout(slideTimeoutId);
+        slideTimeoutId = null;
+      }
 
-      // Reset to 0% then animate to 100% using RAF (5s duration)
+      // Simple approach: reset to 0%, then transition to 100%
       activeFill.style.transition = 'none';
-      activeFill.style.animation = 'none';
       activeFill.style.width = '0%';
-      progressStartPct = 0;
-      progressStartTime = performance.now();
-      const step = (now) => {
-        const elapsed = now - progressStartTime;
-        const pct = Math.min(1, progressStartPct + elapsed / 5000);
-        activeFill.style.width = `${pct * 100}%`;
-        if (pct < 1) {
-          progressRafId = requestAnimationFrame(step);
-        } else {
-          progressRafId = null;
-        }
-      };
-      progressRafId = requestAnimationFrame(step);
+      activeFill.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'; // Make sure it's visible
+
+      // Force browser reflow
+      activeFill.offsetHeight;
+
+      // Start transition and advance slide after 5s
+      activeFill.style.transition = 'width 5s linear';
+      activeFill.style.width = '100%';
+
+      isAnimating = true;
+      slideTimeoutId = setTimeout(() => {
+        slideTimeoutId = null;
+        isAnimating = false;
+        nextSlide();
+      }, 5000);
+
+      console.log('✅ Started animation for slide:', activeSlide);
     }
 
     function updateStatusBars(activeSlide) {
@@ -380,44 +403,52 @@
     function pauseBarAnimation() {
       const activeBar = sectionWrapper.querySelector(`.status-bar[data-slide="${currentSlide}"] .status-bar-fill`);
       if (!activeBar) return;
-      // Stop animations/transitions before measuring and freezing
-      activeBar.style.animation = 'none';
-      cancelProgressRaf();
-      const rect = activeBar.getBoundingClientRect();
-      const parentRect = activeBar.parentElement.getBoundingClientRect();
-      const progressPct = parentRect.width ? (rect.width / parentRect.width) * 100 : 0;
+      // Pause CSS animation by computing current progress and freezing width
+      const computed = getComputedStyle(activeBar);
+      const matrix = computed.transform;
+      let pct = 0;
+      try {
+        const rect = activeBar.getBoundingClientRect();
+        const parentRect = activeBar.parentElement.getBoundingClientRect();
+        pct = parentRect.width ? (rect.width / parentRect.width) * 100 : 0;
+      } catch (e) {}
+      activeBar.classList.remove('is-animating');
       activeBar.style.transition = 'none';
-      activeBar.style.width = `${progressPct}%`;
-      progressStartPct = Math.min(1, Math.max(0, progressPct / 100));
-      console.log('⏸️ Paused at % (width):', progressPct);
+      activeBar.style.animation = 'none';
+      activeBar.style.width = `${pct}%`;
+      console.log('⏸️ Paused at % (width):', pct);
     }
 
     function resumeBarAnimation() {
       const activeBar = sectionWrapper.querySelector(`.status-bar[data-slide="${currentSlide}"] .status-bar-fill`);
       if (!activeBar) return;
+      // Resume from current width using remaining duration
       const rect = activeBar.getBoundingClientRect();
       const parentRect = activeBar.parentElement.getBoundingClientRect();
       const progressPct = parentRect.width ? (rect.width / parentRect.width) * 100 : 0;
-      progressStartPct = Math.min(1, Math.max(0, progressPct / 100));
-      progressStartTime = performance.now();
-      const step = (now) => {
-        const elapsed = now - progressStartTime;
-        const pct = Math.min(1, progressStartPct + elapsed / 5000);
-        activeBar.style.width = `${pct * 100}%`;
-        if (pct < 1) {
-          progressRafId = requestAnimationFrame(step);
-        } else {
-          progressRafId = null;
-        }
+      const remaining = Math.max(0, 5000 * (1 - progressPct / 100));
+      activeBar.style.transition = `width ${remaining}ms linear`;
+      requestAnimationFrame(() => {
+        activeBar.style.width = '100%';
+      });
+      // Also re-attach animationend advance in case width transition completes
+      const onTransitionEnd = () => {
+        activeBar.removeEventListener('transitionend', onTransitionEnd);
+        nextSlide();
       };
-      progressRafId = requestAnimationFrame(step);
-      console.log('▶️ Resumed (width) from %:', progressPct);
+      activeBar.addEventListener('transitionend', onTransitionEnd, { once: true });
+      console.log('▶️ Resumed (width) remaining ms:', remaining);
     }
 
     function nextSlide() {
+      if (isAnimating) {
+        console.log('⚠️ Animation already in progress, skipping advance');
+        return;
+      }
+
       const next = currentSlide >= 3 ? 1 : currentSlide + 1;
+      console.log(`🔄 Advancing from slide ${currentSlide} to slide ${next}`);
       showSlide(next);
-      startAutoSlide();
     }
 
     function prevSlide() {
@@ -425,35 +456,9 @@
       showSlide(prev);
     }
 
-    function startAutoSlide() {
-      if (slideTimeoutId) {
-        clearTimeout(slideTimeoutId);
-      }
-      slideTimeoutId = setTimeout(() => {
-        slideTimeoutId = null;
-        nextSlide();
-      }, 5000);
-    }
+    // Removed timer-based auto-slide; slide advances on animationend/transitionend
 
-    function stopAutoSlide() {
-      if (slideTimeoutId) {
-        clearTimeout(slideTimeoutId);
-        slideTimeoutId = null;
-      }
-    }
-
-    // Pause on hover (disabled by default for reliability)
-    const pauseOnHover = false;
-    if (pauseOnHover) {
-      carousel.addEventListener('mouseenter', () => {
-        stopAutoSlide();
-        pauseBarAnimation();
-      });
-      carousel.addEventListener('mouseleave', () => {
-        startAutoSlide();
-        resumeBarAnimation();
-      });
-    }
+    // Hover pause removed per request
 
     // Immediately start filling the first bar
     function initializeFirstBar() {
@@ -470,7 +475,6 @@
     // Initialize everything
     console.log('🚀 Starting carousel initialization...');
     showSlide(1);
-    startAutoSlide();
     initializeFirstBar();
 
     // Mark as initialized to avoid duplicate setups
@@ -492,7 +496,6 @@
         if (wrapper && wrapper.dataset.carouselInitialized !== 'true') {
           console.log('🔁 Re-initializing carousel on shopify:section:load');
           showSlide(1);
-          startAutoSlide();
           initializeFirstBar();
           wrapper.dataset.carouselInitialized = 'true';
         }
