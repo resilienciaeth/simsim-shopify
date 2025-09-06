@@ -354,6 +354,11 @@
     }
   }
 
+  /* Current page styling - 50% opacity */
+  .navbar-link.current-page {
+    opacity: 0.5;
+  }
+
   .navbar-logo {
     font-size: 18px;
     font-weight: bold;
@@ -519,7 +524,7 @@
     padding: 0 16px 16px 16px; /* 16px sides; top spacing handled by close button */
     transform: translateX(-100%);
     transition: transform 300ms ease;
-    z-index: 9999;
+    z-index: 10002; /* above fixed header (10001) */
     display: flex;
     flex-direction: column;
     gap: 0; /* we'll manage spacing explicitly */
@@ -535,6 +540,7 @@
     padding: 0;
     margin: 0;
     color: #000;
+    z-index: 1; /* ensure on top within drawer */
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -694,7 +700,7 @@
         >
         <a
           href="{{ routes.collections_url }}"
-          class="navbar-link nav-hide-mobile"
+          class="navbar-link nav-hide-mobile{% if request.page_type == 'collection' or request.page_type == 'list-collections' %} current-page{% endif %}"
           {%- if template.name == 'index' -%}
             style="color: #fff !important;"
           {%- endif -%}
@@ -708,8 +714,8 @@
           >
         </a>
         <a
-          href="{{ routes.pages_url }}/explore"
-          class="navbar-link nav-hide-mobile"
+          href="/blogs/explore"
+          class="navbar-link nav-hide-mobile{% if template.name == 'blog' and blog.handle == 'explore' %} current-page{% endif %}"
           {%- if template.name == 'index' -%}
             style="color: #fff !important;"
           {%- endif -%}
@@ -724,7 +730,7 @@
         </a>
         <a
           href="/pages/brand"
-          class="navbar-link nav-hide-mobile"
+          class="navbar-link nav-hide-mobile{% if template.name == 'page' and page.handle == 'brand' %} current-page{% endif %}"
           {%- if template.name == 'index' -%}
             style="color: #fff !important;"
           {%- endif -%}
@@ -760,7 +766,7 @@
       <div class="navbar-right">
         <a
           href="{{ routes.search_url }}"
-          class="navbar-link nav-hide-mobile"
+          class="navbar-link nav-hide-mobile{% if template.name == 'search' %} current-page{% endif %}"
           {%- if template.name == 'index' -%}
             style="color: #fff !important;"
           {%- endif -%}
@@ -770,7 +776,7 @@
         {%- if shop.customer_accounts_enabled -%}
           <a
             href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
-            class="navbar-link nav-hide-mobile"
+            class="navbar-link nav-hide-mobile{% if template.directory == 'customers' %} current-page{% endif %}"
             {%- if template.name == 'index' -%}
               style="color: #fff !important;"
             {%- endif -%}
@@ -780,7 +786,7 @@
 
         <a
           href="{{ routes.cart_url }}"
-          class="navbar-link"
+          class="navbar-link{% if template.name == 'cart' %} current-page{% endif %}"
           id="cart-icon-bubble"
           {%- if template.name == 'index' -%}
             style="color: #fff !important;"
@@ -801,14 +807,28 @@
 <div class="unified-menu-drawer" id="UnifiedMenuDrawer" aria-hidden="true">
   <button type="button" class="menu-close" data-unified-menu-close>CLOSE</button>
   <nav>
-    <a href="{{ routes.collections_url }}" class="navbar-link">Shop</a>
-    <a href="{{ routes.pages_url }}/explore" class="navbar-link">Explore</a>
-    <a href="/pages/brand" class="navbar-link">Brand</a>
-    <a href="{{ routes.search_url }}" class="navbar-link">Search</a>
+    <a
+      href="{{ routes.collections_url }}"
+      class="navbar-link{% if request.page_type == 'collection' or request.page_type == 'list-collections' %} current-page{% endif %}"
+      >Shop</a
+    >
+    <a
+      href="/blogs/explore"
+      class="navbar-link{% if template.name == 'blog' and blog.handle == 'explore' %} current-page{% endif %}"
+      >Explore</a
+    >
+    <a
+      href="/pages/brand"
+      class="navbar-link{% if template.name == 'page' and page.handle == 'brand' %} current-page{% endif %}"
+      >Brand</a
+    >
+    <a href="{{ routes.search_url }}" class="navbar-link{% if template.name == 'search' %} current-page{% endif %}"
+      >Search</a
+    >
     {%- if shop.customer_accounts_enabled -%}
       <a
         href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
-        class="navbar-link"
+        class="navbar-link{% if template.directory == 'customers' %} current-page{% endif %}"
         >Account</a
       >
     {%- endif -%}
