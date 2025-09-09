@@ -1,13 +1,4 @@
 <style>
-  /* Reset all padding and margins for product page */
-  body,
-  #MainContent,
-  .shopify-section,
-  main {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-  }
-
   .product-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -271,7 +262,7 @@
     color: #000;
     margin-bottom: 20px;
     text-align: left;
-    padding-left: 40px; /* Add back padding for title alignment */
+    padding-left: 30px; /* Add back padding for title alignment */
   }
 
   .related-items-grid {
@@ -343,6 +334,33 @@
     font-weight: normal;
   }
 
+  /* Font Overrides - All text elements use NewEdge666 at 12px */
+  .product-title,
+  .product-price,
+  .product-description,
+  .size-option,
+  .color-option,
+  .accordion-header,
+  .accordion-content,
+  .accordion-icon,
+  .add-to-cart-btn,
+  .related-items-title,
+  .related-item-name,
+  .related-item-price {
+    font-family: 'NewEdge666', var(--font-body-family) !important;
+    font-size: 12px !important;
+  }
+
+  .product-title,
+  .size-option,
+  .color-option,
+  .accordion-header,
+  .add-to-cart-btn,
+  .related-items-title,
+  .related-item-name {
+    text-transform: uppercase;
+  }
+
   /* Mobile Styles */
   @media screen and (max-width: 768px) {
     .product-container {
@@ -357,7 +375,7 @@
     }
 
     .product-info-column {
-      padding: 30px 20px 20px 20px;
+      padding: 30px 16px 20px 16px;
       justify-content: flex-start;
     }
 
@@ -398,9 +416,9 @@
       flex-direction: column;
     }
 
-    /* Related Items mobile styles - same approach */
+    /* Related Items mobile styles */
     .related-items-title {
-      padding-left: 20px; /* Add back padding for mobile title alignment */
+      padding-left: 16px; /* 16px on mobile */
     }
 
     .related-items-grid {
@@ -436,6 +454,20 @@
       height: 125px;
       flex-shrink: 0;
       margin-right: 0;
+    }
+  }
+
+  /* Product-only mobile overrides: remove global header spacing and local 90px spacing */
+  @media screen and (max-width: 1199px) {
+    body.template-product {
+      padding-top: 0 !important;
+    }
+  }
+
+  /* Product-only desktop overrides */
+  @media screen and (min-width: 1200px) {
+    body.template-product {
+      padding-top: 0 !important;
     }
   }
 </style>

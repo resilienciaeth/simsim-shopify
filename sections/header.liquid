@@ -83,30 +83,7 @@
     }
   }
 
-  /* Remove padding for product pages and brand pages */
-  html body.template-product,
-  body.template-product,
-  .template-product body,
-  html body.template-page.page-brand-page,
-  body.template-page.page-brand-page,
-  .template-page.page-brand-page body {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-  }
 
-  @media screen and (max-width: 1199px) {
-    html body.template-product,
-    body.template-product,
-    .template-product body,
-    html.template-product body,
-    body.template-product *,
-    html body.template-page.page-brand-page,
-    body.template-page.page-brand-page,
-    .template-page.page-brand-page body {
-      padding-top: 0 !important;
-      margin-top: 0 !important;
-    }
-  }
 
   /* Mobile and Desktop content styling for miscellaneous page */
   /* @media screen and (min-width: 1200px) { */ /* Apply to all screen sizes */
@@ -611,6 +588,11 @@
     .unified-menu-drawer .navbar-link.current-page,
     .unified-menu-drawer .current-page {
       opacity: 0.5;
+    }
+
+    /* Ensure product page mobile drawer links match global size */
+    body.template-product .unified-menu-drawer .navbar-link {
+      font-size: 24px !important;
     }
 
     /* Footer menu options */
