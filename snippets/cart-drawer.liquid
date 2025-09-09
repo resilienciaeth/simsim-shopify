@@ -16,6 +16,297 @@
   .drawer {
     visibility: hidden;
   }
+
+  /* Add 30px horizontal padding to the entire cart drawer (desktop only) */
+  @media screen and (min-width: 990px) {
+    #CartDrawer .drawer__inner {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+  }
+
+  /* Keep top checkout CTA full-bleed (no side padding) on desktop */
+  @media screen and (min-width: 990px) {
+    #CartDrawer .cart-top-cta {
+      margin-left: -30px;
+      margin-right: -30px;
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  /* Mobile: remove side padding from the first row and details section */
+  @media screen and (max-width: 989px) {
+    #CartDrawer .mobile-first-row,
+    #CartDrawer .mobile-details-section {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    /* Remove right padding on mobile price */
+    #CartDrawer .mobile-product-price {
+      padding-right: 0 !important;
+    }
+  }
+
+  /* Desktop Cart Drawer Table Styling - Only affects large screens */
+  @media screen and (min-width: 990px) {
+    /* Ensure true table semantics in case any global CSS changed display */
+    .cart-drawer-table {
+      display: table;
+    }
+    .cart-drawer-table thead {
+      display: table-header-group;
+    }
+    .cart-drawer-table tbody {
+      display: table-row-group;
+    }
+    .cart-drawer-table tr {
+      display: table-row;
+    }
+    .cart-drawer-table th,
+    .cart-drawer-table td {
+      display: table-cell;
+    }
+    .drawer-desktop-table {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    .cart-drawer-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      table-layout: fixed;
+    }
+
+    /* Header styling */
+    .cart-drawer-header {
+      padding-top: 30px; /* 30px space above header row */
+    }
+    .cart-drawer-header th {
+      text-align: left;
+      padding: 0.75rem 0.5rem;
+      border-bottom: 1px solid #000; /* header divider full black */
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #000;
+      vertical-align: top;
+    }
+
+    /* Remove side padding on SIZE, COLOR, QUANTITY headers */
+    .cart-drawer-header .drawer-th-size,
+    .cart-drawer-header .drawer-th-color,
+    .cart-drawer-header .drawer-th-quantity {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    /* Remove side padding on PRODUCT header explicitly */
+    .cart-drawer-header .drawer-th-product {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    /* Column widths - apply to both headers and cells */
+    .drawer-th-product,
+    .drawer-td-product {
+      width: 35%;
+    }
+    .drawer-th-size,
+    .drawer-td-size {
+      width: 15%;
+    }
+    .drawer-th-color,
+    .drawer-td-color {
+      width: 15%;
+    }
+    .drawer-th-quantity,
+    .drawer-td-quantity {
+      width: 20%;
+    }
+    .drawer-th-price,
+    .drawer-td-price {
+      width: 15%;
+    }
+
+    /* Row styling */
+    .cart-drawer-row {
+      border-bottom: 1px solid #000; /* divider under each item full black */
+    }
+
+    .cart-drawer-row td {
+      padding: 0.75rem 0; /* remove side padding on all cells */
+      vertical-align: top;
+      font-size: 12px;
+      text-align: left;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Ensure SIZE, COLOR, QUANTITY body cells have no side padding */
+    .drawer-td-size,
+    .drawer-td-color,
+    .drawer-td-quantity {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    /* Add extra spacing after first (PRODUCT) column */
+    .drawer-th-product {
+      padding-right: 0; /* remove side padding on header */
+      padding-left: 0;
+    }
+    .drawer-td-product {
+      padding-right: 20px;
+    }
+
+    /* Product column */
+    .drawer-product-name {
+      color: #000;
+      text-decoration: none;
+      font-weight: 400;
+      font-size: 12px;
+    }
+
+    .drawer-product-name:hover {
+      opacity: 0.5;
+      text-decoration: none;
+    }
+
+    /* Desktop hover preview image */
+    .desktop-hover-preview {
+      position: fixed;
+      right: 30px; /* 30px padding from edge */
+      bottom: 10px;
+      width: 80px; /* bigger image */
+      height: auto;
+      display: none;
+      z-index: 10005;
+      border-radius: 4px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .drawer-td-product .drawer-product-name:hover ~ .desktop-hover-preview {
+      display: block;
+    }
+
+    /* Size and Color columns */
+    .drawer-td-size,
+    .drawer-td-color {
+      color: #333;
+      font-weight: 400;
+    }
+
+    /* Quantity column (keep left aligned in rows; header can stay left) */
+    .drawer-th-quantity {
+      text-align: left;
+    }
+    .drawer-td-quantity {
+      text-align: left;
+    }
+    .drawer-quantity-value {
+      font-weight: 400;
+      color: #333;
+      margin-right: 8px;
+    }
+
+    /* Desktop quantity controls */
+    .desktop-quantity-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .desktop-quantity-controls {
+      display: flex;
+      gap: 4px;
+    }
+
+    .desktop-quantity-btn {
+      background: transparent;
+      border: none;
+      color: #333;
+      font-size: 10px;
+      font-weight: 400;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+      line-height: 1;
+    }
+
+    .desktop-quantity-btn:hover {
+      opacity: 0.7;
+    }
+
+    /* Price column */
+    .drawer-td-price {
+      text-align: end; /* logical end alignment */
+      text-align: right; /* fallback */
+      padding-right: 0; /* push price fully to the right */
+      padding-left: 0; /* remove left padding so price has no side padding */
+    }
+
+    .drawer-th-price {
+      text-align: end; /* logical end alignment */
+      text-align: right; /* fallback */
+      padding-right: 0; /* no extra side padding on desktop */
+      padding-left: 0;
+    }
+
+    /* Force header alignment to override generic header rule */
+    .cart-drawer-header .drawer-th-price {
+      text-align: end;
+      text-align: right;
+      padding-right: 0;
+      padding-left: 0;
+    }
+    /* Restore quantity header to left alignment */
+    .cart-drawer-header .drawer-th-quantity {
+      text-align: left;
+    }
+
+    .drawer-price {
+      color: #000;
+      font-weight: 500;
+      display: inline-block;
+      width: 100%;
+      text-align: right; /* ensure each price is at column end */
+    }
+
+    /* Desktop total section */
+    .desktop-cart-total-section {
+      margin-top: 30px; /* 30px space from last item */
+      padding: 5px 0; /* inner top/bottom padding inside bars */
+      border-top: 1px solid #000;
+      border-bottom: 1px solid #000;
+    }
+
+    .desktop-cart-total-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0; /* remove side padding so amount sits at far right */
+    }
+
+    .desktop-total-label {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .desktop-total-amount {
+      font-size: 12px;
+      font-weight: 500;
+      color: #000;
+    }
+  }
 </style>
 
 <cart-drawer class="drawer{% if cart == empty %} is-empty{% endif %}">
@@ -47,7 +338,7 @@
       {%- if cart == empty -%}
         <!-- Empty cart state handled by top message -->
       {%- endif -%}
-      <div class="drawer__header">
+      <div class="drawer__header large-up-hide">
         <h2 class="drawer__heading">{{ 'sections.cart.title' | t }}</h2>
       </div>
       <cart-drawer-items
@@ -63,7 +354,132 @@
         >
           <div id="CartDrawer-CartItems" class="drawer__contents js-contents">
             {%- if cart != empty -%}
-              <div class="drawer__cart-items-wrapper">
+              <!-- Desktop Table Layout -->
+              <div class="drawer-desktop-table small-hide medium-hide">
+                <table class="cart-drawer-table">
+                  <colgroup>
+                    <col style="width:35%">
+                    <col style="width:15%">
+                    <col style="width:15%">
+                    <col style="width:20%">
+                    <col style="width:15%">
+                  </colgroup>
+                  <thead>
+                    <tr class="cart-drawer-header">
+                      <th class="drawer-th-product">PRODUCT</th>
+                      <th class="drawer-th-size">SIZE</th>
+                      <th class="drawer-th-color">COLOR</th>
+                      <th class="drawer-th-quantity">QUANTITY</th>
+                      <th class="drawer-th-price">PRICE</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {%- for item in cart.items -%}
+                      <tr class="cart-drawer-row" id="CartDrawer-DesktopItem-{{ item.index | plus: 1 }}">
+                        <!-- PRODUCT Column -->
+                        <td class="drawer-td-product">
+                          <a href="{{ item.url }}" class="drawer-product-name">{{ item.product.title | escape }}</a>
+                          {% if item.image %}
+                            <img
+                              class="desktop-hover-preview"
+                              src="{{ item.image | image_url: width: 160 }}"
+                              alt="{{ item.image.alt | escape }}"
+                              loading="lazy"
+                              width="80"
+                              height="{{ 80 | divided_by: item.image.aspect_ratio | ceil }}"
+                            >
+                          {% endif %}
+                        </td>
+
+                        <!-- SIZE Column -->
+                        <td class="drawer-td-size">
+                          {%- assign size_found = false -%}
+                          {%- for option in item.options_with_values -%}
+                            {%- assign option_name_lower = option.name | downcase -%}
+                            {%- if option_name_lower contains 'size' -%}
+                              {{ option.value }}
+                              {%- assign size_found = true -%}
+                              {%- break -%}
+                            {%- endif -%}
+                          {%- endfor -%}
+                          {%- unless size_found -%}
+                            -
+                          {%- endunless -%}
+                        </td>
+
+                        <!-- COLOR Column -->
+                        <td class="drawer-td-color">
+                          {%- assign color_found = false -%}
+                          {%- for option in item.options_with_values -%}
+                            {%- assign option_name_lower = option.name | downcase -%}
+                            {%- if option_name_lower contains 'color' or option_name_lower contains 'colour' -%}
+                              {{ option.value | upcase }}
+                              {%- assign color_found = true -%}
+                              {%- break -%}
+                            {%- endif -%}
+                          {%- endfor -%}
+                          {%- unless color_found -%}
+                            {{- item.product.metafields.custom.color | default: 'N/A' | upcase -}}
+                          {%- endunless -%}
+                        </td>
+
+                        <!-- QUANTITY Column -->
+                        <td class="drawer-td-quantity">
+                          <div class="desktop-quantity-wrapper">
+                            <span class="drawer-quantity-value">{{ item.quantity | sprintf: '%02d' }}</span>
+                            <div class="desktop-quantity-controls">
+                              <button
+                                class="desktop-quantity-btn desktop-quantity-add"
+                                type="button"
+                                data-index="{{ item.index | plus: 1 }}"
+                                data-quantity="{{ item.quantity }}"
+                                onclick="handleQuantityChange(this, 1)"
+                              >
+                                ADD
+                              </button>
+                              <button
+                                class="desktop-quantity-btn desktop-quantity-remove"
+                                type="button"
+                                data-index="{{ item.index | plus: 1 }}"
+                                data-quantity="{{ item.quantity }}"
+                                onclick="handleQuantityChange(this, -1)"
+                              >
+                                REMOVE
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+
+                        <!-- PRICE Column -->
+                        <td class="drawer-td-price">
+                          <span class="drawer-price">
+                            {{- item.final_line_price | money_without_currency | remove: '.00' }} USD</span
+                          >
+                        </td>
+
+                        {%- comment -%}
+                          Hidden inputs are not valid direct children of table rows and
+                          can cause column misalignment. We removed this input for the
+                          desktop table. The mobile layout below still includes a hidden
+                          input per item inside a non-table container for updates.
+                        {%- endcomment -%}
+                      </tr>
+                    {%- endfor -%}
+                  </tbody>
+                </table>
+                <!-- Desktop Total Section -->
+                <div class="desktop-cart-total-section">
+                  <div class="desktop-cart-total-line">
+                    <span class="desktop-total-label">TOTAL</span>
+                    <span class="desktop-total-amount">
+                      {{- cart.total_price | money_without_currency | remove: '.00' }} USD</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mobile Layout (original - preserved) -->
+              <div class="drawer__cart-items-wrapper large-up-hide">
                 <div class="cart-header">
                   <div class="cart-header-left">PRODUCT</div>
                   <div class="cart-header-center">PRODUCT NAME</div>
@@ -195,7 +611,9 @@
                 <div class="cart-total-section">
                   <div class="cart-total-line">
                     <span class="total-label">TOTAL</span>
-                    <span class="total-amount">{{ cart.total_price | money | remove: '.00' }} USD</span>
+                    <span class="total-amount">
+                      {{- cart.total_price | money_without_currency | remove: '.00' }} USD</span
+                    >
                   </div>
                 </div>
               </div>
@@ -222,7 +640,7 @@
     const currentQty = parseInt(button.dataset.quantity);
     const newQty = currentQty + change;
 
-    // Update the data-quantity attribute immediately
+    // Update the data-quantity attribute immediately (only for mobile buttons)
     const buttons = document.querySelectorAll(`button[data-index="${index}"]`);
     buttons.forEach((btn) => (btn.dataset.quantity = newQty));
 
@@ -262,30 +680,48 @@
       })
         .then((response) => response.json())
         .then((cart) => {
-          // Update all quantity displays
+          // Update all quantity displays (mobile and desktop)
           const mobileQuantity = itemRow.querySelector('.mobile-detail-value:last-of-type');
           const desktopQuantity = itemRow.querySelector('.quantity-value');
+          const drawerDesktopQuantity = document.querySelector(
+            `#CartDrawer-DesktopItem-${lineIndex} .drawer-quantity-value`
+          );
 
           if (mobileQuantity) mobileQuantity.textContent = String(newQuantity).padStart(2, '0');
           if (desktopQuantity) desktopQuantity.textContent = String(newQuantity).padStart(2, '0');
+          if (drawerDesktopQuantity) drawerDesktopQuantity.textContent = String(newQuantity).padStart(2, '0');
 
           // Update the hidden input
           input.value = newQuantity;
 
-          // Update the item's price
+          // Update the item's price (mobile and desktop)
           const cartItem = cart.items[lineIndex - 1];
           if (cartItem) {
-            const priceDisplays = itemRow.querySelectorAll('.mobile-product-price, .cart-item-price');
             const formattedPrice = (cartItem.final_line_price / 100).toFixed(0) + ' USD';
+
+            // Update mobile price displays
+            const priceDisplays = itemRow.querySelectorAll('.mobile-product-price, .cart-item-price');
             priceDisplays.forEach((display) => {
               display.textContent = formattedPrice;
             });
+
+            // Update desktop drawer price
+            const desktopPrice = document.querySelector(`#CartDrawer-DesktopItem-${lineIndex} .drawer-price`);
+            if (desktopPrice) {
+              desktopPrice.textContent = formattedPrice;
+            }
           }
 
-          // Update cart total
+          // Update cart totals (mobile and desktop)
           const totalAmount = document.querySelector('.total-amount');
+          const desktopTotalAmount = document.querySelector('.desktop-total-amount');
+          const totalText = (cart.total_price / 100).toFixed(0) + ' USD';
+
           if (totalAmount) {
-            totalAmount.textContent = (cart.total_price / 100).toFixed(0) + ' USD';
+            totalAmount.textContent = totalText;
+          }
+          if (desktopTotalAmount) {
+            desktopTotalAmount.textContent = totalText;
           }
 
           // Update cart count in header
@@ -294,9 +730,14 @@
             cartIconBubble.textContent = cart.item_count > 0 ? `CART(${cart.item_count})` : 'CART';
           }
 
-          // Remove the item row if quantity is 0
+          // Remove the item rows if quantity is 0
           if (newQuantity === 0) {
             itemRow.remove();
+            // Also remove desktop row
+            const desktopRow = document.querySelector(`#CartDrawer-DesktopItem-${lineIndex}`);
+            if (desktopRow) {
+              desktopRow.remove();
+            }
             // If cart is empty, reload to show empty state
             if (cart.item_count === 0) {
               location.reload();

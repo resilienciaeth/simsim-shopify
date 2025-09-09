@@ -143,6 +143,51 @@
         "unit": "%",
         "label": "t:settings_schema.typography.settings.body_scale.label",
         "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Custom Fonts"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_custom_fonts",
+        "label": "Enable custom fonts",
+        "info": "Override theme fonts with custom uploaded fonts",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "custom_heading_font",
+        "label": "Custom heading font",
+        "options": [
+          {
+            "value": "default",
+            "label": "Use theme default"
+          },
+          {
+            "value": "custom",
+            "label": "Custom font (upload required)"
+          }
+        ],
+        "default": "default",
+        "info": "Upload your custom font files to assets folder"
+      },
+      {
+        "type": "select",
+        "id": "custom_body_font",
+        "label": "Custom body font",
+        "options": [
+          {
+            "value": "default",
+            "label": "Use theme default"
+          },
+          {
+            "value": "custom",
+            "label": "Custom font (upload required)"
+          }
+        ],
+        "default": "default",
+        "info": "Upload your custom font files to assets folder"
       }
     ]
   },

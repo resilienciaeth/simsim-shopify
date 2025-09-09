@@ -1,0 +1,674 @@
+{% comment %}
+  Renders search drawer
+
+  Usage:
+  {% render 'search-drawer' %}
+{% endcomment %}
+
+{{ 'component-search.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'search-drawer.js' | asset_url }}" defer="defer"></script>
+
+<style>
+  /* Search drawer behavior identical to cart drawer - pushes content down */
+  .search-drawer {
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: transparent;
+    transition: visibility 0ms ease;
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  .search-drawer.active {
+    visibility: visible;
+  }
+
+  .search-drawer.closing {
+    visibility: visible;
+  }
+
+  .search-drawer:root,
+  :root {
+    --search-panel-height: 50vh;
+  }
+
+  .search-drawer .drawer__inner {
+    width: 100vw;
+    height: var(--search-panel-height);
+    background-color: #4e8926;
+    color: #000;
+    padding: 0 0 1.5rem 0;
+    border: none;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(-100%);
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.2);
+    pointer-events: auto;
+  }
+
+  .search-drawer.active .drawer__inner {
+    transform: translateY(0);
+  }
+
+  /* Push content down when search is open - same as cart drawer */
+  body.search-drawer-open #MainContent,
+  body.search-drawer-open main,
+  body.search-drawer-open .content-for-layout,
+  body.search-drawer-open .header-wrapper,
+  body.search-drawer-open .shopify-section-group-footer-group,
+  body.search-drawer-open [data-section-type*='footer'],
+  body.search-drawer-open .shopify-section-group:not(.shopify-section-group-header) {
+    transform: translateY(var(--search-panel-height)) !important;
+  }
+
+  /* Search drawer styling similar to cart drawer */
+  @media screen and (min-width: 990px) {
+    .search-drawer .drawer__inner {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+  }
+
+  /* Keep search button full-bleed (no side padding) on desktop */
+  @media screen and (min-width: 990px) {
+    .search-drawer .search-top-cta {
+      margin-left: -30px;
+      margin-right: -30px;
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  /* Mobile padding - 16px sides for content, but not search button */
+  @media screen and (max-width: 989px) {
+    .search-drawer .drawer__inner {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+    
+    /* Keep search button full-bleed on mobile */
+    .search-drawer .search-top-cta {
+      margin-left: -16px;
+      margin-right: -16px;
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  /* Search input styling - black underline only */
+  .search-drawer__input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid black;
+    padding: 10px 0;
+    font-size: 16px;
+    background: transparent;
+    outline: none;
+    color: #000;
+    box-shadow: none;
+  }
+
+  .search-drawer__input:focus {
+    outline: none;
+    border: none;
+    border-bottom: 1px solid black;
+    box-shadow: none;
+  }
+
+  .search-drawer__input::placeholder {
+    color: #000;
+    font-style: normal;
+  }
+
+  /* Style the clear/reset button (X) in the search input */
+  .search-drawer__input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 16px;
+    width: 16px;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000000'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E");
+    background-size: 16px 16px;
+    cursor: pointer;
+  }
+
+  /* For Firefox */
+  .search-drawer__input[type="search"]::-moz-search-cancel-button {
+    -moz-appearance: none;
+    appearance: none;
+    height: 16px;
+    width: 16px;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000000'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E");
+    background-size: 16px 16px;
+    cursor: pointer;
+  }
+
+  /* Search results styling */
+  .search-drawer__results {
+    margin-top: 30px;
+  }
+
+  .search-result-item {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    padding: 5px 0;
+    cursor: pointer;
+  }
+
+  .search-result-item:hover {
+    /* Remove background color - only opacity change */
+  }
+
+  .search-result-name {
+    font-weight: 500;
+    color: #000;
+    text-decoration: none;
+    display: block;
+    padding: 0;
+  }
+
+  .search-result-name:hover {
+    opacity: 0.5;
+    color: #000; /* Keep color black, only change opacity */
+  }
+
+  /* Empty state */
+  .search-drawer__empty {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    margin-top: 30px;
+  }
+
+  /* Loading state */
+  .search-drawer__loading {
+    text-align: center;
+    color: #000; /* Changed to black */
+    margin-top: 20px;
+  }
+
+  /* Overlay to close drawer */
+  .search-drawer__overlay {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - var(--search-panel-height));
+    background: transparent;
+    cursor: pointer;
+  }
+</style>
+
+<search-drawer class="search-drawer">
+  <div id="SearchDrawer-Overlay" class="search-drawer__overlay"></div>
+  <div
+    class="drawer__inner gradient color-{{ settings.cart_drawer_color_scheme }}"
+    role="dialog"
+    aria-modal="true"
+    aria-label="{{ 'general.search.search' | t }}"
+    tabindex="-1"
+  >
+      <!-- Search Button at the top (like checkout button in cart) -->
+      <div class="search-top-cta">
+        <button
+          type="button"
+          id="SearchDrawer-SearchButton"
+          class="button button--full-width"
+          name="search"
+        >
+          SEARCH
+        </button>
+      </div>
+
+      <!-- Search Input (30px below button) -->
+      <div style="margin-top: 30px;">
+        <input
+          type="search"
+          id="SearchDrawer-Input"
+          class="search-drawer__input"
+          placeholder="TYPE IN YOUR SEARCH AND PRESS SEARCH"
+          autocomplete="off"
+          role="combobox"
+          aria-expanded="false"
+          aria-label="{{ 'general.search.search' | t }}"
+        >
+      </div>
+
+      <!-- Search Results -->
+      <div id="SearchDrawer-Results" class="search-drawer__results" style="display: none;">
+        <!-- Results will be populated here -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="SearchDrawer-Empty" class="search-drawer__empty" style="display: none;">
+        No products found. Try a different search term.
+      </div>
+
+      <!-- Loading State -->
+      <div id="SearchDrawer-Loading" class="search-drawer__loading" style="display: none;">Searching...</div>
+    </div>
+  </div>
+</search-drawer>
+
+<script>
+  class SearchDrawer extends HTMLElement {
+    constructor() {
+      super();
+      this.bindEvents();
+    }
+
+    bindEvents() {
+      // Close on escape key
+      document.addEventListener('keyup', (event) => {
+        if (event.code.toUpperCase() === 'ESCAPE' && this.classList.contains('active')) {
+          this.close();
+        }
+      });
+
+      // Close when clicking the overlay
+      const overlay = this.querySelector('#SearchDrawer-Overlay');
+      if (overlay) {
+        overlay.addEventListener('click', () => {
+          this.close();
+        });
+      }
+
+      // Search input event listener
+      const input = this.querySelector('#SearchDrawer-Input');
+      if (input) {
+        input.addEventListener('input', this.debounce(this.handleInput.bind(this), 300));
+        input.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            this.performSearch();
+          }
+        });
+      }
+
+      // Search button listener - now toggles the drawer
+      const searchButton = this.querySelector('#SearchDrawer-SearchButton');
+      if (searchButton) {
+        searchButton.addEventListener('click', () => {
+          this.close();
+        });
+      }
+      
+      // Keep the performSearch function for other uses (legacy)
+      window.performSearch = () => {
+        this.performSearch();
+      };
+    }
+
+    debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    handleInput(event) {
+      const query = event.target.value.trim();
+      if (query.length > 2) {
+        this.performSearch(query);
+      } else {
+        this.clearResults();
+      }
+    }
+
+    async performSearch(query = null) {
+      const input = this.querySelector('#SearchDrawer-Input');
+      const searchQuery = query || input.value.trim();
+
+      if (!searchQuery) {
+        this.clearResults();
+        return;
+      }
+
+      this.showLoading();
+
+      try {
+        console.log('Searching for:', searchQuery);
+        console.log('Routes available:', window.routes);
+        
+        // Try predictive search first
+        const predictiveUrl = `${routes.predictive_search_url}?q=${encodeURIComponent(searchQuery)}&section_id=predictive-search`;
+        console.log('Predictive search URL:', predictiveUrl);
+        
+        const predictiveResponse = await fetch(predictiveUrl);
+        console.log('Predictive response status:', predictiveResponse.status);
+        
+        if (predictiveResponse.ok) {
+          const text = await predictiveResponse.text();
+          console.log('Predictive search raw response:', text);
+          
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(text, 'text/html');
+          console.log('Parsed document:', doc);
+          
+          // Try multiple selectors for product results
+          let products = doc.querySelectorAll('.predictive-search__item[data-loading="false"]');
+          console.log('Products with data-loading=false:', products.length);
+          
+          if (products.length === 0) {
+            products = doc.querySelectorAll('.predictive-search__item');
+            console.log('All predictive-search__item:', products.length);
+          }
+          if (products.length === 0) {
+            products = doc.querySelectorAll('[data-predictive-search-type="product"]');
+            console.log('data-predictive-search-type=product:', products.length);
+          }
+          if (products.length === 0) {
+            products = doc.querySelectorAll('.predictive-search-product');
+            console.log('predictive-search-product class:', products.length);
+          }
+          if (products.length === 0) {
+            // Try to find any element with product in the class name
+            products = doc.querySelectorAll('[class*="product"]');
+            console.log('Any element with product in class:', products.length);
+          }
+          
+          console.log('Final found products:', products.length);
+          
+          if (products.length > 0) {
+            this.displayResults(products, searchQuery);
+            return;
+          }
+        } else {
+          console.error('Predictive search failed with status:', predictiveResponse.status);
+        }
+
+        // Fallback to regular search page
+        console.log('Falling back to regular search');
+        const searchUrl = `${routes.search_url}?q=${encodeURIComponent(searchQuery)}&type=product`;
+        console.log('Search URL:', searchUrl);
+        
+        const searchResponse = await fetch(searchUrl);
+        console.log('Search response status:', searchResponse.status);
+        
+        if (searchResponse.ok) {
+          const searchText = await searchResponse.text();
+          console.log('Search page raw response length:', searchText.length);
+          
+          const searchDoc = new DOMParser().parseFromString(searchText, 'text/html');
+          
+          // Look for product cards in search results
+          let searchProducts = searchDoc.querySelectorAll('.card-product, .product-card, [data-product-handle]');
+          console.log('Search page products (.card-product, .product-card, [data-product-handle]):', searchProducts.length);
+          
+          if (searchProducts.length === 0) {
+            // Try more generic selectors
+            searchProducts = searchDoc.querySelectorAll('.card, .product, [class*="product"], [data-product]');
+            console.log('Generic product selectors found:', searchProducts.length);
+          }
+          
+          if (searchProducts.length === 0) {
+            // Try to find any links that might be products
+            searchProducts = searchDoc.querySelectorAll('a[href*="/products/"]');
+            console.log('Product links found:', searchProducts.length);
+          }
+          
+          if (searchProducts.length > 0) {
+            this.displaySearchPageResults(searchProducts, searchQuery);
+            return;
+          }
+        } else {
+          console.error('Search page failed with status:', searchResponse.status);
+        }
+
+        this.showEmpty();
+      } catch (error) {
+        console.error('Search error:', error);
+        this.showEmpty();
+      }
+    }
+
+    displayResults(products, query) {
+      const resultsContainer = this.querySelector('#SearchDrawer-Results');
+      const emptyContainer = this.querySelector('#SearchDrawer-Empty');
+      const loadingContainer = this.querySelector('#SearchDrawer-Loading');
+      
+      loadingContainer.style.display = 'none';
+      
+      if (products.length === 0) {
+        this.showEmpty();
+        return;
+      }
+
+      resultsContainer.innerHTML = '';
+      let productCount = 0;
+      
+      products.forEach((product, index) => {
+        console.log('Processing product item:', product);
+        
+        // Skip search suggestion items, only process actual products
+        if (product.classList.contains('predictive-search__item--term')) {
+          console.log('Skipping search suggestion item');
+          return;
+        }
+        
+        // Look for different types of links and titles
+        let link = product.querySelector('a') || product;
+        let title = product.querySelector('.predictive-search__item-heading, .predictive-search__item-title, h3, h2, .product-title');
+        
+        // If no title found, try to get it from the link or data attributes
+        if (!title) {
+          title = link.querySelector('.predictive-search__item-heading, .predictive-search__item-title, h3, h2, .product-title');
+        }
+        
+        // Try to get title from text content if still not found
+        if (!title && link.textContent) {
+          // Create a temporary element to hold the title
+          title = { textContent: link.textContent };
+        }
+        
+        console.log('Found link:', link);
+        console.log('Found title:', title);
+        
+        const href = link.href || link.getAttribute('href');
+        const productName = title?.textContent?.trim();
+        
+        console.log('Product href:', href);
+        console.log('Product name:', productName);
+        
+        if (href && productName && href.includes('/products/')) {
+          const resultItem = document.createElement('div');
+          resultItem.className = 'search-result-item';
+          resultItem.innerHTML = `
+            <a href="${href}" class="search-result-name">
+              ${productName}
+            </a>
+          `;
+          
+          // Add click handler to close drawer when product is clicked
+          resultItem.addEventListener('click', () => {
+            this.close();
+          });
+          
+          resultsContainer.appendChild(resultItem);
+          productCount++;
+          console.log('Added product to results:', productName);
+        } else {
+          console.log('Skipped item - not a valid product link');
+        }
+      });
+
+      console.log('Total products added:', productCount);
+      
+      if (productCount > 0) {
+        resultsContainer.style.display = 'block';
+        emptyContainer.style.display = 'none';
+      } else {
+        this.showEmpty();
+      }
+    }
+
+    showLoading() {
+      this.querySelector('#SearchDrawer-Results').style.display = 'none';
+      this.querySelector('#SearchDrawer-Empty').style.display = 'none';
+      this.querySelector('#SearchDrawer-Loading').style.display = 'block';
+    }
+
+    showEmpty() {
+      this.querySelector('#SearchDrawer-Results').style.display = 'none';
+      this.querySelector('#SearchDrawer-Loading').style.display = 'none';
+      this.querySelector('#SearchDrawer-Empty').style.display = 'block';
+    }
+
+    displaySearchPageResults(products, query) {
+      const resultsContainer = this.querySelector('#SearchDrawer-Results');
+      const emptyContainer = this.querySelector('#SearchDrawer-Empty');
+      const loadingContainer = this.querySelector('#SearchDrawer-Loading');
+      
+      loadingContainer.style.display = 'none';
+      
+      if (products.length === 0) {
+        this.showEmpty();
+        return;
+      }
+
+      resultsContainer.innerHTML = '';
+      
+      products.forEach((product, index) => {
+        let link, title;
+        
+        // Try different ways to extract product info
+        link = product.querySelector('a') || product;
+        title = product.querySelector('.card__heading, .product-title, h3, h2') || 
+                product.querySelector('[data-product-title]');
+        
+        if (!title) {
+          // Try to get title from link text or aria-label
+          title = link.querySelector('.card__heading, .product-title') || link;
+        }
+        
+        const href = link.href || link.getAttribute('href');
+        const productName = title.textContent?.trim() || title.getAttribute('aria-label') || 'Product';
+        
+        if (href && productName !== 'Product') {
+          const resultItem = document.createElement('div');
+          resultItem.className = 'search-result-item';
+          resultItem.innerHTML = `
+            <a href="${href}" class="search-result-name">
+              ${productName}
+            </a>
+          `;
+          
+          // Add click handler to close drawer when product is clicked
+          resultItem.addEventListener('click', () => {
+            this.close();
+          });
+          
+          resultsContainer.appendChild(resultItem);
+        }
+      });
+
+      resultsContainer.style.display = 'block';
+      emptyContainer.style.display = 'none';
+    }
+
+    clearResults() {
+      this.querySelector('#SearchDrawer-Results').style.display = 'none';
+      this.querySelector('#SearchDrawer-Empty').style.display = 'none';
+      this.querySelector('#SearchDrawer-Loading').style.display = 'none';
+    }
+
+    open(opener) {
+      this.opener = opener;
+      const summaryElement = this.querySelector('summary');
+      if (summaryElement) summaryElement.setAttribute('role', 'button');
+
+      this.classList.add('animate', 'active');
+      document.body.classList.add('search-drawer-open');
+
+      this.addEventListener(
+        'transitionend',
+        () => {
+          const containerToTrapFocusOn = this.querySelector('.drawer__inner');
+          const focusElement = this.querySelector('#SearchDrawer-Input') || containerToTrapFocusOn;
+          if (typeof trapFocus !== 'undefined') {
+            trapFocus(containerToTrapFocusOn, focusElement);
+          } else {
+            focusElement.focus();
+          }
+        },
+        { once: true }
+      );
+    }
+
+    close() {
+      this.classList.remove('active');
+      document.body.classList.remove('search-drawer-open');
+
+      this.addEventListener(
+        'transitionend',
+        () => {
+          this.classList.remove('animate');
+          if (this.opener) this.opener.focus();
+          if (typeof removeTrapFocus !== 'undefined') {
+            removeTrapFocus();
+          }
+        },
+        { once: true }
+      );
+
+      // Clear the search input and results when closing
+      const input = this.querySelector('#SearchDrawer-Input');
+      if (input) input.value = '';
+      this.clearResults();
+    }
+
+    renderContents(parsedHTML) {
+      this.querySelector('.drawer__inner').classList.contains('is-empty') &&
+        this.querySelector('.drawer__inner').classList.remove('is-empty');
+      this.productId = parsedHTML.querySelector('[id*="SearchDrawer-Item-"]')
+        ? parsedHTML.querySelector('[id*="SearchDrawer-Item-"]').id
+        : null;
+
+      const addToCartForm = parsedHTML.querySelector('form[action*="/cart/add"]');
+      if (addToCartForm) {
+        this.productForm = new ProductForm(addToCartForm, this.dataset.productId, new ProductFormErrorHandler());
+      }
+    }
+  }
+
+  customElements.define('search-drawer', SearchDrawer);
+
+  class SearchDrawerOpener extends HTMLElement {
+    constructor() {
+      super();
+
+      this.addEventListener('click', this.onButtonClick.bind(this));
+    }
+
+    onButtonClick(event) {
+      event.preventDefault();
+      const drawer = document.querySelector('search-drawer');
+      if (drawer) {
+        // Check if drawer is already open and toggle
+        const isOpen = document.body.classList.contains('search-drawer-open') || drawer.classList.contains('active');
+        if (isOpen) {
+          drawer.close();
+        } else {
+          drawer.open(this);
+        }
+      }
+    }
+  }
+
+  customElements.define('search-drawer-opener', SearchDrawerOpener);
+</script>

@@ -180,7 +180,8 @@ body.template-index {
   color: white !important;
   font-weight: 400 !important;
   letter-spacing: normal !important;
-  text-transform: uppercase !important;
+  text-transform: none !important;
+  font-family: 'NewEdge666-Rounded', Arial, sans-serif !important;
 }
 
 .slide-title {
@@ -191,6 +192,7 @@ body.template-index {
   font-weight: 700 !important;
   letter-spacing: normal !important;
   text-transform: uppercase !important;
+  font-family: 'NewEdge666-Rounded', Arial, sans-serif !important;
 }
 
 /* Mobile: center text overlay vertically and align left */

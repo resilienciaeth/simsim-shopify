@@ -37,35 +37,13 @@
     padding-top: 0 !important;
   }
 
-    /* Ensure consistent font family and size across entire website */
+    /* Ensure consistent font family across entire website */
   html, body, * {
     font-family: var(--font-body-family) !important;
-    font-size: 12px !important;
   }
 
   h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: var(--font-heading-family) !important;
-    font-size: 12px !important;
-  }
-
-  /* Ensure all specific text elements are 12px */
-  p, span, div, a, button, input, textarea, select, label, li, td, th {
-    font-size: 12px !important;
-  }
-
-  /* Ensure price elements are 12px */
-  .price, .price *, .card-information, .card-information * {
-    font-size: 12px !important;
-  }
-
-  /* Ensure navigation and menu elements are 12px */
-  nav, nav *, .header, .header *, .footer, .footer * {
-    font-size: 12px !important;
-  }
-
-  /* Ensure form elements are 12px */
-  .field, .field *, .form, .form *, .button, .button * {
-    font-size: 12px !important;
   }
 
   /* Override desktop-specific media queries for consistent 12px */
@@ -310,13 +288,14 @@
     grid-template-columns: 1fr auto 1fr; /* left | logo | right */
     align-items: center;
     padding: 2rem 1.6rem; /* vertical 2rem, horizontal mobile 16px */
-    font-size: 12px;
+    font-size: 12px !important;
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: 500;
     width: 100%;
     min-height: 60px;
     color: inherit;
+    font-family: var(--font-body-family) !important;
   }
 
   .navbar-left,
@@ -346,6 +325,8 @@
     color: inherit;
     font-weight: 500;
     transition: opacity 0.2s ease;
+    font-size: 12px !important;
+    font-family: var(--font-body-family) !important;
   }
 
   @media screen and (min-width: 1200px) {
@@ -384,25 +365,30 @@
     }
 
     .custom-navbar {
-      font-size: 12px; /* keep 12px on mobile too */
+      font-size: 12px !important; /* keep 12px on mobile too */
       padding: 1.5rem 1.6rem; /* keep 16px sides on mobile */
+      font-family: var(--font-body-family) !important;
     }
 
     /* Ensure link text is 12px on mobile */
     .navbar-link {
       font-size: 12px !important;
+      font-family: var(--font-body-family) !important;
     }
 
     /* Force all navbar text to be 12px on mobile */
     .custom-navbar,
     .custom-navbar *,
     .navbar-link,
-    .navbar-menu {
+    .navbar-menu,
+    .navbar-text {
       font-size: 12px !important;
+      font-family: var(--font-body-family) !important;
     }
 
     .navbar-logo {
       font-size: 16px;
+      font-family: var(--font-body-family) !important;
     }
 
     .navbar-logo-image {
@@ -414,11 +400,21 @@
     .custom-navbar {
       padding-left: 30px; /* fixed 30px desktop sides */
       padding-right: 30px;
+      font-size: 12px !important;
+      font-family: var(--font-body-family) !important;
     }
 
     .navbar-left,
     .navbar-right {
       gap: 3rem; /* 30px desktop spacing between items */
+    }
+
+    /* Ensure all navbar elements use consistent font on desktop */
+    .navbar-link,
+    .navbar-menu,
+    .navbar-text {
+      font-size: 12px !important;
+      font-family: var(--font-body-family) !important;
     }
   }
 
@@ -461,6 +457,10 @@
     body.template-index .header-wrapper .navbar-link.navbar-menu {
       color: #fff !important;
       pointer-events: auto !important;
+      position: relative !important;
+      z-index: 10001 !important;
+      display: inline-flex !important;
+      cursor: pointer !important;
     }
     body.template-index .header-wrapper .navbar-link.navbar-menu:link,
     body.template-index .header-wrapper .navbar-link.navbar-menu:visited,
@@ -489,10 +489,30 @@
     color: white !important;
   }
 
-  /* Homepage: make drawer text white too */
+  /* Homepage: make drawer text black and fix font sizes to match other pages */
   body.template-index .unified-menu-drawer,
   body.template-index .unified-menu-drawer * {
-    color: #fff !important;
+    color: #000 !important;
+    font-family: 'NewEdge666', var(--font-body-family) !important;
+  }
+
+  /* Homepage mobile drawer font sizes */
+  @media screen and (max-width: 1199px) {
+    body.template-index .unified-menu-drawer .menu-close {
+      font-size: 12px !important;
+    }
+
+    body.template-index .unified-menu-drawer .navbar-link {
+      font-size: 24px !important;
+    }
+
+    body.template-index .unified-menu-drawer .menu-footer-link {
+      font-size: 12px !important;
+    }
+
+    body.template-index .unified-menu-drawer .menu-social-link {
+      font-size: 12px !important;
+    }
   }
 
   /* Mobile menu visibility rules */
@@ -520,15 +540,16 @@
     width: 70vw;
     height: 100vh;
     background: #4e8926;
-    color: #000; /* black text per design */
+    color: #000; /* black text for consistency */
     padding: 0 16px 16px 16px; /* 16px sides; top spacing handled by close button */
     transform: translateX(-100%);
     transition: transform 300ms ease;
-    z-index: 10002; /* above fixed header (10001) */
+    z-index: 999999; /* ensure above everything including cart drawer */
     display: flex;
     flex-direction: column;
     gap: 0; /* we'll manage spacing explicitly */
     will-change: transform; /* Optimize for smooth animations */
+    font-family: 'NewEdge666', var(--font-body-family) !important;
   }
 
   .unified-menu-drawer .menu-close {
@@ -539,12 +560,13 @@
     border: none;
     padding: 0;
     margin: 0;
-    color: #000;
+    color: #000; /* black text for consistency */
     z-index: 1; /* ensure on top within drawer */
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     cursor: pointer;
+    font-family: 'NewEdge666', var(--font-body-family) !important;
   }
 
   /* Hide mobile drawer on desktop */
@@ -559,11 +581,11 @@
       display: flex;
       flex-direction: column;
       gap: 10px !important; /* exact 10px between items */
-      margin-top: 90px; /* 90px space after CLOSE */
+      margin-top: 120px; /* 120px space after CLOSE */
     }
 
     .unified-menu-drawer .navbar-link {
-      color: #000;
+      color: #000; /* black text for consistency */
       text-decoration: none;
       font-size: 24px !important; /* force 24px menu options size */
       text-transform: uppercase; /* make options uppercase */
@@ -573,15 +595,22 @@
       line-height: 1; /* tighten line box so gap controls spacing */
       display: block; /* consistent height calculation */
       font-weight: normal; /* ensure normal weight */
+      font-family: 'NewEdge666', var(--font-body-family) !important;
     }
 
-    /* Add 30px gap between the two groups (after 3rd link) */
-    .unified-menu-drawer nav a:nth-child(4) {
-      margin-top: 20px; /* 10px base gap + 20px = 30px total */
+    /* Add 60px gap between BRAND and SEARCH (after 3rd link) */
+    .unified-menu-drawer nav *:nth-child(4) {
+      margin-top: 50px; /* 10px base gap + 50px = 60px total */
     }
 
     .unified-menu-drawer .navbar-link:hover {
       opacity: 0.8;
+    }
+
+    /* Current page styling - 50% opacity */
+    .unified-menu-drawer .navbar-link.current-page,
+    .unified-menu-drawer .current-page {
+      opacity: 0.5;
     }
 
     /* Footer menu options */
@@ -594,7 +623,7 @@
     }
 
     .menu-footer-link {
-      color: #000;
+      color: #000; /* black text for consistency */
       text-decoration: none;
       font-size: 12px !important;
       text-transform: uppercase;
@@ -604,6 +633,7 @@
       line-height: 1;
       display: block;
       font-weight: normal;
+      font-family: 'NewEdge666', var(--font-body-family) !important;
     }
 
     .menu-footer-link:hover {
@@ -619,7 +649,7 @@
     }
 
     .menu-social-link {
-      color: #000;
+      color: #000; /* black text for consistency */
       text-decoration: none;
       font-size: 12px !important;
       text-transform: uppercase;
@@ -629,6 +659,7 @@
       line-height: 1;
       display: block;
       font-weight: normal;
+      font-family: 'NewEdge666', var(--font-body-family) !important;
     }
 
     .menu-social-link:hover {
@@ -689,15 +720,16 @@
     <nav class="custom-navbar">
       <!-- Left Navigation -->
       <div class="navbar-left">
-        <a
-          href="#"
+        <unified-menu-opener
           class="navbar-link navbar-menu"
-          data-unified-menu-toggle
           {%- if template.name == 'index' -%}
-            style="color: #fff !important; position: relative; z-index: 10000;"
+            style="color: #fff !important; cursor: pointer;"
+          {%- else -%}
+            style="cursor: pointer;"
           {%- endif -%}
-          >MENU</a
         >
+          MENU
+        </unified-menu-opener>
         <a
           href="{{ routes.collections_url }}"
           class="navbar-link nav-hide-mobile{% if request.page_type == 'collection' or request.page_type == 'list-collections' %} current-page{% endif %}"
@@ -764,13 +796,14 @@
 
       <!-- Right Navigation -->
       <div class="navbar-right">
-        <a
-          href="{{ routes.search_url }}"
+        <search-drawer-opener
           class="navbar-link nav-hide-mobile{% if template.name == 'search' %} current-page{% endif %}"
           {%- if template.name == 'index' -%}
-            style="color: #fff !important;"
+            style="color: #fff !important; cursor: pointer;"
+          {%- else -%}
+            style="cursor: pointer;"
           {%- endif -%}
-          >SEARCH</a
+          >SEARCH</search-drawer-opener
         >
 
         {%- if shop.customer_accounts_enabled -%}
@@ -822,8 +855,10 @@
       class="navbar-link{% if template.name == 'page' and page.handle == 'brand' %} current-page{% endif %}"
       >Brand</a
     >
-    <a href="{{ routes.search_url }}" class="navbar-link{% if template.name == 'search' %} current-page{% endif %}"
-      >Search</a
+    <search-drawer-opener
+      class="navbar-link{% if template.name == 'search' %} current-page{% endif %}"
+      style="cursor: pointer;"
+      >Search</search-drawer-opener
     >
     {%- if shop.customer_accounts_enabled -%}
       <a
@@ -878,7 +913,7 @@
 <script>
   // Unified Menu System
   (function () {
-    var toggle = document.querySelector('[data-unified-menu-toggle]');
+    var toggle = document.querySelector('unified-menu-opener');
     var drawer = document.getElementById('UnifiedMenuDrawer');
 
     console.log('📱 Mobile menu init - Toggle:', toggle, 'Drawer:', drawer);
@@ -887,16 +922,73 @@
       return;
     }
 
+    // Add backup event handler with direct touch events for mobile
+    function forceToggleMenu() {
+      console.log('🔧 Force toggle menu called');
+      var isOpen = document.body.classList.contains('unified-menu-open');
+      if (isOpen) {
+        document.body.classList.remove('unified-menu-open');
+        drawer.setAttribute('aria-hidden', 'true');
+        console.log('📱 Force CLOSED menu');
+      } else {
+        document.body.classList.add('unified-menu-open');
+        drawer.setAttribute('aria-hidden', 'false');
+        console.log('📱 Force OPENED menu');
+      }
+    }
+
+    // Multiple event types to ensure it works
+    toggle.addEventListener('touchstart', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('📱 Touch start on menu toggle');
+      forceToggleMenu();
+    });
+
+    toggle.addEventListener('touchend', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
     // Toggle menu
     toggle.addEventListener('click', function (e) {
       e.preventDefault();
-      console.log('📱 Mobile menu toggle clicked');
+      e.stopPropagation();
+      console.log('📱 Mobile menu toggle clicked on template:', document.body.className);
+      console.log('📱 Toggle element:', toggle);
       var isOpen = document.body.classList.toggle('unified-menu-open');
       drawer.setAttribute('aria-hidden', String(!isOpen));
       console.log('📱 Menu is now:', isOpen ? 'OPEN' : 'CLOSED');
       console.log('📱 Body classes:', document.body.className);
       console.log('📱 Drawer transform:', window.getComputedStyle(drawer).transform);
     });
+
+    // Delegated handlers to catch any missed events (homepage edge cases)
+    document.addEventListener(
+      'click',
+      function (e) {
+        var tgt = e.target && e.target.closest && e.target.closest('[data-unified-menu-toggle]');
+        if (!tgt) return;
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('🛠 Delegated CLICK for menu toggle');
+        forceToggleMenu();
+      },
+      true
+    );
+
+    document.addEventListener(
+      'touchstart',
+      function (e) {
+        var tgt = e.target && e.target.closest && e.target.closest('[data-unified-menu-toggle]');
+        if (!tgt) return;
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('🛠 Delegated TOUCH for menu toggle');
+        forceToggleMenu();
+      },
+      true
+    );
 
     // Close button inside drawer
     var closeBtn = drawer.querySelector('[data-unified-menu-close]');

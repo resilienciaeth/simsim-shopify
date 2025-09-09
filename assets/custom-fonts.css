@@ -1,0 +1,94 @@
+/* Custom Fonts Implementation for Shopify Theme */
+
+/* NewEdge666 Font Family */
+@font-face {
+  font-family: 'NewEdge666';
+  src: url('NewEdge666-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* NewEdge666 Rounded Font Family */
+@font-face {
+  font-family: 'NewEdge666-Rounded';
+  src: url('NewEdge666-Rounded.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* CSS Custom Properties for Theme Integration */
+:root {
+  --font-newedge: 'NewEdge666', Arial, sans-serif;
+}
+
+/* Global Font Application - NewEdge666 for Everything */
+body {
+  font-family: var(--font-newedge) !important;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: var(--font-newedge) !important;
+}
+
+/* Apply to all text elements */
+p, span, div, a, li, td, th, label, input, textarea, select, button {
+  font-family: var(--font-newedge) !important;
+}
+
+/* Utility class for explicit NewEdge666 application */
+.font-newedge {
+  font-family: var(--font-newedge) !important;
+}
+
+/* Ensure font applies to form elements and buttons */
+input, textarea, select, button, .btn {
+  font-family: var(--font-newedge) !important;
+}
+
+/* Apply to navigation and menu items */
+.header, .footer, nav, .menu, .navigation {
+  font-family: var(--font-newedge) !important;
+}
+
+/* Apply to product cards and shopping elements */
+.card, .product-card, .collection-card, .cart {
+  font-family: var(--font-newedge) !important;
+}
+
+/* Override any specific component fonts */
+.predictive-search, .announcement-bar, .slideshow {
+  font-family: var(--font-newedge) !important;
+}
+
+/* Ensure navbar consistency across all pages */
+.custom-navbar,
+.custom-navbar *,
+.navbar-link,
+.navbar-menu,
+.navbar-text,
+.header-wrapper .navbar-link,
+.header-wrapper .navbar-menu,
+.header-wrapper .navbar-text,
+.header-wrapper .custom-navbar,
+.header-wrapper .custom-navbar * {
+  font-family: var(--font-newedge) !important;
+  font-size: 12px !important;
+}
+
+/* Ensure logo text uses NewEdge666 */
+.navbar-logo {
+  font-family: var(--font-newedge) !important;
+}
+
+/* Force consistency on all page templates */
+body.template-index .navbar-link,
+body.template-page .navbar-link,
+body.template-collection .navbar-link,
+body.template-product .navbar-link,
+body.template-blog .navbar-link {
+  font-family: var(--font-newedge) !important;
+  font-size: 12px !important;
+}
