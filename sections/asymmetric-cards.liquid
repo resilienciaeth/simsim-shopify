@@ -3,13 +3,13 @@
 <style>
   .asymmetric-cards-section {
     width: 100%;
-    padding: 0;
+    padding: 180px 0 0 0;
     margin: 0;
   }
 
   .asymmetric-cards-container {
     display: grid;
-    grid-template-columns: 40% 60%;
+    grid-template-columns: 1fr 1fr;
     width: 100%;
     max-width: 100%;
   }
@@ -23,10 +23,6 @@
     justify-content: center;
     cursor: pointer;
     transition: transform 0.3s ease;
-  }
-
-  .asymmetric-card:first-child {
-    min-height: 600px;
   }
 
   .asymmetric-card a {
@@ -77,16 +73,16 @@
   }
 
   @media screen and (max-width: 749px) {
+    .asymmetric-cards-section {
+      padding: 90px 0 0 0;
+    }
+
     .asymmetric-cards-container {
       grid-template-columns: 1fr;
       grid-template-rows: auto auto;
     }
 
     .asymmetric-card {
-      min-height: 400px;
-    }
-
-    .asymmetric-card:first-child {
       min-height: 400px;
     }
 
@@ -177,7 +173,7 @@
   "settings": [
     {
       "type": "header",
-      "content": "Card 1 (Left - Smaller)"
+      "content": "Card 1 (Left)"
     },
     {
       "type": "image_picker",
@@ -193,7 +189,7 @@
     },
     {
       "type": "header",
-      "content": "Card 2 (Right - Larger)"
+      "content": "Card 2 (Right)"
     },
     {
       "type": "image_picker",
