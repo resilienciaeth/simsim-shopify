@@ -44,11 +44,17 @@
       "type": "asymmetric-cards",
       "settings": {
       }
+    },
+    "featured_products_grid_2": {
+      "type": "featured-products-grid",
+      "settings": {
+      }
     }
   },
   "order": [
     "custom_carousel",
     "featured_products_grid",
-    "asymmetric_cards"
+    "asymmetric_cards",
+    "featured_products_grid_2"
   ]
 }
