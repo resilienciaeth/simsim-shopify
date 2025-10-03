@@ -1,0 +1,13 @@
+/* Asymmetric Cards Section Styles */
+.asymmetric-cards-section {
+  overflow: hidden;
+}
+
+.asymmetric-card {
+  position: relative;
+}
+
+.asymmetric-card-text {
+  font-family: inherit;
+}
+

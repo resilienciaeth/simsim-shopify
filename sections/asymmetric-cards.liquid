@@ -1,0 +1,218 @@
+{{ 'asymmetric-cards.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .asymmetric-cards-section {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  .asymmetric-cards-container {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .asymmetric-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 500px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .asymmetric-card:first-child {
+    min-height: 600px;
+  }
+
+  .asymmetric-card a {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    text-decoration: none;
+    z-index: 2;
+  }
+
+  .asymmetric-card-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .asymmetric-card-background img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .asymmetric-card:hover .asymmetric-card-background img {
+    transform: scale(1.05);
+  }
+
+  .asymmetric-card-text {
+    position: relative;
+    z-index: 3;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 40px 20px;
+    text-align: center;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .asymmetric-cards-container {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+    }
+
+    .asymmetric-card {
+      min-height: 400px;
+    }
+
+    .asymmetric-card:first-child {
+      min-height: 400px;
+    }
+
+    .asymmetric-card-text {
+      font-size: 12px;
+      padding: 30px 20px;
+    }
+  }
+</style>
+
+<div class="asymmetric-cards-section section" id="section-{{ section.id }}">
+  <div class="asymmetric-cards-container">
+    <!-- Card 1 -->
+    <div class="asymmetric-card">
+      {%- if section.settings.card1_link != blank -%}
+        <a href="{{ section.settings.card1_link }}" aria-label="Shop Now - Card 1">
+          <span class="asymmetric-card-text">Shop Now</span>
+        </a>
+      {%- else -%}
+        <span class="asymmetric-card-text">Shop Now</span>
+      {%- endif -%}
+
+      <div class="asymmetric-card-background">
+        {%- if section.settings.card1_image != blank -%}
+          <img
+            src="{{ section.settings.card1_image | image_url: width: 1000 }}"
+            srcset="
+              {{ section.settings.card1_image | image_url: width: 500 }} 500w,
+              {{ section.settings.card1_image | image_url: width: 800 }} 800w,
+              {{ section.settings.card1_image | image_url: width: 1000 }} 1000w,
+              {{ section.settings.card1_image | image_url: width: 1200 }} 1200w
+            "
+            sizes="(max-width: 749px) 100vw, 40vw"
+            alt="{{ section.settings.card1_image.alt | escape }}"
+            loading="lazy"
+            width="{{ section.settings.card1_image.width }}"
+            height="{{ section.settings.card1_image.height }}"
+          >
+        {%- else -%}
+          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+            <span style="color: white; font-size: 16px;">Upload Card 1 Image</span>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="asymmetric-card">
+      {%- if section.settings.card2_link != blank -%}
+        <a href="{{ section.settings.card2_link }}" aria-label="Shop Now - Card 2">
+          <span class="asymmetric-card-text">Shop Now</span>
+        </a>
+      {%- else -%}
+        <span class="asymmetric-card-text">Shop Now</span>
+      {%- endif -%}
+
+      <div class="asymmetric-card-background">
+        {%- if section.settings.card2_image != blank -%}
+          <img
+            src="{{ section.settings.card2_image | image_url: width: 1200 }}"
+            srcset="
+              {{ section.settings.card2_image | image_url: width: 600 }} 600w,
+              {{ section.settings.card2_image | image_url: width: 1000 }} 1000w,
+              {{ section.settings.card2_image | image_url: width: 1200 }} 1200w,
+              {{ section.settings.card2_image | image_url: width: 1600 }} 1600w
+            "
+            sizes="(max-width: 749px) 100vw, 60vw"
+            alt="{{ section.settings.card2_image.alt | escape }}"
+            loading="lazy"
+            width="{{ section.settings.card2_image.width }}"
+            height="{{ section.settings.card2_image.height }}"
+          >
+        {%- else -%}
+          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center;">
+            <span style="color: white; font-size: 16px;">Upload Card 2 Image</span>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Asymmetric Cards",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Card 1 (Left - Smaller)"
+    },
+    {
+      "type": "image_picker",
+      "id": "card1_image",
+      "label": "Card 1 Background Image",
+      "info": "Recommended size: 800x1000px or larger"
+    },
+    {
+      "type": "url",
+      "id": "card1_link",
+      "label": "Card 1 Link",
+      "info": "Link to collection or product page"
+    },
+    {
+      "type": "header",
+      "content": "Card 2 (Right - Larger)"
+    },
+    {
+      "type": "image_picker",
+      "id": "card2_image",
+      "label": "Card 2 Background Image",
+      "info": "Recommended size: 1200x1000px or larger"
+    },
+    {
+      "type": "url",
+      "id": "card2_link",
+      "label": "Card 2 Link",
+      "info": "Link to collection or product page"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Asymmetric Cards",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}
