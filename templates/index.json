@@ -39,16 +39,10 @@
         "product_3": "the-pyramid-pearl-small",
         "product_4": "the-pyramid-tortoise-small"
       }
-    },
-    "asymmetric_cards": {
-      "type": "asymmetric-cards",
-      "settings": {
-      }
     }
   },
   "order": [
     "custom_carousel",
-    "featured_products_grid",
-    "asymmetric_cards"
+    "featured_products_grid"
   ]
 }
