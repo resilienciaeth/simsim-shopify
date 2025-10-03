@@ -1,0 +1,23 @@
+/* Newsletter Signup Section Styles */
+.newsletter-signup-section {
+  overflow: hidden;
+}
+
+.newsletter-title {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.newsletter-email-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0;
+}
+
+.newsletter-submit-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+

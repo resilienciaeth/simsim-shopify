@@ -45,8 +45,25 @@
       "settings": {
       }
     },
+    "text_block": {
+      "type": "text-block",
+      "settings": {
+        "text": "This is more than a bag;<br>it's a celebration of identity, culture, and the beauty of being distinct."
+      }
+    },
     "featured_products_grid_2": {
       "type": "featured-products-grid",
+      "settings": {
+      }
+    },
+    "newsletter_signup": {
+      "type": "newsletter-signup",
+      "settings": {
+        "title": "From the world of SIMSIM: style, stories, and statements."
+      }
+    },
+    "footer": {
+      "type": "reusable-footer",
       "settings": {
       }
     }
@@ -55,6 +72,9 @@
     "custom_carousel",
     "featured_products_grid",
     "asymmetric_cards",
-    "featured_products_grid_2"
+    "text_block",
+    "featured_products_grid_2",
+    "newsletter_signup",
+    "footer"
   ]
 }

@@ -1,0 +1,10 @@
+/* Text Block Section Styles */
+.text-block-section {
+  overflow: hidden;
+}
+
+.text-block-text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
