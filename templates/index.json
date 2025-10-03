@@ -43,11 +43,19 @@
     "asymmetric_cards": {
       "type": "asymmetric-cards",
       "settings": {
+        "card1_image": "shopify://shop_images/2025-SIMSIM-DP_218.png",
+        "card1_link": "",
+        "card2_image": "shopify://shop_images/2025-SIMSIM-DP_451.png",
+        "card2_link": ""
       }
     },
     "featured_products_grid_2": {
       "type": "featured-products-grid",
       "settings": {
+        "product_1": "the-pyramid-emerald-large",
+        "product_2": "the-pyramid-onyx-large",
+        "product_3": "the-pyramid-pearl-large",
+        "product_4": "the-pyramid-tortoise-large"
       }
     }
   },
