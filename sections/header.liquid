@@ -728,8 +728,8 @@
           >
         </a>
         <a
-          href="/blogs/explore"
-          class="navbar-link nav-hide-mobile{% if template.name == 'blog' and blog.handle == 'explore' %} current-page{% endif %}"
+          href="/pages/about"
+          class="navbar-link nav-hide-mobile{% if template.name == 'page' and page.handle == 'about' %} current-page{% endif %}"
           {%- if template.name == 'index' -%}
             style="color: #fff !important;"
           {%- endif -%}
@@ -739,22 +739,7 @@
             {%- if template.name == 'index' -%}
               style="color: #fff !important;"
             {%- endif -%}
-            >EXPLORE</span
-          >
-        </a>
-        <a
-          href="/pages/brand"
-          class="navbar-link nav-hide-mobile{% if template.name == 'page' and page.handle == 'brand' %} current-page{% endif %}"
-          {%- if template.name == 'index' -%}
-            style="color: #fff !important;"
-          {%- endif -%}
-        >
-          <span
-            class="navbar-text"
-            {%- if template.name == 'index' -%}
-              style="color: #fff !important;"
-            {%- endif -%}
-            >BRAND</span
+            >ABOUT</span
           >
         </a>
       </div>
@@ -808,9 +793,9 @@
           {%- endif -%}
         >
           {%- if cart != empty -%}
-            CART({{ cart.item_count }})
+            BAG({{ cart.item_count }})
           {%- else -%}
-            CART
+            BAG
           {%- endif -%}
         </a>
       </div>
@@ -828,14 +813,9 @@
       >Shop</a
     >
     <a
-      href="/blogs/explore"
-      class="navbar-link{% if template.name == 'blog' and blog.handle == 'explore' %} current-page{% endif %}"
-      >Explore</a
-    >
-    <a
-      href="/pages/brand"
-      class="navbar-link{% if template.name == 'page' and page.handle == 'brand' %} current-page{% endif %}"
-      >Brand</a
+      href="/pages/about"
+      class="navbar-link{% if template.name == 'page' and page.handle == 'about' %} current-page{% endif %}"
+      >About</a
     >
     <search-drawer-opener
       class="navbar-link{% if template.name == 'search' %} current-page{% endif %}"
@@ -860,9 +840,7 @@
 
   <!-- Social Media Links -->
   <div class="menu-social">
-    <a href="#" class="menu-social-link">FACEBOOK</a>
     <a href="#" class="menu-social-link">INSTAGRAM</a>
-    <a href="#" class="menu-social-link">TIKTOK</a>
   </div>
 </div>
 

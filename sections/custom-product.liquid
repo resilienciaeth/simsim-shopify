@@ -120,6 +120,8 @@
     background: none;
     border: none;
     padding: 0;
+    text-decoration: none;
+    display: inline-block;
   }
 
   .size-option:hover {
@@ -129,6 +131,7 @@
   .size-option.selected {
     opacity: 1;
     color: #000;
+    pointer-events: none;
   }
 
   /* Colors section */
@@ -524,33 +527,53 @@
       <div class="product-title-price-row">
         <h1 class="product-title">{{ product.title }}</h1>
         <div class="product-price" id="product-price">
-          {%- assign first_variant = product.variants.first -%}
-          {{ first_variant.price | money_without_currency | remove: ',' | remove: '.00' }} USD
+          {{ product.price | money_without_currency | remove: ',' | remove: '.00' }} USD
         </div>
       </div>
 
-      <!-- Sizes Section -->
-      {%- if product.variants.size > 1 -%}
+      <!-- Sizes Section - Now links to different products -->
+      {%- assign current_size = product.metafields.custom.size -%}
+      {%- assign other_size_handle = product.metafields.custom.other_size_handle -%}
+
+      {%- if current_size != blank and other_size_handle != blank -%}
+        {%- assign other_size_product = all_products[other_size_handle] -%}
+        {%- if other_size_product -%}
+          <div class="product-sizes">
+            <div class="sizes-options">
+              {%- comment %} Determine which is small and which is large {%- endcomment %}
+              {%- assign size_upper = current_size | upcase -%}
+
+              {%- if size_upper == 'SMALL' or size_upper == 'S' -%}
+                {%- comment %} Current is Small, other is Large {%- endcomment %}
+                <a href="{{ product.url }}" class="size-option selected">Small</a>
+                <a href="{{ other_size_product.url }}" class="size-option">Large</a>
+              {%- elsif size_upper == 'LARGE' or size_upper == 'L' -%}
+                {%- comment %} Current is Large, other is Small {%- endcomment %}
+                <a href="{{ other_size_product.url }}" class="size-option">Small</a>
+                <a href="{{ product.url }}" class="size-option selected">Large</a>
+              {%- else -%}
+                {%- comment %} Fallback: just show current and other {%- endcomment %}
+                <a href="{{ product.url }}" class="size-option selected">{{ current_size }}</a>
+                <a href="{{ other_size_product.url }}" class="size-option">
+                  {{- other_size_product.metafields.custom.size -}}
+                </a>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- elsif current_size != blank -%}
+        {%- comment %} Only one size available, still show it {%- endcomment %}
         <div class="product-sizes">
           <div class="sizes-options">
-            {%- for variant in product.variants -%}
-              {%- if variant.available -%}
-                <div
-                  class="size-option{% if forloop.first %} selected{% endif %}"
-                  data-variant-id="{{ variant.id }}"
-                  data-variant-price="{{ variant.price | money_without_currency | remove: ',' | remove: '.00' }}"
-                  onclick="selectVariant(this)"
-                >
-                  {{ variant.title }}
-                </div>
-              {%- endif -%}
-            {%- endfor -%}
+            <div class="size-option selected">{{ current_size }}</div>
           </div>
         </div>
       {%- endif -%}
 
-      <!-- Colors Section -->
+      <!-- Colors Section - Size-aware color linking -->
       {%- assign product_collections = product.collections -%}
+      {%- assign current_product_size = product.metafields.custom.size | upcase -%}
+
       {%- if product_collections.size > 0 -%}
         {%- assign main_collection = product_collections.first -%}
         {%- assign collection_products = main_collection.products -%}
@@ -558,7 +581,10 @@
           <div class="product-colors">
             <div class="colors-options">
               {%- for collection_product in collection_products limit: 10 -%}
-                {%- if collection_product.available -%}
+                {%- assign collection_product_size = collection_product.metafields.custom.size | upcase -%}
+
+                {%- comment %} Only show products with the same size as current product {%- endcomment %}
+                {%- if collection_product_size == current_product_size -%}
                   <a
                     href="{{ collection_product.url }}"
                     class="color-option{% if collection_product.id == product.id %} current{% endif %}"
@@ -725,26 +751,8 @@
     thumbnail.classList.add('active');
   }
 
-  function selectVariant(sizeElement) {
-    // Remove selected class from all size options
-    const allSizeOptions = document.querySelectorAll('.size-option');
-    allSizeOptions.forEach((option) => option.classList.remove('selected'));
-
-    // Add selected class to clicked option
-    sizeElement.classList.add('selected');
-
-    // Update price
-    const newPrice = sizeElement.getAttribute('data-variant-price');
-    const priceElement = document.getElementById('product-price');
-    if (priceElement && newPrice) {
-      priceElement.textContent = newPrice + ' USD';
-    }
-
-    // Store selected variant ID for potential form submission
-    const variantId = sizeElement.getAttribute('data-variant-id');
-    // You can use this variantId for cart functionality later
-    console.log('Selected variant ID:', variantId);
-  }
+  // Size selection now handled by links to different products
+  // This function is no longer needed but kept for backwards compatibility
 
   function toggleAccordion(header) {
     // Get the content element
@@ -770,21 +778,18 @@
   }
 
   async function addToCart() {
-    // Get selected variant ID from the size options
-    const selectedSize = document.querySelector('.size-option.selected');
-    let variantId = null;
+    // Use the first variant (not "first available" which might skip variants)
+    const firstVariantId = {{ product.variants.first.id }};
+    
+    // Debug info
+    console.log('Product ID:', {{ product.id }});
+    console.log('Variant ID:', firstVariantId);
+    console.log('Variant title:', '{{ product.variants.first.title }}');
+    console.log('Variant available:', {{ product.variants.first.available }});
+    console.log('Inventory quantity:', {{ product.variants.first.inventory_quantity }});
+    console.log('Total variants:', {{ product.variants.size }});
 
-    if (selectedSize) {
-      variantId = selectedSize.getAttribute('data-variant-id');
-    } else {
-      // If no size selected, use first available variant
-      const firstSize = document.querySelector('.size-option');
-      if (firstSize) {
-        variantId = firstSize.getAttribute('data-variant-id');
-      }
-    }
-
-    if (variantId) {
+    if (firstVariantId) {
       try {
         // Add to cart using Shopify AJAX API
         const response = await fetch('/cart/add.js', {
@@ -793,12 +798,19 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id: variantId,
+            id: firstVariantId,
             quantity: 1,
           }),
         });
 
         const data = await response.json();
+
+        // Check if there was an error
+        if (!response.ok) {
+          console.error('Cart error:', data);
+          alert(data.description || data.message || 'Unable to add item to cart. Please check if the product is in stock.');
+          return;
+        }
 
         // Get updated cart data
         const cartResponse = await fetch('/cart.js');
@@ -835,9 +847,10 @@
         }
       } catch (error) {
         console.error('Error:', error);
+        alert('There was an error adding the item to your cart. Please try again.');
       }
     } else {
-      alert('Please select a size before adding to cart.');
+      alert('This product is currently unavailable.');
     }
   }
 </script>

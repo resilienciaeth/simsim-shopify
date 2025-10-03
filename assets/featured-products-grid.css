@@ -1,0 +1,24 @@
+/* Featured Products Grid Section Styles */
+.featured-products-grid {
+  width: 100%;
+}
+
+.featured-product-item {
+  cursor: pointer;
+}
+
+.featured-product-item a {
+  text-decoration: none;
+}
+
+/* Smooth image loading */
+.featured-product-item img {
+  display: block;
+}
+
+/* Placeholder styling */
+.placeholder-image {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 14px;
+}
+
