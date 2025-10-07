@@ -21,14 +21,14 @@
         "slide2_image1": "shopify://shop_images/Screenshot_2025-10-03_at_10.03.45.png",
         "slide2_image2": "shopify://shop_images/Screenshot_2025-10-03_at_10.03.45.png",
         "slide2_mobile_image": "shopify://shop_images/Screenshot_2025-10-03_at_10.03.45.png",
-        "slide2_text": "Make the deal that'll be the talk of the town until the 3rd of May",
-        "slide2_title": "ARCHIVE SALE: 30% ON SELECTED ITEMS",
-        "slide2_link": "shopify://pages/about",
+        "slide2_text": "Introducing",
+        "slide2_title": "The Pyramid Bag",
+        "slide2_link": "shopify://collections",
         "slide3_image": "shopify://shop_images/Screenshot_2025-10-03_at_10.04.53.png",
         "slide3_mobile_image": "shopify://shop_images/Screenshot_2025-10-03_at_10.04.53.png",
-        "slide3_text": "Where geometry meets glamour",
-        "slide3_title": "AUTUMN/WINTER 2024 COLLECTION",
-        "slide3_link": "shopify://blogs/explore/in-conversation-with-gideon-rubin"
+        "slide3_text": "Introducing",
+        "slide3_title": "The Pyramid Bag",
+        "slide3_link": "shopify://collections"
       }
     },
     "featured_products_grid": {
@@ -73,6 +73,12 @@
     "footer": {
       "type": "reusable-footer",
       "settings": {
+        "about_handle": "about",
+        "contact_handle": "contact",
+        "stockist_handle": "stockist",
+        "privacy_handle": "privacy-policy",
+        "shipping_handle": "shipping-and-return",
+        "terms_handle": "terms-and-conditions"
       }
     }
   },
