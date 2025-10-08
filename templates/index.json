@@ -36,8 +36,8 @@
       "settings": {
         "product_1": "the-pyramid-emerald-small",
         "product_2": "the-pyramid-onyx-small",
-        "product_3": "the-pyramid-pearl-small",
-        "product_4": "the-pyramid-tortoise-small"
+        "product_3": "the-pyramid-tortoise-small",
+        "product_4": "the-pyramid-pearl-small"
       }
     },
     "asymmetric_cards": {
@@ -60,8 +60,8 @@
       "settings": {
         "product_1": "the-pyramid-emerald-large",
         "product_2": "the-pyramid-onyx-large",
-        "product_3": "the-pyramid-pearl-large",
-        "product_4": "the-pyramid-tortoise-large"
+        "product_3": "the-pyramid-tortoise-small",
+        "product_4": "the-pyramid-pearl-small"
       }
     },
     "newsletter_signup": {
