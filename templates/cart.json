@@ -45,11 +45,16 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
+    },
+    "footer": {
+      "type": "reusable-footer",
+      "settings": {}
     }
   },
   "order": [
     "cart-items",
     "cart-footer",
-    "featured-collection"
+    "featured-collection",
+    "footer"
   ]
 }

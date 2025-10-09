@@ -207,10 +207,32 @@
 
   .accordion-content {
     display: none;
-    padding: 10px 0 0 0;
+    padding: 10px 0;
+    margin-left: -2px;
     color: #000;
     line-height: 1.6;
     font-size: 0.9rem;
+    white-space: pre-line;
+    text-transform: none;
+  }
+
+  .accordion-content p {
+    margin: 0 0 10px 0;
+    margin-left: -2px;
+    padding: 0;
+    padding-left: 0;
+    white-space: pre-line;
+    text-indent: 0 !important;
+  }
+
+  .accordion-content p:first-child {
+    margin-left: -2px;
+    padding-left: 0;
+    text-indent: 0 !important;
+  }
+
+  .accordion-content p:last-child {
+    margin-bottom: 0;
   }
 
   .accordion-content.active {
@@ -357,7 +379,6 @@
   .product-title,
   .size-option,
   .color-option,
-  .accordion-header,
   .add-to-cart-btn,
   .related-items-title,
   .related-item-name {
@@ -600,28 +621,28 @@
 
       <!-- Accordion Section - Desktop only -->
       <div class="product-accordion">
-        <!-- Information Accordion -->
-        {%- if product.metafields.custom.product_information -%}
-          <div class="accordion-item">
-            <button class="accordion-header" onclick="toggleAccordion(this)">
-              <span>INFORMATION</span>
-              <span class="accordion-icon">+</span>
-            </button>
-            <div class="accordion-content">
-              {{ product.metafields.custom.product_information }}
-            </div>
-          </div>
-        {%- endif -%}
-
         <!-- Details Accordion -->
         {%- if product.metafields.custom.product_details -%}
           <div class="accordion-item">
             <button class="accordion-header" onclick="toggleAccordion(this)">
-              <span>DETAILS</span>
+              <span>Details</span>
               <span class="accordion-icon">+</span>
             </button>
             <div class="accordion-content">
               {{ product.metafields.custom.product_details }}
+            </div>
+          </div>
+        {%- endif -%}
+
+        <!-- Information Accordion -->
+        {%- if product.metafields.custom.product_information -%}
+          <div class="accordion-item">
+            <button class="accordion-header" onclick="toggleAccordion(this)">
+              <span>SIZE NOTES</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              {{ product.metafields.custom.product_information }}
             </div>
           </div>
         {%- endif -%}
@@ -647,28 +668,28 @@
 
       <!-- Mobile Accordion Section -->
       <div class="product-accordion accordion-mobile">
-        <!-- Information Accordion -->
-        {%- if product.metafields.custom.product_information -%}
-          <div class="accordion-item">
-            <button class="accordion-header" onclick="toggleAccordion(this)">
-              <span>INFORMATION</span>
-              <span class="accordion-icon">+</span>
-            </button>
-            <div class="accordion-content">
-              {{ product.metafields.custom.product_information }}
-            </div>
-          </div>
-        {%- endif -%}
-
         <!-- Details Accordion -->
         {%- if product.metafields.custom.product_details -%}
           <div class="accordion-item">
             <button class="accordion-header" onclick="toggleAccordion(this)">
-              <span>DETAILS</span>
+              <span>Details</span>
               <span class="accordion-icon">+</span>
             </button>
             <div class="accordion-content">
               {{ product.metafields.custom.product_details }}
+            </div>
+          </div>
+        {%- endif -%}
+
+        <!-- Information Accordion -->
+        {%- if product.metafields.custom.product_information -%}
+          <div class="accordion-item">
+            <button class="accordion-header" onclick="toggleAccordion(this)">
+              <span>SIZE NOTES</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-content">
+              {{ product.metafields.custom.product_information }}
             </div>
           </div>
         {%- endif -%}

@@ -748,15 +748,12 @@
       <div class="navbar-center">
         <a href="{{ routes.root_url }}" class="navbar-logo">
           {%- assign logo_alt = shop.name | escape -%}
-          {%- assign dark_logo_url = 'https://cdn.shopify.com/s/files/1/0911/2394/1654/files/logo_2.png?v=1756148711' -%}
-          {%- assign light_logo_url = 'https://cdn.shopify.com/s/files/1/0911/2394/1654/files/Group_343.png?v=1756148728' -%}
+          {%- assign dark_logo_url = 'https://cdn.shopify.com/s/files/1/0911/2394/1654/files/logo_black.svg?v=1759960909' -%}
+          {%- assign light_logo_url = 'https://cdn.shopify.com/s/files/1/0911/2394/1654/files/logo_white.svg?v=1759960909' -%}
           <img
             src="{%- if template.name == 'index' or section.settings.nav_variant == 'light' -%}{{ light_logo_url }}{%- else -%}{{ dark_logo_url }}{%- endif -%}"
             alt="{{ logo_alt }}"
             class="navbar-logo-image"
-            width="120"
-            height="32"
-            style="height: 32px; width: auto;"
           >
         </a>
       </div>
@@ -833,9 +830,9 @@
 
   <!-- Footer Menu Options -->
   <div class="menu-footer">
-    <a href="{{ routes.pages_url }}/privacy-policy" class="menu-footer-link">PRIVACY POLICY</a>
-    <a href="{{ routes.pages_url }}/shipping-and-return" class="menu-footer-link">SHIPPING AND RETURN</a>
-    <a href="{{ routes.pages_url }}/terms-and-conditions" class="menu-footer-link">TERMS AND CONDITIONS</a>
+    <a href="/pages/privacy-policy" class="menu-footer-link">PRIVACY POLICY</a>
+    <a href="/pages/shipping-and-returns" class="menu-footer-link">SHIPPING AND RETURNS</a>
+    <a href="/pages/terms-and-conditions" class="menu-footer-link">TERMS AND CONDITIONS</a>
   </div>
 
   <!-- Social Media Links -->

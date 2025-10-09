@@ -116,19 +116,11 @@
 
   <!-- Right side - fixed image -->
   <div class="brand-page-image">
-    {% if page.metafields.custom.brand_page_image != blank %}
-      {{
-        page.metafields.custom.brand_page_image
-        | image_url: width: 1200
-        | image_tag: alt: page.metafields.custom.brand_page_image.alt
-        | default: page.title, loading: 'lazy'
-      }}
-    {% else %}
-      <!-- Placeholder if no image is set -->
-      <div style="background: #f0f0f0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #999; font-size: 14px;">
-        Brand Image Placeholder
-      </div>
-    {% endif %}
+    <img
+      src="https://cdn.shopify.com/s/files/1/0911/2394/1654/files/Screenshot_2025-10-08_at_16.46.45.png?v=1759960032"
+      alt="{{ page.title | escape }}"
+      loading="lazy"
+    >
   </div>
 </div>
 

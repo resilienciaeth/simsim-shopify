@@ -124,31 +124,72 @@
       <h2 class="newsletter-title">From the world of SIMSIM: style, stories, and statements.</h2>
     {%- endif -%}
 
-    {% form 'customer', class: 'newsletter-form' %}
-      {%- if form.posted_successfully? -%}
-        <div class="newsletter-message success">Thanks for subscribing!</div>
-      {%- else -%}
-        <div class="newsletter-input-wrapper">
-          <input
-            type="email"
-            name="contact[email]"
-            class="newsletter-email-input"
-            placeholder="Enter your email"
-            required
-            aria-label="Email address"
-          >
-          <button type="submit" class="newsletter-submit-button">Join</button>
-        </div>
+    <form class="newsletter-form" id="convertkit-form">
+      <div class="newsletter-input-wrapper">
+        <input
+          type="email"
+          name="email"
+          class="newsletter-email-input"
+          placeholder="Enter your email"
+          required
+          aria-label="Email address"
+          id="email-input"
+        >
+        <button type="submit" class="newsletter-submit-button">Join</button>
+      </div>
+      <div class="newsletter-message" id="newsletter-message"></div>
+    </form>
 
-        {%- if form.errors -%}
-          <div class="newsletter-message error">
-            {{ form.errors | default_errors }}
-          </div>
-        {%- endif -%}
-      {%- endif -%}
+    <script>
+      const CONVERTKIT_FORM_ID = '7753448';
+      const CONVERTKIT_API_KEY = 'hrlHwRPE65AwRJj2dWxPLw';
 
-      <input type="hidden" name="contact[tags]" value="newsletter">
-    {% endform %}
+      document.getElementById('convertkit-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const emailInput = document.getElementById('email-input');
+        const messageDiv = document.getElementById('newsletter-message');
+        const submitButton = e.target.querySelector('.newsletter-submit-button');
+
+        const email = emailInput.value;
+
+        // Disable button and show loading state
+        submitButton.disabled = true;
+        submitButton.textContent = 'Joining...';
+        messageDiv.textContent = '';
+        messageDiv.className = 'newsletter-message';
+
+        try {
+          const response = await fetch(`https://api.convertkit.com/v3/forms/${CONVERTKIT_FORM_ID}/subscribe`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              api_key: CONVERTKIT_API_KEY,
+              email: email,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            messageDiv.textContent = 'Thanks for subscribing!';
+            messageDiv.className = 'newsletter-message success';
+            emailInput.value = '';
+          } else {
+            throw new Error(data.message || 'Something went wrong');
+          }
+        } catch (error) {
+          messageDiv.textContent = error.message || 'An error occurred. Please try again.';
+          messageDiv.className = 'newsletter-message error';
+        } finally {
+          // Re-enable button
+          submitButton.disabled = false;
+          submitButton.textContent = 'Join';
+        }
+      });
+    </script>
   </div>
 </div>
 
