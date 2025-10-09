@@ -21,7 +21,11 @@
     font-weight: 700;
     letter-spacing: normal;
     text-transform: uppercase;
-    font-family: 'NewEdge666-Rounded', Arial, sans-serif;
+  }
+
+  /* Force NewEdge666-Rounded with higher specificity */
+  .newsletter-signup-section .newsletter-content .newsletter-title {
+    font-family: 'NewEdge666-Rounded', Arial, sans-serif !important;
   }
 
   .newsletter-form {

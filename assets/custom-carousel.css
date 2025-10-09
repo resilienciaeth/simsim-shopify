@@ -195,16 +195,16 @@ body.template-index {
   font-family: 'NewEdge666-Rounded', Arial, sans-serif !important;
 }
 
-/* Mobile: center text overlay vertically and align left */
+/* Mobile: position text overlay at bottom and align left */
 @media screen and (max-width: 749px) {
   .slide-text-overlay {
     display: block !important;
     position: absolute;
-    top: 50%;
+    top: auto;
     left: 0;
     right: 0;
-    bottom: auto;
-    transform: translateY(-50%);
+    bottom: 60px;
+    transform: none;
     padding: 0 20px;
     text-align: left;
     z-index: 5;
