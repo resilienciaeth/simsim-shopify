@@ -379,7 +379,7 @@
       activeFill.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'; // Make sure it's visible
 
       // Force browser reflow
-      activeFill.offsetHeight;
+      void activeFill.offsetWidth;
 
       // Start transition and advance slide after 5s
       activeFill.style.transition = 'width 5s linear';
@@ -475,7 +475,10 @@
     // Initialize everything
     console.log('🚀 Starting carousel initialization...');
     showSlide(1);
-    initializeFirstBar();
+    // Delay first bar initialization slightly to ensure DOM is ready
+    setTimeout(() => {
+      initializeFirstBar();
+    }, 100);
 
     // Mark as initialized to avoid duplicate setups
     sectionWrapper.dataset.carouselInitialized = 'true';
