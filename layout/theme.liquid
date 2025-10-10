@@ -385,5 +385,8 @@
     {%- if settings.cart_type == 'drawer' -%}
       <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
+
+    {% comment %}Email Popup - Only shows on homepage after 5 seconds{% endcomment %}
+    {% render 'email-popup' %}
   </body>
 </html>
