@@ -44,9 +44,9 @@
       "type": "asymmetric-cards",
       "settings": {
         "card1_image": "shopify://shop_images/2025-SIMSIM-DP_218.png",
-        "card1_link": "",
+        "card1_link": "shopify://collections",
         "card2_image": "shopify://shop_images/2025-SIMSIM-DP_451.png",
-        "card2_link": ""
+        "card2_link": "shopify://collections"
       }
     },
     "text_block": {
