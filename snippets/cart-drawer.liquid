@@ -322,7 +322,7 @@
       <!-- Top Checkout CTA inside cart drawer -->
       <div class="cart-top-cta">
         <a
-          href="{{ routes.cart_url }}"
+          href="/checkout"
           class="button button--primary cart__checkout-button{% if cart == empty %} is-disabled{% endif %}"
           name="checkout"
           {% if cart == empty %}
@@ -727,7 +727,7 @@
           // Update cart count in header
           const cartIconBubble = document.getElementById('cart-icon-bubble');
           if (cartIconBubble) {
-            cartIconBubble.textContent = cart.item_count > 0 ? `CART(${cart.item_count})` : 'CART';
+            cartIconBubble.textContent = cart.item_count > 0 ? `BAG(${cart.item_count})` : 'BAG';
           }
 
           // Remove the item rows if quantity is 0

@@ -840,31 +840,28 @@
         // Update cart count in header
         const cartIconBubble = document.getElementById('cart-icon-bubble');
         if (cartIconBubble) {
-          cartIconBubble.textContent = cart.item_count > 0 ? `CART(${cart.item_count})` : 'CART';
+          cartIconBubble.textContent = cart.item_count > 0 ? `BAG(${cart.item_count})` : 'BAG';
         }
 
-        // Open cart drawer if it exists
+        // Update cart drawer content and open it
         const cartDrawer = document.querySelector('cart-drawer');
         if (cartDrawer) {
           cartDrawer.classList.remove('is-empty');
-          cartDrawer.style.visibility = 'visible';
-
-          // Update cart drawer content
-          const drawerForm = document.getElementById('CartDrawer-Form');
-          if (drawerForm) {
-            const formData = new FormData(drawerForm);
-            const searchParams = new URLSearchParams(formData).toString();
-            const fetchUrl = `${window.location.pathname}?section_id=cart-drawer&${searchParams}`;
-
-            const response = await fetch(fetchUrl);
-            const text = await response.text();
-            const html = new DOMParser().parseFromString(text, 'text/html');
-            const sourceQty = html.querySelector('cart-drawer-items');
-            const targetQty = document.querySelector('cart-drawer-items');
-            if (sourceQty && targetQty) {
-              targetQty.innerHTML = sourceQty.innerHTML;
-            }
+          
+          // Fetch the updated cart drawer section
+          const response = await fetch('/?section_id=cart-drawer');
+          const text = await response.text();
+          const html = new DOMParser().parseFromString(text, 'text/html');
+          
+          // Update the cart drawer content
+          const sourceDrawer = html.querySelector('#CartDrawer');
+          const targetDrawer = document.querySelector('#CartDrawer');
+          if (sourceDrawer && targetDrawer) {
+            targetDrawer.innerHTML = sourceDrawer.innerHTML;
           }
+          
+          // Open the cart drawer
+          cartDrawer.open();
         }
       } catch (error) {
         console.error('Error:', error);

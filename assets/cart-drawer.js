@@ -112,6 +112,9 @@ class CartDrawer extends HTMLElement {
       this.querySelector('.drawer__inner').classList.remove('is-empty');
     this.productId = parsedState.id;
     this.getSectionsToRender().forEach((section) => {
+      // Skip cart-icon-bubble to preserve the BAG text
+      if (section.id === 'cart-icon-bubble') return;
+
       const sectionElement = section.selector
         ? document.querySelector(section.selector)
         : document.getElementById(section.id);
@@ -119,6 +122,12 @@ class CartDrawer extends HTMLElement {
       if (!sectionElement) return;
       sectionElement.innerHTML = this.getSectionInnerHTML(parsedState.sections[section.id], section.selector);
     });
+
+    // Update cart count in header with BAG text
+    const cartIconBubble = document.getElementById('cart-icon-bubble');
+    if (cartIconBubble && parsedState.item_count !== undefined) {
+      cartIconBubble.textContent = parsedState.item_count > 0 ? `BAG(${parsedState.item_count})` : 'BAG';
+    }
 
     setTimeout(() => {
       this.open();
