@@ -921,8 +921,25 @@
       
       const variants = Array.isArray(productJson.variants) ? productJson.variants : [];
       console.log('🔍 DEBUG: Variants array check:', variants.length, 'variants found');
+      variants.forEach((v, i) => {
+        console.log(`🔍 DEBUG: Variant ${i}:`, {
+          id: v.id,
+          title: v.title,
+          available: v.available,
+          inventory_quantity: v.inventory_quantity,
+          inventory_policy: v.inventory_policy,
+          inventory_management: v.inventory_management
+        });
+      });
       
-      const firstAvailable = variants.find(v => v && v.available === true);
+      const firstAvailable = variants.find(v => {
+        // Check both available flag and inventory_quantity for "continue" policy
+        const isAvailable = v.available === true;
+        const hasContinuePolicy = v.inventory_policy === 'continue';
+        const hasInventory = v.inventory_quantity > 0;
+        console.log(`🔍 DEBUG: Checking variant ${v.id}:`, { isAvailable, hasContinuePolicy, hasInventory });
+        return v && (isAvailable || (hasContinuePolicy && hasInventory));
+      });
       console.log('🔍 DEBUG: First available variant:', firstAvailable);
       
       const button = document.querySelector('.add-to-cart-btn');
