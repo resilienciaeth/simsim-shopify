@@ -682,6 +682,7 @@
         <button
           type="button"
           class="add-to-cart-btn"
+          data-variant-id="{{ first_available_variant_id | default: product.selected_or_first_available_variant.id }}"
           {% if has_available_variant == false %}
             disabled
           {% endif %}
@@ -828,136 +829,75 @@
   }
 
   async function addToCart() {
-    // Check if button is disabled (out of stock)
     const button = document.querySelector('.add-to-cart-btn');
     if (!button) return;
 
-    // Prefer client-validated first available variant, fallback to Liquid
-    const clientVariantId = typeof window !== 'undefined' ? window.__firstAvailableVariantId : null;
-    const variantId = clientVariantId ?? {{ first_available_variant_id | default: product.selected_or_first_available_variant.id }};
+    // Get variant ID from button data attribute
+    const variantId = button.getAttribute('data-variant-id');
+    if (!variantId) return;
 
-    if (variantId) {
-      try {
-        // Add to cart using Shopify AJAX API
-        const response = await fetch('/cart/add.js', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: variantId,
-            quantity: 1,
-          }),
-        });
+    // Disable button during request
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = 'ADDING...';
 
-        if (!response.ok) {
-          // If Shopify rejects (likely sold out), reflect that in the UI
-          button.textContent = 'SOLD OUT';
-          button.disabled = true;
-          return;
-        }
+    try {
+      // Add to cart using Shopify AJAX API
+      const response = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: variantId,
+          quantity: 1,
+        }),
+      });
 
-        const data = await response.json();
-
-        // Note: We continue even if the API returns an error about stock
-        // to allow the cart system to handle inventory policies
-
-        // Get updated cart data
-        const cartResponse = await fetch('/cart.js');
-        const cart = await cartResponse.json();
-
-        // Update cart count in header
-        const cartIconBubble = document.getElementById('cart-icon-bubble');
-        if (cartIconBubble) {
-          cartIconBubble.textContent = cart.item_count > 0 ? `BAG(${cart.item_count})` : 'BAG';
-        }
-
-        // Update cart drawer content and open it
-        const cartDrawer = document.querySelector('cart-drawer');
-        if (cartDrawer) {
-          cartDrawer.classList.remove('is-empty');
-          
-          // Fetch the updated cart drawer section
-          const response = await fetch('/?section_id=cart-drawer');
-          const text = await response.text();
-          const html = new DOMParser().parseFromString(text, 'text/html');
-          
-          // Update the cart drawer content
-          const sourceDrawer = html.querySelector('#CartDrawer');
-          const targetDrawer = document.querySelector('#CartDrawer');
-          if (sourceDrawer && targetDrawer) {
-            targetDrawer.innerHTML = sourceDrawer.innerHTML;
-          }
-          
-          // Open the cart drawer
-          cartDrawer.open();
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        // Silently continue - don't show error alerts for stock issues
+      if (!response.ok) {
+        button.textContent = 'SOLD OUT';
+        return;
       }
+
+      const data = await response.json();
+
+      // Reset button
+      button.disabled = false;
+      button.textContent = originalText;
+
+      // Get updated cart data
+      const cartResponse = await fetch('/cart.js');
+      const cart = await cartResponse.json();
+
+      // Update cart count in header
+      const cartIconBubble = document.getElementById('cart-icon-bubble');
+      if (cartIconBubble) {
+        cartIconBubble.textContent = cart.item_count > 0 ? `BAG(${cart.item_count})` : 'BAG';
+      }
+
+      // Update cart drawer content and open it
+      const cartDrawer = document.querySelector('cart-drawer');
+      if (cartDrawer) {
+        cartDrawer.classList.remove('is-empty');
+
+        // Fetch the updated cart drawer section
+        const response = await fetch('/?section_id=cart-drawer');
+        const text = await response.text();
+        const html = new DOMParser().parseFromString(text, 'text/html');
+
+        // Update the cart drawer content
+        const sourceDrawer = html.querySelector('#CartDrawer');
+        const targetDrawer = document.querySelector('#CartDrawer');
+        if (sourceDrawer && targetDrawer) {
+          targetDrawer.innerHTML = sourceDrawer.innerHTML;
+        }
+
+        // Open the cart drawer
+        cartDrawer.open();
+      }
+    } catch (error) {
+      button.disabled = false;
+      button.textContent = originalText;
     }
   }
-
-  // Client-side availability check to align live behavior
-  document.addEventListener('DOMContentLoaded', async () => {
-    try {
-      const rootFromLiquid = '{{ routes.root_url }}';
-      const rootFromGlobal = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '';
-      const root = rootFromGlobal || rootFromLiquid || '';
-      const normalizedRoot = root.endsWith('/') ? root.slice(0, -1) : root;
-      const productJsonUrl = `${normalizedRoot}/products/{{ product.handle }}.js`;
-      
-      console.log('🔍 DEBUG: Fetching product JSON from:', productJsonUrl);
-      
-      const response = await fetch(productJsonUrl);
-      console.log('🔍 DEBUG: Response status:', response.status, response.ok);
-      
-      if (!response.ok) return;
-      const productJson = await response.json();
-      
-      console.log('🔍 DEBUG: Full product JSON:', productJson);
-      console.log('🔍 DEBUG: Variants:', productJson.variants);
-      
-      const variants = Array.isArray(productJson.variants) ? productJson.variants : [];
-      console.log('🔍 DEBUG: Variants array check:', variants.length, 'variants found');
-      variants.forEach((v, i) => {
-        console.log(`🔍 DEBUG: Variant ${i}:`, {
-          id: v.id,
-          title: v.title,
-          available: v.available,
-          inventory_quantity: v.inventory_quantity,
-          inventory_policy: v.inventory_policy,
-          inventory_management: v.inventory_management
-        });
-      });
-      
-      const firstAvailable = variants.find(v => {
-        // Check both available flag and inventory_quantity for "continue" policy
-        const isAvailable = v.available === true;
-        const hasContinuePolicy = v.inventory_policy === 'continue';
-        const hasInventory = v.inventory_quantity > 0;
-        console.log(`🔍 DEBUG: Checking variant ${v.id}:`, { isAvailable, hasContinuePolicy, hasInventory });
-        return v && (isAvailable || (hasContinuePolicy && hasInventory));
-      });
-      console.log('🔍 DEBUG: First available variant:', firstAvailable);
-      
-      const button = document.querySelector('.add-to-cart-btn');
-      if (!button) return;
-      if (firstAvailable) {
-        window.__firstAvailableVariantId = firstAvailable.id;
-        button.disabled = false;
-        button.textContent = 'ADD TO CART';
-        console.log('✅ DEBUG: Button set to ADD TO CART with variant ID:', firstAvailable.id);
-      } else {
-        window.__firstAvailableVariantId = null;
-        button.disabled = true;
-        button.textContent = 'SOLD OUT';
-        console.log('❌ DEBUG: Button set to SOLD OUT - no available variants');
-      }
-    } catch (e) {
-      console.error('❌ DEBUG: Error in availability check:', e);
-      // Ignore; fall back to server-rendered state and add-to-cart handling
-    }
-  });
 </script>
