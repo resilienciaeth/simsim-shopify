@@ -669,21 +669,13 @@
 
       <!-- Add to Cart Button -->
       <div class="add-to-cart-section">
-        <!-- DEBUG: Variant available = {{ product.selected_or_first_available_variant.available }} -->
-        <!-- DEBUG: Variant null = {{ product.selected_or_first_available_variant }} -->
         <button
           type="button"
           class="add-to-cart-btn"
+          id="add-to-cart-button"
           onclick="addToCart()"
-          {% unless product.selected_or_first_available_variant.available %}
-            disabled
-          {% endunless %}
         >
-          {%- unless product.selected_or_first_available_variant.available -%}
-            SOLD OUT
-          {%- else -%}
-            ADD TO CART
-          {%- endunless -%}
+          ADD TO CART
         </button>
       </div>
 
@@ -905,4 +897,23 @@
       alert('This product is currently unavailable.');
     }
   }
+
+  // Update button state based on product availability
+  function updateAddToCartButton() {
+    const button = document.getElementById('add-to-cart-button');
+    const selectedVariant = {{ product.selected_or_first_available_variant | json }};
+    
+    console.log('Updating button state. Variant:', selectedVariant);
+    
+    if (!selectedVariant || !selectedVariant.available) {
+      button.disabled = true;
+      button.textContent = 'SOLD OUT';
+    } else {
+      button.disabled = false;
+      button.textContent = 'ADD TO CART';
+    }
+  }
+
+  // Run on page load
+  document.addEventListener('DOMContentLoaded', updateAddToCartButton);
 </script>
