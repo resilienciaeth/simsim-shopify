@@ -825,8 +825,9 @@
     const button = document.querySelector('.add-to-cart-btn');
     if (!button) return;
 
-    // Use the first available variant ID computed in Liquid as a fallback
-    const variantId = {{ first_available_variant_id | default: product.selected_or_first_available_variant.id }};
+    // Prefer client-validated first available variant, fallback to Liquid
+    const clientVariantId = typeof window !== 'undefined' ? window.__firstAvailableVariantId : null;
+    const variantId = clientVariantId ?? {{ first_available_variant_id | default: product.selected_or_first_available_variant.id }};
 
     if (variantId) {
       try {
@@ -890,4 +891,27 @@
       }
     }
   }
+
+  // Client-side availability check to align live behavior
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const response = await fetch('/products/{{ product.handle }}.js');
+      if (!response.ok) return;
+      const productJson = await response.json();
+      const firstAvailable = productJson.variants && productJson.variants.find(v => v && v.available);
+      const button = document.querySelector('.add-to-cart-btn');
+      if (!button) return;
+      if (firstAvailable) {
+        window.__firstAvailableVariantId = firstAvailable.id;
+        button.disabled = false;
+        button.textContent = 'ADD TO CART';
+      } else {
+        window.__firstAvailableVariantId = null;
+        button.disabled = true;
+        button.textContent = 'SOLD OUT';
+      }
+    } catch (e) {
+      // Ignore; fall back to server-rendered state and add-to-cart handling
+    }
+  });
 </script>
