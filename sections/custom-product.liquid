@@ -682,16 +682,9 @@
         <button
           type="button"
           class="add-to-cart-btn"
-          {% if has_available_variant == false %}
-            disabled
-          {% endif %}
           onclick="addToCart()"
         >
-          {%- if has_available_variant == false -%}
-            SOLD OUT
-          {%- else -%}
-            ADD TO CART
-          {%- endif -%}
+          ADD TO CART
         </button>
       </div>
 
@@ -830,9 +823,7 @@
   async function addToCart() {
     // Check if button is disabled (out of stock)
     const button = document.querySelector('.add-to-cart-btn');
-    if (button && button.disabled) {
-      return; // Don't proceed if sold out
-    }
+    if (!button) return;
 
     // Use the first available variant ID computed in Liquid as a fallback
     const variantId = {{ first_available_variant_id | default: product.selected_or_first_available_variant.id }};
@@ -850,6 +841,13 @@
             quantity: 1,
           }),
         });
+
+        if (!response.ok) {
+          // If Shopify rejects (likely sold out), reflect that in the UI
+          button.textContent = 'SOLD OUT';
+          button.disabled = true;
+          return;
+        }
 
         const data = await response.json();
 
