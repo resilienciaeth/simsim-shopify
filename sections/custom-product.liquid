@@ -669,14 +669,7 @@
 
       <!-- Add to Cart Button -->
       <div class="add-to-cart-section">
-        <button
-          type="button"
-          class="add-to-cart-btn"
-          id="add-to-cart-button"
-          onclick="addToCart()"
-        >
-          ADD TO CART
-        </button>
+        <button type="button" class="add-to-cart-btn" onclick="addToCart()">ADD TO CART</button>
       </div>
 
       <!-- Mobile Accordion Section -->
@@ -812,31 +805,10 @@
   }
 
   async function addToCart() {
-    // Get the selected or first available variant
-    const selectedVariant = {{ product.selected_or_first_available_variant | json }};
-    
-    // Check if variant exists and is available
-    if (!selectedVariant) {
-      alert('This product is currently unavailable.');
-      return;
-    }
-    
-    if (!selectedVariant.available) {
-      alert('This product is currently sold out.');
-      return;
-    }
+    // Use the first variant
+    const firstVariantId = {{ product.variants.first.id }};
 
-    const variantId = selectedVariant.id;
-    
-    // Debug info
-    console.log('Product ID:', {{ product.id }});
-    console.log('Variant ID:', variantId);
-    console.log('Variant title:', selectedVariant.title);
-    console.log('Variant available:', selectedVariant.available);
-    console.log('Has only default variant:', {{ product.has_only_default_variant }});
-    console.log('Total variants:', {{ product.variants.size }});
-
-    if (variantId) {
+    if (firstVariantId) {
       try {
         // Add to cart using Shopify AJAX API
         const response = await fetch('/cart/add.js', {
@@ -845,7 +817,7 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id: variantId,
+            id: firstVariantId,
             quantity: 1,
           }),
         });
@@ -897,23 +869,4 @@
       alert('This product is currently unavailable.');
     }
   }
-
-  // Update button state based on product availability
-  function updateAddToCartButton() {
-    const button = document.getElementById('add-to-cart-button');
-    const selectedVariant = {{ product.selected_or_first_available_variant | json }};
-    
-    console.log('Updating button state. Variant:', selectedVariant);
-    
-    if (!selectedVariant || !selectedVariant.available) {
-      button.disabled = true;
-      button.textContent = 'SOLD OUT';
-    } else {
-      button.disabled = false;
-      button.textContent = 'ADD TO CART';
-    }
-  }
-
-  // Run on page load
-  document.addEventListener('DOMContentLoaded', updateAddToCartButton);
 </script>
