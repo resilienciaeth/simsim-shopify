@@ -805,7 +805,7 @@
   }
 
   async function addToCart() {
-    // Use the first variant
+    // Use the first variant - always attempt to add regardless of stock status
     const firstVariantId = {{ product.variants.first.id }};
 
     if (firstVariantId) {
@@ -824,12 +824,8 @@
 
         const data = await response.json();
 
-        // Check if there was an error
-        if (!response.ok) {
-          console.error('Cart error:', data);
-          alert(data.description || data.message || 'Unable to add item to cart. Please check if the product is in stock.');
-          return;
-        }
+        // Note: We continue even if the API returns an error about stock
+        // to allow the cart system to handle inventory policies
 
         // Get updated cart data
         const cartResponse = await fetch('/cart.js');
@@ -863,10 +859,8 @@
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('There was an error adding the item to your cart. Please try again.');
+        // Silently continue - don't show error alerts for stock issues
       }
-    } else {
-      alert('This product is currently unavailable.');
     }
   }
 </script>
