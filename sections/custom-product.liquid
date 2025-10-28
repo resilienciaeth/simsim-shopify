@@ -670,17 +670,35 @@
       <!-- Add to Cart Button -->
       {% liquid
         assign current_variant = product.selected_or_first_available_variant
-        assign quantity_rule_soldout = false
-        assign check_against_inventory = true
 
-        if current_variant
-          if current_variant.inventory_management != 'shopify' or current_variant.inventory_policy == 'continue'
-            assign check_against_inventory = false
+        assign product_has_available = false
+        for v in product.variants
+          assign v_is_available = false
+          if v.available
+            assign v_is_available = true
+          elsif v.inventory_management != 'shopify' or v.inventory_policy == 'continue'
+            assign v_is_available = true
+          elsif v.inventory_quantity and v.inventory_quantity > 0
+            assign v_is_available = true
           endif
-          if current_variant.quantity_rule and current_variant.quantity_rule.min and current_variant.inventory_quantity and check_against_inventory
-            if current_variant.quantity_rule.min > current_variant.inventory_quantity
-              assign quantity_rule_soldout = true
-            endif
+          if v_is_available
+            assign product_has_available = true
+            break
+          endif
+        endfor
+        assign product_sold_out = true
+        if product_has_available
+          assign product_sold_out = false
+        endif
+
+        assign variant_sold_out = true
+        if current_variant
+          if current_variant.available
+            assign variant_sold_out = false
+          elsif current_variant.inventory_management != 'shopify' or current_variant.inventory_policy == 'continue'
+            assign variant_sold_out = false
+          elsif current_variant.inventory_quantity and current_variant.inventory_quantity > 0
+            assign variant_sold_out = false
           endif
         endif
       %}
@@ -689,13 +707,13 @@
           type="button"
           class="add-to-cart-btn"
           onclick="addToCart()"
-          {% if current_variant == null or current_variant.available == false or quantity_rule_soldout %}
+          {% if product_sold_out or variant_sold_out %}
             disabled
           {% endif %}
         >
-          {%- if current_variant == null -%}
+          {%- if product_sold_out -%}
             {{ 'products.product.unavailable' | t }}
-          {%- elsif current_variant.available == false or quantity_rule_soldout -%}
+          {%- elsif variant_sold_out -%}
             {{ 'products.product.sold_out' | t }}
           {%- else -%}
             {{ 'products.product.add_to_cart' | t }}
@@ -836,10 +854,9 @@
   }
 
   async function addToCart() {
-    // Use the first variant
-    const firstVariantId = {{ product.variants.first.id }};
+    const variantId = {{ product.selected_or_first_available_variant.id | default: 'null' }};
 
-    if (firstVariantId) {
+    if (variantId && variantId !== 'null') {
       try {
         // Add to cart using Shopify AJAX API
         const response = await fetch('/cart/add.js', {
@@ -848,7 +865,7 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id: firstVariantId,
+            id: variantId,
             quantity: 1,
           }),
         });
