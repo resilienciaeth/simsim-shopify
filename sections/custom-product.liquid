@@ -682,9 +682,16 @@
         <button
           type="button"
           class="add-to-cart-btn"
+          {% if has_available_variant == false %}
+            disabled
+          {% endif %}
           onclick="addToCart()"
         >
-          ADD TO CART
+          {%- if has_available_variant == false -%}
+            SOLD OUT
+          {%- else -%}
+            ADD TO CART
+          {%- endif -%}
         </button>
       </div>
 
@@ -895,12 +902,16 @@
   // Client-side availability check to align live behavior
   document.addEventListener('DOMContentLoaded', async () => {
     try {
-      const root = '{{ routes.root_url }}';
-      const productJsonUrl = `${root ? root + '/' : '/'}products/{{ product.handle }}.js`;
+      const rootFromLiquid = '{{ routes.root_url }}';
+      const rootFromGlobal = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '';
+      const root = rootFromGlobal || rootFromLiquid || '';
+      const normalizedRoot = root.endsWith('/') ? root.slice(0, -1) : root;
+      const productJsonUrl = `${normalizedRoot}/products/{{ product.handle }}.js`;
       const response = await fetch(productJsonUrl);
       if (!response.ok) return;
       const productJson = await response.json();
-      const firstAvailable = productJson.variants && productJson.variants.find(v => v && v.available);
+      const variants = Array.isArray(productJson.variants) ? productJson.variants : [];
+      const firstAvailable = variants.find(v => v && v.available === true);
       const button = document.querySelector('.add-to-cart-btn');
       if (!button) return;
       if (firstAvailable) {
