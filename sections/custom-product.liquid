@@ -266,6 +266,12 @@
     opacity: 0.5;
   }
 
+  .add-to-cart-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #666;
+  }
+
   /* Related Items section - Below main columns */
   .related-items-section {
     padding-top: 90px;
@@ -663,7 +669,20 @@
 
       <!-- Add to Cart Button -->
       <div class="add-to-cart-section">
-        <button type="button" class="add-to-cart-btn" onclick="addToCart()">ADD TO CART</button>
+        <button
+          type="button"
+          class="add-to-cart-btn"
+          onclick="addToCart()"
+          {% if product.selected_or_first_available_variant.available == false %}
+            disabled
+          {% endif %}
+        >
+          {%- if product.selected_or_first_available_variant.available == false -%}
+            SOLD OUT
+          {%- else -%}
+            ADD TO CART
+          {%- endif -%}
+        </button>
       </div>
 
       <!-- Mobile Accordion Section -->
@@ -799,6 +818,14 @@
   }
 
   async function addToCart() {
+    // Check if product is available
+    const isAvailable = {{ product.selected_or_first_available_variant.available | default: false }};
+    
+    if (!isAvailable) {
+      alert('This product is currently sold out.');
+      return;
+    }
+
     // Use the first variant (not "first available" which might skip variants)
     const firstVariantId = {{ product.variants.first.id }};
     
