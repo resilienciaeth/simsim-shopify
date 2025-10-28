@@ -668,8 +668,39 @@
       </div>
 
       <!-- Add to Cart Button -->
+      {% liquid
+        assign current_variant = product.selected_or_first_available_variant
+        assign quantity_rule_soldout = false
+        assign check_against_inventory = true
+
+        if current_variant
+          if current_variant.inventory_management != 'shopify' or current_variant.inventory_policy == 'continue'
+            assign check_against_inventory = false
+          endif
+          if current_variant.quantity_rule and current_variant.quantity_rule.min and current_variant.inventory_quantity and check_against_inventory
+            if current_variant.quantity_rule.min > current_variant.inventory_quantity
+              assign quantity_rule_soldout = true
+            endif
+          endif
+        endif
+      %}
       <div class="add-to-cart-section">
-        <button type="button" class="add-to-cart-btn" onclick="addToCart()">ADD TO CART</button>
+        <button
+          type="button"
+          class="add-to-cart-btn"
+          onclick="addToCart()"
+          {% if current_variant == null or current_variant.available == false or quantity_rule_soldout %}
+            disabled
+          {% endif %}
+        >
+          {%- if current_variant == null -%}
+            {{ 'products.product.unavailable' | t }}
+          {%- elsif current_variant.available == false or quantity_rule_soldout -%}
+            {{ 'products.product.sold_out' | t }}
+          {%- else -%}
+            {{ 'products.product.add_to_cart' | t }}
+          {%- endif -%}
+        </button>
       </div>
 
       <!-- Mobile Accordion Section -->
