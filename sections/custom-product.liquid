@@ -669,19 +669,21 @@
 
       <!-- Add to Cart Button -->
       <div class="add-to-cart-section">
+        <!-- DEBUG: Variant available = {{ product.selected_or_first_available_variant.available }} -->
+        <!-- DEBUG: Variant null = {{ product.selected_or_first_available_variant }} -->
         <button
           type="button"
           class="add-to-cart-btn"
           onclick="addToCart()"
-          {% if product.selected_or_first_available_variant.available == false %}
+          {% unless product.selected_or_first_available_variant.available %}
             disabled
-          {% endif %}
+          {% endunless %}
         >
-          {%- if product.selected_or_first_available_variant.available == false -%}
+          {%- unless product.selected_or_first_available_variant.available -%}
             SOLD OUT
           {%- else -%}
             ADD TO CART
-          {%- endif -%}
+          {%- endunless -%}
         </button>
       </div>
 
@@ -818,26 +820,31 @@
   }
 
   async function addToCart() {
-    // Check if product is available
-    const isAvailable = {{ product.selected_or_first_available_variant.available | default: false }};
+    // Get the selected or first available variant
+    const selectedVariant = {{ product.selected_or_first_available_variant | json }};
     
-    if (!isAvailable) {
+    // Check if variant exists and is available
+    if (!selectedVariant) {
+      alert('This product is currently unavailable.');
+      return;
+    }
+    
+    if (!selectedVariant.available) {
       alert('This product is currently sold out.');
       return;
     }
 
-    // Use the first variant (not "first available" which might skip variants)
-    const firstVariantId = {{ product.variants.first.id }};
+    const variantId = selectedVariant.id;
     
     // Debug info
     console.log('Product ID:', {{ product.id }});
-    console.log('Variant ID:', firstVariantId);
-    console.log('Variant title:', '{{ product.variants.first.title }}');
-    console.log('Variant available:', {{ product.variants.first.available }});
-    console.log('Inventory quantity:', {{ product.variants.first.inventory_quantity }});
+    console.log('Variant ID:', variantId);
+    console.log('Variant title:', selectedVariant.title);
+    console.log('Variant available:', selectedVariant.available);
+    console.log('Has only default variant:', {{ product.has_only_default_variant }});
     console.log('Total variants:', {{ product.variants.size }});
 
-    if (firstVariantId) {
+    if (variantId) {
       try {
         // Add to cart using Shopify AJAX API
         const response = await fetch('/cart/add.js', {
@@ -846,7 +853,7 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id: firstVariantId,
+            id: variantId,
             quantity: 1,
           }),
         });
