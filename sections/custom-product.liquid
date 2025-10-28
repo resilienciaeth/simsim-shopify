@@ -668,40 +668,8 @@
       </div>
 
       <!-- Add to Cart Button -->
-      {% liquid
-        assign current_variant = product.selected_or_first_available_variant
-
-        assign product_sold_out = true
-        if product.available
-          assign product_sold_out = false
-        endif
-
-        assign variant_sold_out = true
-        if current_variant
-          if current_variant.available
-            assign variant_sold_out = false
-          elsif current_variant.inventory_policy == 'continue'
-            assign variant_sold_out = false
-          endif
-        endif
-      %}
       <div class="add-to-cart-section">
-        <button
-          type="button"
-          class="add-to-cart-btn"
-          onclick="addToCart()"
-          {% if product_sold_out or variant_sold_out %}
-            disabled
-          {% endif %}
-        >
-          {%- if product_sold_out -%}
-            {{ 'products.product.unavailable' | t }}
-          {%- elsif variant_sold_out -%}
-            {{ 'products.product.sold_out' | t }}
-          {%- else -%}
-            {{ 'products.product.add_to_cart' | t }}
-          {%- endif -%}
-        </button>
+        <button type="button" class="add-to-cart-btn" onclick="addToCart()">ADD TO CART</button>
       </div>
 
       <!-- Mobile Accordion Section -->
@@ -837,9 +805,10 @@
   }
 
   async function addToCart() {
-    const variantId = {{ product.selected_or_first_available_variant.id | default: 'null' }};
+    // Use the first variant
+    const firstVariantId = {{ product.variants.first.id }};
 
-    if (variantId && variantId !== 'null') {
+    if (firstVariantId) {
       try {
         // Add to cart using Shopify AJAX API
         const response = await fetch('/cart/add.js', {
@@ -848,7 +817,7 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id: variantId,
+            id: firstVariantId,
             quantity: 1,
           }),
         });
