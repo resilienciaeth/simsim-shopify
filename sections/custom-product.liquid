@@ -671,23 +671,8 @@
       {% liquid
         assign current_variant = product.selected_or_first_available_variant
 
-        assign product_has_available = false
-        for v in product.variants
-          assign v_is_available = false
-          if v.available
-            assign v_is_available = true
-          elsif v.inventory_management != 'shopify' or v.inventory_policy == 'continue'
-            assign v_is_available = true
-          elsif v.inventory_quantity and v.inventory_quantity > 0
-            assign v_is_available = true
-          endif
-          if v_is_available
-            assign product_has_available = true
-            break
-          endif
-        endfor
         assign product_sold_out = true
-        if product_has_available
+        if product.available
           assign product_sold_out = false
         endif
 
@@ -695,9 +680,7 @@
         if current_variant
           if current_variant.available
             assign variant_sold_out = false
-          elsif current_variant.inventory_management != 'shopify' or current_variant.inventory_policy == 'continue'
-            assign variant_sold_out = false
-          elsif current_variant.inventory_quantity and current_variant.inventory_quantity > 0
+          elsif current_variant.inventory_policy == 'continue'
             assign variant_sold_out = false
           endif
         endif
