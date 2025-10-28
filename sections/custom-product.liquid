@@ -669,7 +669,30 @@
 
       <!-- Add to Cart Button -->
       <div class="add-to-cart-section">
-        <button type="button" class="add-to-cart-btn" onclick="addToCart()">ADD TO CART</button>
+        {%- assign has_available_variant = false -%}
+        {%- assign first_available_variant_id = null -%}
+        {%- for v in product.variants -%}
+          {%- if v.available -%}
+            {%- assign has_available_variant = true -%}
+            {%- assign first_available_variant_id = v.id -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        <button
+          type="button"
+          class="add-to-cart-btn"
+          {% if has_available_variant == false %}
+            disabled
+          {% endif %}
+          onclick="addToCart()"
+        >
+          {%- if has_available_variant == false -%}
+            SOLD OUT
+          {%- else -%}
+            ADD TO CART
+          {%- endif -%}
+        </button>
       </div>
 
       <!-- Mobile Accordion Section -->
@@ -805,10 +828,16 @@
   }
 
   async function addToCart() {
-    // Use the first variant - always attempt to add regardless of stock status
-    const firstVariantId = {{ product.variants.first.id }};
+    // Check if button is disabled (out of stock)
+    const button = document.querySelector('.add-to-cart-btn');
+    if (button && button.disabled) {
+      return; // Don't proceed if sold out
+    }
 
-    if (firstVariantId) {
+    // Use the first available variant ID computed in Liquid as a fallback
+    const variantId = {{ first_available_variant_id | default: product.selected_or_first_available_variant.id }};
+
+    if (variantId) {
       try {
         // Add to cart using Shopify AJAX API
         const response = await fetch('/cart/add.js', {
@@ -817,7 +846,7 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id: firstVariantId,
+            id: variantId,
             quantity: 1,
           }),
         });
