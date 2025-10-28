@@ -907,23 +907,39 @@
       const root = rootFromGlobal || rootFromLiquid || '';
       const normalizedRoot = root.endsWith('/') ? root.slice(0, -1) : root;
       const productJsonUrl = `${normalizedRoot}/products/{{ product.handle }}.js`;
+      
+      console.log('🔍 DEBUG: Fetching product JSON from:', productJsonUrl);
+      
       const response = await fetch(productJsonUrl);
+      console.log('🔍 DEBUG: Response status:', response.status, response.ok);
+      
       if (!response.ok) return;
       const productJson = await response.json();
+      
+      console.log('🔍 DEBUG: Full product JSON:', productJson);
+      console.log('🔍 DEBUG: Variants:', productJson.variants);
+      
       const variants = Array.isArray(productJson.variants) ? productJson.variants : [];
+      console.log('🔍 DEBUG: Variants array check:', variants.length, 'variants found');
+      
       const firstAvailable = variants.find(v => v && v.available === true);
+      console.log('🔍 DEBUG: First available variant:', firstAvailable);
+      
       const button = document.querySelector('.add-to-cart-btn');
       if (!button) return;
       if (firstAvailable) {
         window.__firstAvailableVariantId = firstAvailable.id;
         button.disabled = false;
         button.textContent = 'ADD TO CART';
+        console.log('✅ DEBUG: Button set to ADD TO CART with variant ID:', firstAvailable.id);
       } else {
         window.__firstAvailableVariantId = null;
         button.disabled = true;
         button.textContent = 'SOLD OUT';
+        console.log('❌ DEBUG: Button set to SOLD OUT - no available variants');
       }
     } catch (e) {
+      console.error('❌ DEBUG: Error in availability check:', e);
       // Ignore; fall back to server-rendered state and add-to-cart handling
     }
   });
