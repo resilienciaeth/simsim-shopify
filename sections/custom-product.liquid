@@ -895,7 +895,9 @@
   // Client-side availability check to align live behavior
   document.addEventListener('DOMContentLoaded', async () => {
     try {
-      const response = await fetch('/products/{{ product.handle }}.js');
+      const root = '{{ routes.root_url }}';
+      const productJsonUrl = `${root ? root + '/' : '/'}products/{{ product.handle }}.js`;
+      const response = await fetch(productJsonUrl);
       if (!response.ok) return;
       const productJson = await response.json();
       const firstAvailable = productJson.variants && productJson.variants.find(v => v && v.available);
