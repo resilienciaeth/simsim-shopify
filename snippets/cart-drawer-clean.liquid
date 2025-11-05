@@ -33,6 +33,24 @@
   .cart-bottom-cta .button {
     width: 100%;
     margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+    border-radius: 0;
+  }
+
+  @media screen and (min-width: 990px) {
+    #CartDrawer .cart-bottom-cta {
+      margin-left: -30px;
+      margin-right: -30px;
+      padding-left: 0;
+      padding-right: 0;
+      width: calc(100% + 60px);
+    }
+    
+    #CartDrawer .cart-bottom-cta .button {
+      padding-left: 0;
+      padding-right: 0;
+    }
   }
 </style>
 
