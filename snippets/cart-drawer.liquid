@@ -22,12 +22,40 @@
     #CartDrawer .drawer__inner {
       padding-left: 30px;
       padding-right: 30px;
+      padding-bottom: 0;
     }
   }
 
-  /* Keep top checkout CTA full-bleed (no side padding) on desktop */
+  /* Remove bottom padding from drawer inner on all screens */
+  #CartDrawer .drawer__inner {
+    padding-bottom: 0 !important;
+  }
+
+  /* Style for empty cart message at top */
   @media screen and (min-width: 990px) {
     #CartDrawer .cart-top-cta {
+      margin-left: -30px;
+      margin-right: -30px;
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  /* Bottom checkout button styling - full width, no bottom margin */
+  .cart-bottom-cta {
+    margin-top: 30px;
+    margin-bottom: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .cart-bottom-cta .button {
+    width: 100%;
+    margin: 0;
+  }
+
+  @media screen and (min-width: 990px) {
+    #CartDrawer .cart-bottom-cta {
       margin-left: -30px;
       margin-right: -30px;
       padding-left: 0;
@@ -319,24 +347,11 @@
       aria-label="{{ 'sections.cart.title' | t }}"
       tabindex="-1"
     >
-      <!-- Top Checkout CTA inside cart drawer -->
-      <div class="cart-top-cta">
-        <a
-          href="/checkout"
-          class="button button--primary cart__checkout-button{% if cart == empty %} is-disabled{% endif %}"
-          name="checkout"
-          {% if cart == empty %}
-            aria-disabled="true" tabindex="-1"
-          {% endif %}
-        >
-          {{- 'sections.cart.checkout' | t -}}
-        </a>
-        {% if cart == empty %}
-          <div class="cart-top-empty-note">YOUR CART IS EMPTY</div>
-        {% endif %}
-      </div>
       {%- if cart == empty -%}
-        <!-- Empty cart state handled by top message -->
+        <!-- Top empty cart message -->
+        <div class="cart-top-cta">
+          <div class="cart-top-empty-note">YOUR CART IS EMPTY</div>
+        </div>
       {%- endif -%}
       <div class="drawer__header large-up-hide">
         <h2 class="drawer__heading">{{ 'sections.cart.title' | t }}</h2>
@@ -626,6 +641,18 @@
           <div id="CartDrawer-CartErrors" role="alert"></div>
         </form>
       </cart-drawer-items>
+      <!-- Bottom Checkout CTA -->
+      {%- if cart != empty -%}
+        <div class="cart-bottom-cta">
+          <a
+            href="/checkout"
+            class="button button--primary cart__checkout-button"
+            name="checkout"
+          >
+            {{- 'sections.cart.checkout' | t -}}
+          </a>
+        </div>
+      {%- endif -%}
     </div>
   </div>
 </cart-drawer>
