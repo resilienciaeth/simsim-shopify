@@ -46,6 +46,10 @@
       aria-label="{{ 'sections.cart.title' | t }}"
       tabindex="-1"
     >
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 5bcb5abe90568b07bc4435c7697c55470e3f4531
       {%- if cart == empty -%}
         <!-- Top empty cart message -->
         <div class="cart-top-cta">
@@ -137,6 +141,23 @@
                     <span class="total-amount">{{ cart.total_price | money | remove: '.00' }} USD</span>
                   </div>
                 </div>
+                
+                  <!-- Top Checkout CTA inside cart drawer -->
+      <div class="cart-top-cta">
+        <a
+          href="{{ routes.cart_url }}"
+          class="button button--primary cart__checkout-button{% if cart == empty %} is-disabled{% endif %}"
+          name="checkout"
+          {% if cart == empty %}
+            aria-disabled="true" tabindex="-1"
+          {% endif %}
+        >
+          {{- 'sections.cart.checkout' | t -}}
+        </a>
+        {% if cart == empty %}
+          <div class="cart-top-empty-note">YOUR CART IS EMPTY</div>
+        {% endif %}
+      </div>
               </div>
             {%- endif -%}
             <p id="CartDrawer-LiveRegionText" class="visually-hidden" role="status"></p>
