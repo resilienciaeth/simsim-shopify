@@ -14,11 +14,11 @@
     "footer": {
       "type": "footer",
       "blocks": {
-        "footer-0": {
-          "type": "link_list",
+        "footer-2": {
+          "type": "text",
           "settings": {
-            "heading": "Quick links",
-            "menu": "footer"
+            "heading": "About",
+            "subtext": "<p>SIMSIM is a “we see you” to those who have carved their own path, who exist between cultures, who don’t conform to the labels the world tries to place on them. It’s for the unconventional, the in-between, the ones who embrace their otherness with pride.</p><p>Rooted in heritage and individuality, SIMSIM creates one-of-a-kind statement pieces — designed to spark conversation, connection, and confidence.</p>"
           }
         },
         "footer-1": {
@@ -27,24 +27,17 @@
             "heading": "Info",
             "menu": "footer"
           }
-        },
-        "footer-2": {
-          "type": "text",
-          "settings": {
-            "heading": "Our mission",
-            "subtext": "<p>Share contact information, store details, and brand content with your customers.<\/p>"
-          }
         }
       },
       "block_order": [
-        "footer-0",
-        "footer-1",
-        "footer-2"
+        "footer-2",
+        "footer-1"
       ],
       "settings": {
         "color_scheme": "scheme-1",
         "newsletter_enable": false,
         "newsletter_heading": "Subscribe to our emails",
+        "enable_follow_on_shop": true,
         "show_social": true,
         "enable_country_selector": false,
         "enable_language_selector": false,
