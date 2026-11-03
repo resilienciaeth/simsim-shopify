@@ -58,10 +58,10 @@
     "featured_products_grid_2": {
       "type": "featured-products-grid",
       "settings": {
-        "product_1": "the-pyramid-emerald-large",
+        "product_1": "the-pyramid-onyx-small",
         "product_2": "the-pyramid-onyx-large",
         "product_3": "the-pyramid-tortoise-large",
-        "product_4": "the-pyramid-pearl-large"
+        "product_4": "the-pyramid-tortoise-small"
       }
     },
     "newsletter_signup": {
