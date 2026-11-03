@@ -180,14 +180,14 @@
 </style>
 
 <div class="custom-collection-grid" data-mode="less">
-  {% liquid
-    assign product_list = null
-    if collection
-      assign product_list = collection.products
-    elsif collections.all
-      assign product_list = collections.all.products
-    endif
-  %}
+ {% liquid
+  if collection
+    assign product_list = collection.products
+  else
+    assign product_list = collections['frontpage'].products
+  endif
+%}
+
   <div class="custom-collection-grid__toggle">
     <button type="button" class="toggle-btn js-less is-active" aria-pressed="true">Less</button>
     <button type="button" class="toggle-btn js-more" aria-pressed="false">More</button>
