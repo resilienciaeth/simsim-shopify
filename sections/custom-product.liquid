@@ -561,6 +561,10 @@
       <!-- Sizes Section - Now links to different products -->
       {%- assign current_size = product.metafields.custom.size -%}
       {%- assign other_size_handle = product.metafields.custom.other_size_handle -%}
+      {%- if product.handle == 'the-pyramid-pearl-small' or product.handle == 'the-pyramid-emerald-small' -%}
+  {%- assign other_size_handle = blank -%}
+{%- endif -%}
+
 
       {%- if current_size != blank and other_size_handle != blank -%}
         {%- assign other_size_product = all_products[other_size_handle] -%}
