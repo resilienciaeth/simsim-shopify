@@ -607,6 +607,12 @@
         {%- if collection_products.size > 1 -%}
           <div class="product-colors">
             <div class="colors-options">
+              {%- if product.handle == 'the-pyramid-amber-small' -%}
+  <span class="color-option current" aria-current="true">
+    {{ product.metafields.custom.color | escape }}
+  </span>
+{%- endif -%}
+
               {%- for collection_product in collection_products limit: 10 -%}
                 {%- assign collection_product_size = collection_product.metafields.custom.size | upcase -%}
 
