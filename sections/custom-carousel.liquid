@@ -46,35 +46,20 @@
       {%- if section.settings.slide1_link != blank -%}
         <a href="{{ section.settings.slide1_link }}" class="slide-link" aria-label="Navigate to slide 1 link">
       {%- endif -%}
-      <div class="slide-content two-columns">
-        <!-- Desktop: Two columns -->
+            <div class="slide-content one-column">
+        <!-- Desktop: Full width image -->
         <div class="column desktop-only">
           {%- if section.settings.slide1_image1 != blank -%}
             <img
-              src="{{ section.settings.slide1_image1 | image_url: width: 800 }}"
+              src="{{ section.settings.slide1_image1 | image_url: width: 1600 }}"
               alt="{{ section.settings.slide1_image1.alt | escape }}"
-              loading="lazy"
+              loading="eager"
               width="{{ section.settings.slide1_image1.width }}"
               height="{{ section.settings.slide1_image1.height }}"
             >
           {%- else -%}
             <div class="placeholder-image">
-              <span>Image 1</span>
-            </div>
-          {%- endif -%}
-        </div>
-        <div class="column desktop-only">
-          {%- if section.settings.slide1_image2 != blank -%}
-            <img
-              src="{{ section.settings.slide1_image2 | image_url: width: 800 }}"
-              alt="{{ section.settings.slide1_image2.alt | escape }}"
-              loading="lazy"
-              width="{{ section.settings.slide1_image2.width }}"
-              height="{{ section.settings.slide1_image2.height }}"
-            >
-          {%- else -%}
-            <div class="placeholder-image">
-              <span>Image 2</span>
+              <span>Full Width Image</span>
             </div>
           {%- endif -%}
         </div>
