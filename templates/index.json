@@ -12,9 +12,8 @@
     "custom_carousel": {
       "type": "custom-carousel",
       "settings": {
-        "slide1_image1": "shopify://shop_images/Screenshot_2025-10-03_at_10.01.30.png",
-        "slide1_image2": "shopify://shop_images/Screenshot_2025-10-03_at_10.00.52.png",
-        "slide1_mobile_image": "shopify://shop_images/Screenshot_2025-10-03_at_10.01.30.png",
+        "slide1_image1": "shopify://shop_images/Campaign-Amber-04.png",
+        "slide1_mobile_image": "shopify://shop_images/Campaign-Amber-04.png",
         "slide1_text": "Introducing",
         "slide1_title": "The Pyramid Bag",
         "slide1_link": "shopify://collections",
