@@ -18,16 +18,16 @@
         "slide1_text": "Introducing",
         "slide1_title": "The Pyramid Bag",
         "slide1_link": "shopify://collections",
-        "slide2_image1": "shopify://shop_images/Screenshot_2025-10-03_at_10.03.45.png",
-        "slide2_image2": "shopify://shop_images/Screenshot_2025-10-03_at_10.03.45.png",
-        "slide2_mobile_image": "shopify://shop_images/Screenshot_2025-10-03_at_10.03.45.png",
-        "slide2_text": "Introducing",
-        "slide2_title": "The Pyramid Bag",
+        "slide2_image1": "shopify://shop_images/Campaign-Amber-02.png",
+        "slide2_image2": "shopify://shop_images/Campaign-Amber-02.png",
+        "slide2_mobile_image": "shopify://shop_images/Campaign-Amber-02.png",
+        "slide2_text": "NEW",
+        "slide2_title": "The Pyramid in Amber",
         "slide2_link": "shopify://collections",
-        "slide3_image": "shopify://shop_images/Screenshot_2025-10-03_at_10.04.53.png",
-        "slide3_mobile_image": "shopify://shop_images/Screenshot_2025-10-03_at_10.04.53.png",
-        "slide3_text": "Introducing",
-        "slide3_title": "The Pyramid Bag",
+        "slide3_image": "shopify://shop_images/Campaign-Amber-10.png",
+        "slide3_mobile_image": "shopify://shop_images/Campaign-Amber-10.png",
+        "slide3_text": "NEW",
+        "slide3_title": "The Pyramid in Amber",
         "slide3_link": "shopify://collections"
       }
     },
@@ -43,7 +43,7 @@
     "asymmetric_cards": {
       "type": "asymmetric-cards",
       "settings": {
-        "card1_image": "shopify://shop_images/2025-SIMSIM-DP_218.png",
+        "card1_image": "shopify://shop_images/Campaign-Amber-14_e3f59ace-5e50-4319-82ca-adf59e13f963.png",
         "card1_link": "shopify://collections",
         "card2_image": "shopify://shop_images/2025-SIMSIM-DP_451.png",
         "card2_link": "shopify://collections"
