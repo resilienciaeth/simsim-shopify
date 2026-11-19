@@ -366,3 +366,8 @@ body.template-index {
     transition: none;
   }
 }
+/* Match Slide 3 small-text font to Slides 1 and 2 */
+.custom-carousel-wrapper .carousel-slide[data-slide="3"] .slide-small-text {
+  font-family: 'NewEdge666-Rounded', Arial, sans-serif !important;
+  font-weight: 400 !important;
+}
