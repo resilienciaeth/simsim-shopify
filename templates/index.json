@@ -12,10 +12,10 @@
     "custom_carousel": {
       "type": "custom-carousel",
       "settings": {
-        "slide1_image1": "shopify://shop_images/Campaign-Amber-04.png",
-        "slide1_mobile_image": "shopify://shop_images/Campaign-Amber-01.png",
+        "slide1_image1": "shopify://shop_images/High_res_ruby_landscape.png",
+        "slide1_mobile_image": "shopify://shop_images/High_res_ruby_landscape.png",
         "slide1_text": "NEW",
-        "slide1_title": "The Pyramid in Amber",
+        "slide1_title": "The Pyramid in Ruby",
         "slide1_link": "shopify://collections",
         "slide2_image1": "shopify://shop_images/Campaign-Amber-02.png",
         "slide2_image2": "shopify://shop_images/Campaign-Amber-02.png",
@@ -25,16 +25,16 @@
         "slide2_link": "shopify://collections",
         "slide3_image": "shopify://shop_images/Campaign-Amber-10.png",
         "slide3_mobile_image": "shopify://shop_images/Campaign-Amber-06.png",
-        "slide3_text": "NEW",
-        "slide3_title": "The Pyramid in Amber",
+        "slide3_text": "SHOP THE COLLECTION",
+        "slide3_title": "ART YOU CARRY",
         "slide3_link": "shopify://collections"
       }
     },
     "featured_products_grid": {
       "type": "featured-products-grid",
       "settings": {
-        "product_1": "the-pyramid-amber-small",
-        "product_2": "the-pyramid-tortoise-small",
+        "product_1": "the-pyramid-ruby-small",
+        "product_2": "the-pyramid-amber-small",
         "product_3": "the-pyramid-pearl-small",
         "product_4": "the-pyramid-emerald-small"
       }
@@ -44,7 +44,7 @@
       "settings": {
         "card1_image": "shopify://shop_images/Campaign-Amber-14_e3f59ace-5e50-4319-82ca-adf59e13f963.png",
         "card1_link": "shopify://collections",
-        "card2_image": "shopify://shop_images/2025-SIMSIM-DP_451.png",
+        "card2_image": "shopify://shop_images/High_res_Ruby19.png",
         "card2_link": "shopify://collections"
       }
     },
